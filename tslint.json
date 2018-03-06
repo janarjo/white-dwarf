@@ -1,0 +1,10 @@
+{
+    "extends": "tslint:latest",
+    "rules": {
+        "indent": [true, "spaces", 4],
+        "quotemark": [true, "single"],
+        "interface-name" : [true, "never-prefix"],
+        "member-access": [true, "no-public"],
+        "no-angle-bracket-type-assertion": true
+    }
+}
