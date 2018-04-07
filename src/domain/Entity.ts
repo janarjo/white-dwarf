@@ -2,17 +2,14 @@ import { Vector } from '../math/Vector';
 
 export abstract class Entity {
     constructor(
-            protected position: Vector,
-            protected orientation: number) {
+            public position: Vector,
+            public orientation: number,
+            protected speed: number) {
     }
 
-    abstract move(): void;
-
-    get Position() {
-        return this.position;
-    }
-
-    get Orientation() {
-        return this.orientation;
+    move() {
+        const motionX = this.speed * Math.cos(this.orientation);
+        const motionY = this.speed * Math.sin(this.orientation);
+        this.position = this.position.add(new Vector(motionX, motionY));
     }
 }

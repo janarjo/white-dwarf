@@ -1,15 +1,18 @@
 import { Vector } from '../math/Vector';
 import { Entity } from './Entity';
+import { Projectile } from './Projectile';
 
 export class Player extends Entity {
     constructor(
             position: Vector,
             orientation: number = 0,
-            private speed: number = 0,
+            speed: number = 0,
             private acceleration: number = 0.1,
             private readonly maxSpeed: number = 6,
-            private turningSpeed: number = 0.10) {
-        super(position, orientation);
+            private turningSpeed: number = 0.10,
+            public attackSpeed: number = 1,
+            private projectileSpeed: number = 10) {
+        super(position, orientation, speed);
     }
 
     accelerate() {
@@ -28,9 +31,7 @@ export class Player extends Entity {
         this.orientation -= this.turningSpeed;
     }
 
-    move() {
-        const motionX = this.speed * Math.cos(this.orientation);
-        const motionY = this.speed * Math.sin(this.orientation);
-        this.position = this.position.add(new Vector(motionX, motionY));
+    getProjectile(): Projectile {
+        return new Projectile(this.position, this.orientation, this.projectileSpeed);
     }
 }

@@ -1,6 +1,6 @@
 import { Vector } from '../math/Vector';
 
-export function rotate(origin: Vector, angle: number, points: Readonly<Vector[]>) {
+export function rotate(origin: Vector, angle: number, points: ReadonlyArray<Vector>): ReadonlyArray<Vector> {
     const cosMult = Math.cos(angle);
     const sinMult = Math.sin(angle);
 
