@@ -4,7 +4,7 @@
   "description": "An asteroids-like game with Typescript",
   "main": "webpack.config.js",
   "scripts": {
-    "start": "webpack-dev-server --content-base dist/ --mode=development",
+    "start": "webpack && webpack-dev-server --content-base dist/ --mode=development",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

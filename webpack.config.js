@@ -28,7 +28,8 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             title: 'White-Dwarf',
-            template: 'src/index.html'
+            template: './src/index.html',
+            filename: 'index.html'
         })
     ]
 }
