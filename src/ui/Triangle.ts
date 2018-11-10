@@ -1,6 +1,6 @@
 import { rotate } from '../math/Utils';
 import { Vector } from '../math/Vector';
-import { Shape } from './Shape';
+import { Shape, ShapeType } from './Shape';
 
 export class Triangle extends Shape {
     constructor(
@@ -9,7 +9,7 @@ export class Triangle extends Shape {
             color: string = 'white',
             protected base: number = 30,
             protected height: number = 50) {
-        super(position, color);
+        super(ShapeType.TRIANGLE, position, color);
     }
 
     draw(ctx: CanvasRenderingContext2D) {

@@ -1,5 +1,5 @@
 import { Vector } from '../math/Vector';
-import { Shape } from './Shape';
+import { Shape, ShapeType } from './Shape';
 
 export class Circle extends Shape {
     constructor(
@@ -7,7 +7,7 @@ export class Circle extends Shape {
             color: string,
             protected lineWidth: number = 2,
             protected radius: number = 2) {
-        super(position, color);
+        super(ShapeType.CIRCLE, position, color);
     }
 
     draw(ctx: CanvasRenderingContext2D) {

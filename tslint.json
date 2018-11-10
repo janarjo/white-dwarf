@@ -6,6 +6,8 @@
         "interface-name" : [true, "never-prefix"],
         "member-access": [true, "no-public"],
         "no-angle-bracket-type-assertion": true,
-        "object-literal-sort-keys": false
+        "object-literal-sort-keys": false,
+        "curly": [true, "ignore-same-line"],
+        "no-unused-expression": [true, "allow-fast-null-checks"]
     }
 }

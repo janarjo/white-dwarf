@@ -1,7 +1,12 @@
-import { Game } from './domain/Game';
-import { Player } from './domain/Player';
+import { EntityManager } from './EntityManager';
+import { EventManager } from './EventManager';
 import { Vector } from './math/Vector';
-import { Painter } from './ui/Painter';
+import { ControlSystem } from './systems/ControlSystem';
+import { CoreSystem } from './systems/CoreSystem';
+import { MovementSystem } from './systems/MovementSystem';
+import { RenderSystem } from './systems/RenderSystem';
+import { System } from './systems/System';
+import { WeaponSystem } from './systems/WeaponSystem';
 
 export class Controller {
     readonly fps = 60;
@@ -15,9 +20,21 @@ export class Controller {
     isTurningLeft = false;
     isTurningRight = false;
 
+    readonly eventManager = new EventManager();
+    readonly entityManager = new EntityManager();
+
+    readonly systems: System[];
+
     constructor(
-            readonly game: Game,
-            readonly painter: Painter) {
+            readonly ctx: CanvasRenderingContext2D,
+            readonly size: Vector) {
+            this.systems = [
+                new CoreSystem(this.entityManager, this.eventManager),
+                new MovementSystem(this.entityManager, this.eventManager),
+                // new ControlSystem(this.entityManager, this.eventManager),
+                new RenderSystem(this.entityManager, this.eventManager, ctx, size),
+                // new WeaponSystem(this.entityManager, this.eventManager),
+            ];
     }
 
     gameLoop() {
@@ -29,30 +46,27 @@ export class Controller {
         if (delta > this.interval) {
             this.then = now - (delta % (this.interval));
             this.applyPlayerInput();
-            this.game.moveEntities();
-            this.game.clearDeadEntities();
-            this.painter.paint(this.game.entities);
+            this.eventManager.processEvents();
+            this.entityManager.processEntities(this.systems);
         }
     }
 
     applyPlayerInput() {
-        const player = this.game.player;
         const now = Date.now();
         if (this.isShooting && this.nextFire < now) {
-            this.nextFire = now + player.attackSpeed * 1000;
-            this.game.entities.push(player.getProjectile());
+            // this.eventManager.queueEvent(new FireEvent());
         }
         if (this.isAccelerating) {
-            player.accelerate();
+            // todo
         }
         if (this.isDecelerating) {
-            player.decelerate();
+            // todo
         }
         if (this.isTurningLeft) {
-            player.turnLeft();
+            // this.eventManager.queueEvent(new TurnEvent({ direction: TurnEventDirection.LEFT }));
         }
         if (this.isTurningRight) {
-            player.turnRight();
+            // this.eventManager.queueEvent(new TurnEvent({ direction: TurnEventDirection.RIGHT }));
         }
     }
 

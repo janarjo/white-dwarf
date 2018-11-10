@@ -1,7 +1,14 @@
 import { Vector } from '../math/Vector';
 
+export enum ShapeType {
+    CIRCLE,
+    TRIANGLE,
+    DOT,
+}
+
 export abstract class Shape {
     constructor(
+            protected type: ShapeType,
             protected position: Vector,
             protected color: string) {
     }

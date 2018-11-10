@@ -1,5 +1,3 @@
-import { Tuple } from '../domain/Types';
-
 export class Vector {
     constructor(readonly x: number, readonly y: number) { }
 
@@ -15,8 +13,8 @@ export class Vector {
         return new Vector(this.x * n, this.y * n);
     }
 
-    isWithin(area: Tuple): boolean {
-        return this.x >= 0 && this.x <= area[0]
-            && this.y >= 0 && this.y <= area[1];
+    isWithin(area: Vector): boolean {
+        return this.x >= 0 && this.x <= area.x
+            && this.y >= 0 && this.y <= area.y;
     }
 }

@@ -1,11 +1,11 @@
 import { Vector } from '../math/Vector';
-import { Shape } from './Shape';
+import { Shape, ShapeType } from './Shape';
 
 export class Dot extends Shape {
     constructor(
             position: Vector,
             color: string = 'white') {
-        super(position, color);
+        super(ShapeType.DOT, position, color);
     }
 
     draw(ctx: CanvasRenderingContext2D) {
