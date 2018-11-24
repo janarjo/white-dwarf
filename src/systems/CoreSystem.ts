@@ -21,10 +21,10 @@ export class CoreSystem extends System {
                 const turnEvent = (event as TurnEvent);
                 switch (turnEvent.data.direction) {
                     case TurnEventDirection.LEFT:
-                        core.state = this.updateOrientation(core.state, -core.state.turningSpeed);
+                        core.state = this.updateOrientation(core.state, -turnEvent.data.turningSpeed);
                         break;
                     case TurnEventDirection.RIGHT:
-                        core.state = this.updateOrientation(core.state, core.state.turningSpeed);
+                        core.state = this.updateOrientation(core.state, turnEvent.data.turningSpeed);
                         break;
                 }
             }

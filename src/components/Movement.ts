@@ -5,6 +5,7 @@ export interface MovementState {
     speed: number;
     acceleration: number;
     maxSpeed: number;
+    turningSpeed: number;
 }
 
 export class Movement extends Component {

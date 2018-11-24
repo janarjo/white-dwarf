@@ -40,6 +40,10 @@ export class RenderSystem extends System {
         });
     }
 
+    registerListeners(): void {
+        return;
+    }
+
     private clear() {
         this.ctx.fillStyle = 'black';
         this.ctx.fillRect(0, 0, this.size.x, this.size.y);

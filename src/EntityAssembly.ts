@@ -10,7 +10,6 @@ export const getPlayer = (position: Vector) => [
     new Core({
         position,
         orientation: 0,
-        turningSpeed: 0,
     }),
     new Render({
         type: ShapeType.TRIANGLE,
@@ -26,6 +25,7 @@ export const getPlayer = (position: Vector) => [
         acceleration: 0,
         speed: 0,
         maxSpeed: 6,
+        turningSpeed: 0,
     }),
     new Weapon({
         isFiring: false,
@@ -38,7 +38,6 @@ export const getProjectile = (position: Vector, orientation: number) => [
     new Core({
         position,
         orientation,
-        turningSpeed: 0,
     }),
     new Render({
         type: ShapeType.DOT,
@@ -47,5 +46,6 @@ export const getProjectile = (position: Vector, orientation: number) => [
         acceleration: 0,
         speed: 5,
         maxSpeed: 5,
+        turningSpeed: 0,
     }),
 ];

@@ -1,4 +1,4 @@
-import { Component, ComponentCode } from '../components/Components';
+import { ComponentCode } from '../components/Components';
 import { Movement, MovementState } from '../components/Movement';
 import { EntityManager } from '../EntityManager';
 import { EventManager } from '../EventManager';

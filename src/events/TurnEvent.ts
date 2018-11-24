@@ -7,6 +7,7 @@ export enum TurnEventDirection {
 
 export interface TurnEventData {
     direction: TurnEventDirection;
+    turningSpeed: number;
 }
 
 export class TurnEvent extends Event {

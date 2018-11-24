@@ -10,8 +10,5 @@ export abstract class System {
     }
 
     abstract update(entities: Entity[]): void;
-
-    registerListeners(): void {
-        return;
-    }
+    abstract registerListeners(): void;
 }
