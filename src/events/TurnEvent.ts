@@ -1,12 +1,6 @@
 import { Event, EventType } from './Event';
 
-export enum TurnEventDirection {
-    LEFT,
-    RIGHT,
-}
-
 export interface TurnEventData {
-    direction: TurnEventDirection;
     turningSpeed: number;
 }
 

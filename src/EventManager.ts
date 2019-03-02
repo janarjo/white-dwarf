@@ -32,5 +32,6 @@ export class EventManager {
                 this.listeners.get(event.type) as Array<(event: Event) => void> : [];
             listeners.forEach((callback: (event: Event) => void) => callback(event));
         });
+        this.events = [];
     }
 }

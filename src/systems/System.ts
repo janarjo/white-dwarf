@@ -1,14 +1,5 @@
-import { Entity } from '../Entity';
-import { EntityManager } from '../EntityManager';
-import { EventManager } from '../EventManager';
-
 export abstract class System {
-    constructor(
-        readonly entityManager: EntityManager,
-        readonly eventManager: EventManager) {
-            this.registerListeners();
+    update(): void {
+        return;
     }
-
-    abstract update(entities: Entity[]): void;
-    abstract registerListeners(): void;
 }

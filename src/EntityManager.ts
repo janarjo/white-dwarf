@@ -1,5 +1,3 @@
-import { Component, ComponentCode } from './components/Components';
-import { Movement } from './components/Movement';
 import { Entity } from './Entity';
 import { getPlayer } from './EntityAssembly';
 import { Vector } from './math/Vector';
@@ -16,7 +14,7 @@ export class EntityManager {
     }
 
     processEntities(systems: ReadonlyArray<System>) {
-        systems.forEach((system) => system.update(this.entities));
+        systems.forEach((system) => system.update());
     }
 
     getEntity(entityId: number): Entity | undefined {

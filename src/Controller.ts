@@ -1,3 +1,4 @@
+import { CommandManager } from './CommandManager';
 import { EntityManager } from './EntityManager';
 import { EventManager } from './EventManager';
 import { Vector } from './math/Vector';
@@ -6,35 +7,26 @@ import { CoreSystem } from './systems/CoreSystem';
 import { MovementSystem } from './systems/MovementSystem';
 import { RenderSystem } from './systems/RenderSystem';
 import { System } from './systems/System';
-import { WeaponSystem } from './systems/WeaponSystem';
 
 export class Controller {
     readonly fps = 60;
     readonly interval = 1000 / this.fps;
     then: number = Date.now();
-    nextFire: number = Date.now();
 
-    isShooting = false;
-    isAccelerating = false;
-    isDecelerating = false;
-    isTurningLeft = false;
-    isTurningRight = false;
-
-    readonly eventManager = new EventManager();
     readonly entityManager = new EntityManager();
+    readonly eventManager = new EventManager();
+    readonly commandManager = new CommandManager();
 
     readonly systems: System[];
 
-    constructor(
-            readonly ctx: CanvasRenderingContext2D,
-            readonly size: Vector) {
-            this.systems = [
-                new CoreSystem(this.entityManager, this.eventManager),
-                new MovementSystem(this.entityManager, this.eventManager),
-                // new ControlSystem(this.entityManager, this.eventManager),
-                new RenderSystem(this.entityManager, this.eventManager, ctx, size),
-                // new WeaponSystem(this.entityManager, this.eventManager),
-            ];
+    constructor(canvas: HTMLCanvasElement, size: Vector) {
+        this.systems = [
+            new CoreSystem(this.entityManager, this.eventManager),
+            new MovementSystem(this.entityManager, this.eventManager, this.commandManager),
+            new ControlSystem(this.entityManager, this.commandManager, canvas),
+            new RenderSystem(this.entityManager, canvas.getContext('2d')!, size),
+            // new WeaponSystem(this.entityManager, this.eventManager),
+        ];
     }
 
     gameLoop() {
@@ -45,53 +37,9 @@ export class Controller {
 
         if (delta > this.interval) {
             this.then = now - (delta % (this.interval));
-            this.applyPlayerInput();
+            this.commandManager.processCommands();
             this.eventManager.processEvents();
             this.entityManager.processEntities(this.systems);
-        }
-    }
-
-    applyPlayerInput() {
-        const now = Date.now();
-        if (this.isShooting && this.nextFire < now) {
-            // this.eventManager.queueEvent(new FireEvent());
-        }
-        if (this.isAccelerating) {
-            // todo
-        }
-        if (this.isDecelerating) {
-            // todo
-        }
-        if (this.isTurningLeft) {
-            // this.eventManager.queueEvent(new TurnEvent({ direction: TurnEventDirection.LEFT }));
-        }
-        if (this.isTurningRight) {
-            // this.eventManager.queueEvent(new TurnEvent({ direction: TurnEventDirection.RIGHT }));
-        }
-    }
-
-    handleInput(event: KeyboardEvent, isKeyDown: boolean) {
-        switch (event.keyCode) {
-            case 32: {
-                this.isShooting = isKeyDown ? true : false;
-                break;
-            }
-            case 37: {
-                this.isTurningLeft = isKeyDown ? true : false;
-                break;
-            }
-            case 38: {
-                this.isAccelerating = isKeyDown ? true : false;
-                break;
-            }
-            case 39: {
-                this.isTurningRight = isKeyDown ? true : false;
-                break;
-            }
-            case 40: {
-                this.isDecelerating = isKeyDown ? true : false;
-                break;
-            }
         }
     }
 }

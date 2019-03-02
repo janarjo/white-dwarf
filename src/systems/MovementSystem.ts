@@ -1,47 +1,69 @@
+import { CommandManager } from '../CommandManager';
+import { Command } from '../Commands';
 import { ComponentCode } from '../components/Components';
 import { Movement, MovementState } from '../components/Movement';
 import { EntityManager } from '../EntityManager';
 import { EventManager } from '../EventManager';
-import { AccelerateEvent } from '../events/AccelerateEvent';
-import { Event, EventType } from '../events/Event';
+import { MoveEvent } from '../events/MoveEvent';
+import { TurnEvent } from '../events/TurnEvent';
 import { System } from './System';
 
 export class MovementSystem extends System {
     constructor(
-        readonly entityManager: EntityManager,
-        readonly eventManager: EventManager) {
-            super(entityManager, eventManager);
+        private readonly entityManager: EntityManager,
+        private readonly eventManager: EventManager,
+        private readonly commandManager: CommandManager) {
+        super();
+        this.registerListeners();
     }
 
     update() {
         this.entityManager.entities.forEach((entity) => {
             const movement = entity.getComponent(ComponentCode.MOVEMENT) as Movement | undefined;
-            if (movement) {
-                movement.state = this.updateMomentum(movement.state);
-            }
+            if (!movement) return;
+
+            movement.state = this.updateMomentum(movement.state);
+            if (movement.state.speed === 0) return;
+            this.eventManager.queueEvent(new MoveEvent(entity.id, { speed: movement.state.speed }));
         });
     }
 
     registerListeners() {
-        this.eventManager.registerListener(EventType.ACCELERATE, (event: Event) => {
-            const entity = this.entityManager.getEntity(event.entityId);
-            const movement = entity && entity.getComponent(ComponentCode.MOVEMENT) as Movement | undefined;
-            if (movement) {
-                const accelerateEvent = (event as AccelerateEvent);
-                movement.state = this.updateAcceleration(movement.state, accelerateEvent.data.amount);
-            }
+        this.commandManager.registerListener(Command.ACCELERATE, () => {
+            this.entityManager.entities.forEach((entity) => {
+                const movement = entity.getComponent(ComponentCode.MOVEMENT) as Movement | undefined;
+                if (movement) movement.state.acceleration = 0.1;
+            });
         });
-    }
-
-    private updateAcceleration(movementState: MovementState, amount: number): MovementState {
-        return { ...movementState, acceleration: movementState.acceleration + amount };
+        this.commandManager.registerListener(Command.DECELERATE, () => {
+            this.entityManager.entities.forEach((entity) => {
+                const movement = entity.getComponent(ComponentCode.MOVEMENT) as Movement | undefined;
+                if (movement) movement.state.acceleration = -0.1;
+            });
+        });
+        this.commandManager.registerListener(Command.TURN_LEFT, () => {
+            this.entityManager.entities.forEach((entity) => {
+                const movement = entity.getComponent(ComponentCode.MOVEMENT) as Movement | undefined;
+                if (!movement) return;
+                if (movement.state.turningSpeed === 0) return;
+                this.eventManager.queueEvent(new TurnEvent(entity.id, { turningSpeed: -movement.state.turningSpeed }));
+            });
+        });
+        this.commandManager.registerListener(Command.TURN_RIGHT, () => {
+            this.entityManager.entities.forEach((entity) => {
+                const movement = entity.getComponent(ComponentCode.MOVEMENT) as Movement | undefined;
+                if (!movement) return;
+                if (movement.state.turningSpeed === 0) return;
+                this.eventManager.queueEvent(new TurnEvent(entity.id, { turningSpeed: movement.state.turningSpeed }));
+            });
+        });
     }
 
     private updateMomentum(movementState: MovementState): MovementState {
         const newSpeed = movementState.speed + movementState.acceleration;
         if (newSpeed > 0 && newSpeed < movementState.maxSpeed) {
             return { ...movementState, speed: newSpeed };
-        } else if (newSpeed < 0) {
+        } else if (newSpeed <= 0) {
             return { ...movementState, speed: 0 };
         } else if (newSpeed > movementState.maxSpeed) {
             return { ...movementState, speed: movementState.maxSpeed };

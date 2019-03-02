@@ -24,8 +24,8 @@ export const getPlayer = (position: Vector) => [
     new Movement({
         acceleration: 0,
         speed: 0,
-        maxSpeed: 6,
-        turningSpeed: 0,
+        maxSpeed: 5,
+        turningSpeed: 0.1,
     }),
     new Weapon({
         isFiring: false,

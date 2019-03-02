@@ -1,4 +1,3 @@
-import { Vector } from '../math/Vector';
 import { Component, ComponentCode } from './Components';
 
 export interface MovementState {

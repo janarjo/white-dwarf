@@ -1,42 +1,38 @@
+import { CommandManager } from '../CommandManager';
 import { ComponentCode } from '../components/Components';
 import { Core, CoreState } from '../components/Core';
-import { Entity } from '../Entity';
+import { EntityManager } from '../EntityManager';
+import { EventManager } from '../EventManager';
 import { Event, EventType } from '../events/Event';
 import { MoveEvent } from '../events/MoveEvent';
-import { TurnEvent, TurnEventDirection } from '../events/TurnEvent';
+import { TurnEvent } from '../events/TurnEvent';
 import { Vector } from '../math/Vector';
 import { System } from './System';
 
 export class CoreSystem extends System {
-
-    update(entities: Entity[]): void {
-        return;
+    constructor(
+        readonly entityManager: EntityManager,
+        readonly eventManager: EventManager) {
+        super();
+        this.registerListeners();
     }
 
     registerListeners(): void {
         this.eventManager.registerListener(EventType.TURN, (event: Event) => {
             const entity = this.entityManager.getEntity(event.entityId);
             const core = entity && entity.getComponent(ComponentCode.CORE) as Core | undefined;
-            if (core) {
-                const turnEvent = (event as TurnEvent);
-                switch (turnEvent.data.direction) {
-                    case TurnEventDirection.LEFT:
-                        core.state = this.updateOrientation(core.state, -turnEvent.data.turningSpeed);
-                        break;
-                    case TurnEventDirection.RIGHT:
-                        core.state = this.updateOrientation(core.state, turnEvent.data.turningSpeed);
-                        break;
-                }
-            }
-        });
+            if (!core) return;
 
+            const turnEvent = (event as TurnEvent);
+            core.state = this.updateOrientation(core.state, turnEvent.data.turningSpeed);
+        });
         this.eventManager.registerListener(EventType.MOVE, (event: Event) => {
             const entity = this.entityManager.getEntity(event.entityId);
             const core = entity && entity.getComponent(ComponentCode.CORE) as Core | undefined;
-            if (core) {
-                const moveEvent = (event as MoveEvent);
-                core.state = this.updatePosition(core.state, moveEvent.data.speed);
-            }
+            if (!core) return;
+
+            const moveEvent = (event as MoveEvent);
+            core.state = this.updatePosition(core.state, moveEvent.data.speed);
         });
     }
 

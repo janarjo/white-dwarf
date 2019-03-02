@@ -2,7 +2,6 @@ import { ComponentCode } from '../components/Components';
 import { Core } from '../components/Core';
 import { Render } from '../components/Render';
 import { EntityManager } from '../EntityManager';
-import { EventManager } from '../EventManager';
 import { Vector } from '../math/Vector';
 import { Dot } from '../ui/Dot';
 import { Shape, ShapeType } from '../ui/Shape';
@@ -11,11 +10,10 @@ import { System } from './System';
 
 export class RenderSystem extends System {
     constructor(
-        readonly entityManager: EntityManager,
-        readonly eventManager: EventManager,
-        readonly ctx: CanvasRenderingContext2D,
-        readonly size: Vector) {
-            super(entityManager, eventManager);
+        private readonly entityManager: EntityManager,
+        private readonly ctx: CanvasRenderingContext2D,
+        private readonly size: Vector) {
+        super();
     }
 
     update() {
@@ -38,10 +36,6 @@ export class RenderSystem extends System {
                 shape && this.drawShape(shape);
             }
         });
-    }
-
-    registerListeners(): void {
-        return;
     }
 
     private clear() {
