@@ -1,4 +1,4 @@
-import { Component, ComponentCode } from './components/Components';
+import { Component } from './components/Components';
 
 export class Entity {
     constructor(
@@ -6,7 +6,7 @@ export class Entity {
             readonly components: Component[]) {
     }
 
-    getComponent(code: ComponentCode): Component | undefined {
-        return this.components.find((component) => component.code === code);
+    getComponent<T extends Component>(type: new (state: any) => T): T | undefined {
+        return this.components.find((component) => component instanceof type) as T | undefined;
     }
 }

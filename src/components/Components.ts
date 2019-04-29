@@ -1,5 +1,3 @@
-import { Vector } from '../math/Vector';
-
 export enum ComponentCode {
     CORE,
     CONTROL,

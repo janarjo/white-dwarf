@@ -1,5 +1,3 @@
-import { CommandManager } from '../CommandManager';
-import { ComponentCode } from '../components/Components';
 import { Core, CoreState } from '../components/Core';
 import { getProjectile } from '../EntityAssembly';
 import { EntityManager } from '../EntityManager';
@@ -21,7 +19,7 @@ export class CoreSystem extends System {
     registerListeners(): void {
         this.eventManager.registerListener(EventType.TURN, (event: Event) => {
             const entity = this.entityManager.getEntity(event.entityId);
-            const core = entity && entity.getComponent(ComponentCode.CORE) as Core | undefined;
+            const core = entity && entity.getComponent(Core);
             if (!core) return;
 
             const turnEvent = (event as TurnEvent);
@@ -29,7 +27,7 @@ export class CoreSystem extends System {
         });
         this.eventManager.registerListener(EventType.MOVE, (event: Event) => {
             const entity = this.entityManager.getEntity(event.entityId);
-            const core = entity && entity.getComponent(ComponentCode.CORE) as Core | undefined;
+            const core = entity && entity.getComponent(Core);
             if (!core) return;
 
             const moveEvent = (event as MoveEvent);
@@ -37,7 +35,7 @@ export class CoreSystem extends System {
         });
         this.eventManager.registerListener(EventType.FIRE, (event: Event) => {
             const entity = this.entityManager.getEntity(event.entityId);
-            const core = entity && entity.getComponent(ComponentCode.CORE) as Core | undefined;
+            const core = entity && entity.getComponent(Core);
             if (!core) return;
 
             this.entityManager.createEntity(getProjectile(core.state.position, core.state.orientation));

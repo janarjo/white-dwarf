@@ -23,7 +23,7 @@ export class WeaponSystem extends System {
     registerListeners() {
         this.commandManager.registerListener(Command.FIRE, () => {
             this.entityManager.entities.forEach((entity) => {
-                const weapon = entity.getComponent(ComponentCode.WEAPON) as Weapon | undefined;
+                const weapon = entity.getComponent(Weapon);
                 if (!weapon) return;
 
                 this.eventManager.queueEvent(new FireEvent(entity.id));

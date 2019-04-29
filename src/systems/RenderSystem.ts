@@ -19,8 +19,8 @@ export class RenderSystem extends System {
     update() {
         this.clear();
         this.entityManager.entities.forEach((entity) => {
-            const core = entity.getComponent(ComponentCode.CORE) as Core | undefined;
-            const render = entity.getComponent(ComponentCode.RENDER) as Render | undefined;
+            const core = entity.getComponent(Core);
+            const render = entity.getComponent(Render);
             if (core && render) {
                 let shape: Shape | undefined;
                 switch (render.state.type) {

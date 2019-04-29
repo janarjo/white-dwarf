@@ -19,7 +19,7 @@ export class MovementSystem extends System {
 
     update() {
         this.entityManager.entities.forEach((entity) => {
-            const movement = entity.getComponent(ComponentCode.MOVEMENT) as Movement | undefined;
+            const movement = entity.getComponent(Movement);
             if (!movement) return;
 
             movement.state = this.updateMomentum(movement.state);
@@ -31,19 +31,19 @@ export class MovementSystem extends System {
     registerListeners() {
         this.commandManager.registerListener(Command.ACCELERATE, () => {
             this.entityManager.entities.forEach((entity) => {
-                const movement = entity.getComponent(ComponentCode.MOVEMENT) as Movement | undefined;
+                const movement = entity.getComponent(Movement);
                 if (movement) movement.state.acceleration = 0.1;
             });
         });
         this.commandManager.registerListener(Command.DECELERATE, () => {
             this.entityManager.entities.forEach((entity) => {
-                const movement = entity.getComponent(ComponentCode.MOVEMENT) as Movement | undefined;
+                const movement = entity.getComponent(Movement);
                 if (movement) movement.state.acceleration = -0.1;
             });
         });
         this.commandManager.registerListener(Command.TURN_LEFT, () => {
             this.entityManager.entities.forEach((entity) => {
-                const movement = entity.getComponent(ComponentCode.MOVEMENT) as Movement | undefined;
+                const movement = entity.getComponent(Movement);
                 if (!movement) return;
                 if (movement.state.turningSpeed === 0) return;
                 this.eventManager.queueEvent(new TurnEvent(entity.id, { turningSpeed: -movement.state.turningSpeed }));
@@ -51,7 +51,7 @@ export class MovementSystem extends System {
         });
         this.commandManager.registerListener(Command.TURN_RIGHT, () => {
             this.entityManager.entities.forEach((entity) => {
-                const movement = entity.getComponent(ComponentCode.MOVEMENT) as Movement | undefined;
+                const movement = entity.getComponent(Movement);
                 if (!movement) return;
                 if (movement.state.turningSpeed === 0) return;
                 this.eventManager.queueEvent(new TurnEvent(entity.id, { turningSpeed: movement.state.turningSpeed }));
