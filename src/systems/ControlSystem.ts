@@ -23,6 +23,7 @@ export class ControlSystem extends System {
             if (control.state.isAccelerating) this.commandManager.queueCommand(Command.ACCELERATE);
             if (control.state.isTurningRight) this.commandManager.queueCommand(Command.TURN_RIGHT);
             if (control.state.isDecelerating) this.commandManager.queueCommand(Command.DECELERATE);
+            if (control.state.isFiring) this.commandManager.queueCommand(Command.FIRE);
         });
     }
 
@@ -32,7 +33,7 @@ export class ControlSystem extends System {
             if (!control) return;
             switch (event.keyCode) {
                 case 32: {
-                    // todo
+                    control.state.isFiring = isKeyDown ? true : false;
                     break;
                 }
                 case 37: {

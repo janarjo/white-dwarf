@@ -19,7 +19,7 @@ export const getPlayer = (position: Vector) => [
         isDecelerating: false,
         isTurningLeft: false,
         isTurningRight: false,
-        isShooting: false,
+        isFiring: false,
     }),
     new Movement({
         acceleration: 0,
@@ -28,7 +28,6 @@ export const getPlayer = (position: Vector) => [
         turningSpeed: 0.1,
     }),
     new Weapon({
-        isFiring: false,
         attackSpeed: 1,
         projectileSpeed: 10,
     }),

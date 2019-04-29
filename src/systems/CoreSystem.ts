@@ -1,6 +1,7 @@
 import { CommandManager } from '../CommandManager';
 import { ComponentCode } from '../components/Components';
 import { Core, CoreState } from '../components/Core';
+import { getProjectile } from '../EntityAssembly';
 import { EntityManager } from '../EntityManager';
 import { EventManager } from '../EventManager';
 import { Event, EventType } from '../events/Event';
@@ -33,6 +34,13 @@ export class CoreSystem extends System {
 
             const moveEvent = (event as MoveEvent);
             core.state = this.updatePosition(core.state, moveEvent.data.speed);
+        });
+        this.eventManager.registerListener(EventType.FIRE, (event: Event) => {
+            const entity = this.entityManager.getEntity(event.entityId);
+            const core = entity && entity.getComponent(ComponentCode.CORE) as Core | undefined;
+            if (!core) return;
+
+            this.entityManager.createEntity(getProjectile(core.state.position, core.state.orientation));
         });
     }
 

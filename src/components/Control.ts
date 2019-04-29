@@ -2,7 +2,7 @@ import { Vector } from '../math/Vector';
 import { Component, ComponentCode } from './Components';
 
 export interface ControlState {
-    isShooting: boolean;
+    isFiring: boolean;
     isAccelerating: boolean;
     isDecelerating: boolean;
     isTurningLeft: boolean;

@@ -1,3 +1,4 @@
+import { Component } from './components/Components';
 import { Entity } from './Entity';
 import { getPlayer } from './EntityAssembly';
 import { Vector } from './math/Vector';
@@ -10,7 +11,7 @@ export class EntityManager {
     constructor() {
         this.entities = [];
         this.enumerator = 0;
-        this.createPlayer();
+        this.createEntity(getPlayer(new Vector(640, 360)));
     }
 
     processEntities(systems: ReadonlyArray<System>) {
@@ -21,8 +22,8 @@ export class EntityManager {
         return this.entities.find((entity) => entity.id === entityId);
     }
 
-    createPlayer() {
-        this.entities.push(new Entity(this.enumerator, getPlayer(new Vector(640, 360))));
+    createEntity(components: Component[]) {
+        this.entities.push(new Entity(this.enumerator, components));
         this.enumerator++;
     }
 }

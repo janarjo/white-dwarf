@@ -1,7 +1,6 @@
 import { Component, ComponentCode } from './Components';
 
 export interface WeaponState {
-    isFiring: boolean;
     attackSpeed: number;
     projectileSpeed: number;
 }

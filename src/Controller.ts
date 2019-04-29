@@ -7,6 +7,7 @@ import { CoreSystem } from './systems/CoreSystem';
 import { MovementSystem } from './systems/MovementSystem';
 import { RenderSystem } from './systems/RenderSystem';
 import { System } from './systems/System';
+import { WeaponSystem } from './systems/WeaponSystem';
 
 export class Controller {
     readonly fps = 60;
@@ -25,7 +26,7 @@ export class Controller {
             new MovementSystem(this.entityManager, this.eventManager, this.commandManager),
             new ControlSystem(this.entityManager, this.commandManager, canvas),
             new RenderSystem(this.entityManager, canvas.getContext('2d')!, size),
-            // new WeaponSystem(this.entityManager, this.eventManager),
+            new WeaponSystem(this.entityManager, this.eventManager, this.commandManager),
         ];
     }
 
