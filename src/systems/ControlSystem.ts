@@ -16,7 +16,7 @@ export class ControlSystem extends System {
     }
 
     update() {
-        this.entityManager.entities.forEach((entity) => {
+        this.entityManager.entities.forEach(entity => {
             const control = entity.getComponent(Control);
             if (!control) return;
             if (control.state.isTurningLeft) this.commandManager.queueCommand(Command.TURN_LEFT);
@@ -28,7 +28,7 @@ export class ControlSystem extends System {
     }
 
     handleInput(event: KeyboardEvent, isKeyDown: boolean) {
-        this.entityManager.entities.forEach((entity) => {
+        this.entityManager.entities.forEach(entity => {
             const control = entity.getComponent(Control);
             if (!control) return;
             switch (event.keyCode) {

@@ -8,6 +8,7 @@
         "no-angle-bracket-type-assertion": true,
         "object-literal-sort-keys": false,
         "curly": [true, "ignore-same-line"],
-        "no-unused-expression": [true, "allow-fast-null-checks"]
+        "no-unused-expression": [true, "allow-fast-null-checks"],
+        "arrow-parens": false
     }
 }

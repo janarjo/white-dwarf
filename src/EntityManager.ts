@@ -15,11 +15,11 @@ export class EntityManager {
     }
 
     processEntities(systems: ReadonlyArray<System>) {
-        systems.forEach((system) => system.update());
+        systems.forEach(system => system.update());
     }
 
     getEntity(entityId: number): Entity | undefined {
-        return this.entities.find((entity) => entity.id === entityId);
+        return this.entities.find(entity => entity.id === entityId);
     }
 
     createEntity(components: Component[]) {

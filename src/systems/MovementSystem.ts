@@ -1,13 +1,13 @@
 import { CommandManager } from '../CommandManager';
 import { Command } from '../Commands';
 import { ComponentCode } from '../components/Components';
+import { Control } from '../components/Control';
 import { Movement, MovementState } from '../components/Movement';
 import { EntityManager } from '../EntityManager';
 import { EventManager } from '../EventManager';
 import { MoveEvent } from '../events/MoveEvent';
 import { TurnEvent } from '../events/TurnEvent';
 import { System } from './System';
-import { Control } from '../components/Control';
 
 export class MovementSystem extends System {
     constructor(
@@ -19,7 +19,7 @@ export class MovementSystem extends System {
     }
 
     update() {
-        this.entityManager.entities.forEach((entity) => {
+        this.entityManager.entities.forEach(entity => {
             const movement = entity.getComponent(Movement);
             if (!movement) return;
 
@@ -32,24 +32,24 @@ export class MovementSystem extends System {
     registerListeners() {
         this.commandManager.registerListener(Command.ACCELERATE, () => {
             this.entityManager.entities
-                .filter((entity) => entity.hasComponent(Control))
-                .forEach((entity) => {
+                .filter(entity => entity.hasComponent(Control))
+                .forEach(entity => {
                     const movement = entity.getComponent(Movement);
                     if (movement) movement.state.acceleration = 0.1;
                 });
         });
         this.commandManager.registerListener(Command.DECELERATE, () => {
             this.entityManager.entities
-                .filter((entity) => entity.hasComponent(Control))
-                .forEach((entity) => {
+                .filter(entity => entity.hasComponent(Control))
+                .forEach(entity => {
                     const movement = entity.getComponent(Movement);
                     if (movement) movement.state.acceleration = -0.1;
                 });
         });
         this.commandManager.registerListener(Command.TURN_LEFT, () => {
             this.entityManager.entities
-                .filter((entity) => entity.hasComponent(Control))
-                .forEach((entity) => {
+                .filter(entity => entity.hasComponent(Control))
+                .forEach(entity => {
                     const movement = entity.getComponent(Movement);
                     if (!movement) return;
                     if (movement.state.turningSpeed === 0) return;
@@ -59,8 +59,8 @@ export class MovementSystem extends System {
         });
         this.commandManager.registerListener(Command.TURN_RIGHT, () => {
             this.entityManager.entities
-                .filter((entity) => entity.hasComponent(Control))
-                .forEach((entity) => {
+                .filter(entity => entity.hasComponent(Control))
+                .forEach(entity => {
                     const movement = entity.getComponent(Movement);
                     if (!movement) return;
                     if (movement.state.turningSpeed === 0) return;

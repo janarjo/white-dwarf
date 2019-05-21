@@ -17,7 +17,7 @@ export class CoreSystem extends System {
     }
 
     registerListeners(): void {
-        this.eventManager.registerListener(EventType.TURN, (event: Event) => {
+        this.eventManager.registerListener(EventType.TURN, event => {
             const entity = this.entityManager.getEntity(event.entityId);
             const core = entity && entity.getComponent(Core);
             if (!core) return;
@@ -25,7 +25,7 @@ export class CoreSystem extends System {
             const turnEvent = (event as TurnEvent);
             core.state = this.updateOrientation(core.state, turnEvent.data.turningSpeed);
         });
-        this.eventManager.registerListener(EventType.MOVE, (event: Event) => {
+        this.eventManager.registerListener(EventType.MOVE, event => {
             const entity = this.entityManager.getEntity(event.entityId);
             const core = entity && entity.getComponent(Core);
             if (!core) return;
@@ -33,7 +33,7 @@ export class CoreSystem extends System {
             const moveEvent = (event as MoveEvent);
             core.state = this.updatePosition(core.state, moveEvent.data.speed);
         });
-        this.eventManager.registerListener(EventType.FIRE, (event: Event) => {
+        this.eventManager.registerListener(EventType.FIRE, event => {
             const entity = this.entityManager.getEntity(event.entityId);
             const core = entity && entity.getComponent(Core);
             if (!core) return;

@@ -18,7 +18,7 @@ export class RenderSystem extends System {
 
     update() {
         this.clear();
-        this.entityManager.entities.forEach((entity) => {
+        this.entityManager.entities.forEach(entity => {
             const core = entity.getComponent(Core);
             const render = entity.getComponent(Render);
             if (core && render) {
