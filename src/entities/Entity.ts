@@ -1,4 +1,4 @@
-import { Component } from './components/Components';
+import { Component } from '../components/Component';
 
 export class Entity {
     constructor(

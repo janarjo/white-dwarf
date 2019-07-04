@@ -1,6 +1,6 @@
-import { Event, EventMap, EventType } from './events/Event';
+import { Event, EventMap, EventType } from './Event';
 
-export class EventManager {
+export class Events {
     private events: Event[] = [];
     private listeners: Map<EventType, ReadonlyArray<(event: Event) => void>> = new Map();
 

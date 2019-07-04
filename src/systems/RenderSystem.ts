@@ -1,7 +1,6 @@
-import { ComponentCode } from '../components/Components';
 import { Core } from '../components/Core';
 import { Render } from '../components/Render';
-import { EntityManager } from '../EntityManager';
+import { Entities } from '../entities/Entities';
 import { Vector } from '../math/Vector';
 import { Dot } from '../ui/Dot';
 import { Shape, ShapeType } from '../ui/Shape';
@@ -10,7 +9,7 @@ import { System } from './System';
 
 export class RenderSystem extends System {
     constructor(
-        private readonly entityManager: EntityManager,
+        private readonly entities: Entities,
         private readonly ctx: CanvasRenderingContext2D,
         private readonly size: Vector) {
         super();
@@ -18,7 +17,7 @@ export class RenderSystem extends System {
 
     update() {
         this.clear();
-        this.entityManager.entities.forEach(entity => {
+        this.entities.entities.forEach(entity => {
             const core = entity.getComponent(Core);
             const render = entity.getComponent(Render);
             if (core && render) {

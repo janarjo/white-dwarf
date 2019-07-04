@@ -1,17 +1,16 @@
-import { CommandManager } from '../CommandManager';
-import { Command } from '../Commands';
-import { ComponentCode } from '../components/Components';
+import { Command } from '../command/Command';
+import { Commands } from '../command/Commands';
 import { Weapon } from '../components/Weapon';
-import { EntityManager } from '../EntityManager';
-import { EventManager } from '../EventManager';
+import { Entities } from '../entities/Entities';
+import { Events } from '../events/Events';
 import { FireEvent } from '../events/FireEvent';
 import { System } from './System';
 
 export class WeaponSystem extends System {
     constructor(
-        private readonly entityManager: EntityManager,
-        private readonly eventManager: EventManager,
-        private readonly commandManager: CommandManager) {
+        private readonly entities: Entities,
+        private readonly events: Events,
+        private readonly commands: Commands) {
         super();
         this.registerListeners();
     }
@@ -21,12 +20,12 @@ export class WeaponSystem extends System {
     }
 
     registerListeners() {
-        this.commandManager.on(Command.FIRE, () => {
-            this.entityManager.entities.forEach(entity => {
+        this.commands.on(Command.FIRE, () => {
+            this.entities.entities.forEach(entity => {
                 const weapon = entity.getComponent(Weapon);
                 if (!weapon) return;
 
-                this.eventManager.emit(new FireEvent(entity.id));
+                this.events.emit(new FireEvent(entity.id));
             });
         });
     }

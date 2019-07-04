@@ -1,6 +1,6 @@
-import { CommandManager } from './CommandManager';
-import { EntityManager } from './EntityManager';
-import { EventManager } from './EventManager';
+import { Commands } from './command/Commands';
+import { Entities } from './entities/Entities';
+import { Events } from './events/Events';
 import { Vector } from './math/Vector';
 import { ControlSystem } from './systems/ControlSystem';
 import { CoreSystem } from './systems/CoreSystem';
@@ -14,19 +14,19 @@ export class Controller {
     readonly interval = 1000 / this.fps;
     then: number = Date.now();
 
-    readonly entityManager = new EntityManager();
-    readonly eventManager = new EventManager();
-    readonly commandManager = new CommandManager();
+    readonly entities = new Entities();
+    readonly events = new Events();
+    readonly commands = new Commands();
 
     readonly systems: System[];
 
     constructor(canvas: HTMLCanvasElement, size: Vector) {
         this.systems = [
-            new CoreSystem(this.entityManager, this.eventManager),
-            new MovementSystem(this.entityManager, this.eventManager, this.commandManager),
-            new ControlSystem(this.entityManager, this.commandManager, canvas),
-            new RenderSystem(this.entityManager, canvas.getContext('2d')!, size),
-            new WeaponSystem(this.entityManager, this.eventManager, this.commandManager),
+            new CoreSystem(this.entities, this.events),
+            new MovementSystem(this.entities, this.events, this.commands),
+            new ControlSystem(this.entities, this.commands, canvas),
+            new RenderSystem(this.entities, canvas.getContext('2d')!, size),
+            new WeaponSystem(this.entities, this.events, this.commands),
         ];
     }
 
@@ -38,9 +38,9 @@ export class Controller {
 
         if (delta > this.interval) {
             this.then = now - (delta % (this.interval));
-            this.commandManager.proccess();
-            this.eventManager.proccess();
-            this.entityManager.proccess(this.systems);
+            this.commands.proccess();
+            this.events.proccess();
+            this.entities.proccess(this.systems);
         }
     }
 }

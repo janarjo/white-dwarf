@@ -1,40 +1,39 @@
+import { getProjectile } from '../Assembly';
 import { Core, CoreState } from '../components/Core';
-import { getProjectile } from '../EntityAssembly';
-import { EntityManager } from '../EntityManager';
-import { EventManager } from '../EventManager';
+import { Entities } from '../entities/Entities';
 import { EventType } from '../events/Event';
+import { Events } from '../events/Events';
 import { Vector } from '../math/Vector';
 import { System } from './System';
 
 export class CoreSystem extends System {
     constructor(
-        readonly entityManager: EntityManager,
-        readonly eventManager: EventManager) {
+        readonly entities: Entities,
+        readonly events: Events) {
         super();
         this.registerListeners();
     }
 
     registerListeners(): void {
-        this.eventManager.on(EventType.TURN, event => {
-            const entity = this.entityManager.getEntity(event.entityId);
-            const core = entity && entity.getComponent(Core);
+        this.events.on(EventType.TURN, event => {
+            const core = this.entities.getComponent(event.entityId, Core);
             if (!core) return;
 
             core.state = this.updateOrientation(core.state, event.data.turningSpeed);
         });
-        this.eventManager.on(EventType.MOVE, event => {
-            const entity = this.entityManager.getEntity(event.entityId);
+        this.events.on(EventType.MOVE, event => {
+            const entity = this.entities.get(event.entityId);
             const core = entity && entity.getComponent(Core);
             if (!core) return;
 
             core.state = this.updatePosition(core.state, event.data.speed);
         });
-        this.eventManager.on(EventType.FIRE, event => {
-            const entity = this.entityManager.getEntity(event.entityId);
+        this.events.on(EventType.FIRE, event => {
+            const entity = this.entities.get(event.entityId);
             const core = entity && entity.getComponent(Core);
             if (!core) return;
 
-            this.entityManager.createEntity(getProjectile(core.state.position, core.state.orientation));
+            this.entities.create(getProjectile(core.state.position, core.state.orientation));
         });
     }
 

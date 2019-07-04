@@ -1,13 +1,13 @@
-import { CommandManager } from '../CommandManager';
-import { Command } from '../Commands';
+import { Command } from '../command/Command';
+import { Commands } from '../command/Commands';
 import { Control } from '../components/Control';
-import { EntityManager } from '../EntityManager';
+import { Entities } from '../entities/Entities';
 import { System } from './System';
 
 export class ControlSystem extends System {
     constructor(
-        private readonly entityManager: EntityManager,
-        private readonly commandManager: CommandManager,
+        private readonly entities: Entities,
+        private readonly commands: Commands,
         canvas: HTMLCanvasElement) {
         super();
         canvas.addEventListener('keydown', (event) => this.handleInput(event, true));
@@ -15,19 +15,19 @@ export class ControlSystem extends System {
     }
 
     update() {
-        this.entityManager.entities.forEach(entity => {
+        this.entities.entities.forEach(entity => {
             const control = entity.getComponent(Control);
             if (!control) return;
-            if (control.state.isTurningLeft) this.commandManager.emit(Command.TURN_LEFT);
-            if (control.state.isAccelerating) this.commandManager.emit(Command.ACCELERATE);
-            if (control.state.isTurningRight) this.commandManager.emit(Command.TURN_RIGHT);
-            if (control.state.isDecelerating) this.commandManager.emit(Command.DECELERATE);
-            if (control.state.isFiring) this.commandManager.emit(Command.FIRE);
+            if (control.state.isTurningLeft) this.commands.emit(Command.TURN_LEFT);
+            if (control.state.isAccelerating) this.commands.emit(Command.ACCELERATE);
+            if (control.state.isTurningRight) this.commands.emit(Command.TURN_RIGHT);
+            if (control.state.isDecelerating) this.commands.emit(Command.DECELERATE);
+            if (control.state.isFiring) this.commands.emit(Command.FIRE);
         });
     }
 
     handleInput(event: KeyboardEvent, isKeyDown: boolean) {
-        this.entityManager.entities.forEach(entity => {
+        this.entities.entities.forEach(entity => {
             const control = entity.getComponent(Control);
             if (!control) return;
             switch (event.keyCode) {

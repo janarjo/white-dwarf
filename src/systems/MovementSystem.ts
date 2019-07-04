@@ -1,70 +1,69 @@
-import { CommandManager } from '../CommandManager';
-import { Command } from '../Commands';
-import { ComponentCode } from '../components/Components';
+import { Command } from '../command/Command';
+import { Commands } from '../command/Commands';
 import { Control } from '../components/Control';
 import { Movement, MovementState } from '../components/Movement';
-import { EntityManager } from '../EntityManager';
-import { EventManager } from '../EventManager';
+import { Entities } from '../entities/Entities';
+import { Events } from '../events/Events';
 import { MoveEvent } from '../events/MoveEvent';
 import { TurnEvent } from '../events/TurnEvent';
 import { System } from './System';
 
 export class MovementSystem extends System {
     constructor(
-        private readonly entityManager: EntityManager,
-        private readonly eventManager: EventManager,
-        private readonly commandManager: CommandManager) {
+        private readonly entities: Entities,
+        private readonly events: Events,
+        private readonly commands: Commands) {
         super();
         this.registerListeners();
     }
 
     update() {
-        this.entityManager.entities.forEach(entity => {
+        this.entities.entities.forEach(entity => {
             const movement = entity.getComponent(Movement);
             if (!movement) return;
 
             movement.state = this.updateMomentum(movement.state);
             if (movement.state.speed === 0) return;
-            this.eventManager.emit(new MoveEvent(entity.id, { speed: movement.state.speed }));
+            this.events.emit(new MoveEvent(entity.id, { speed: movement.state.speed }));
         });
     }
 
     registerListeners() {
-        this.commandManager.on(Command.ACCELERATE, () => {
-            this.entityManager.entities
+        this.commands.on(Command.ACCELERATE, () => {
+            this.entities.entities
                 .filter(entity => entity.hasComponent(Control))
                 .forEach(entity => {
                     const movement = entity.getComponent(Movement);
                     if (movement) movement.state.acceleration = 0.1;
                 });
         });
-        this.commandManager.on(Command.DECELERATE, () => {
-            this.entityManager.entities
+        this.commands.on(Command.DECELERATE, () => {
+            this.entities.entities
                 .filter(entity => entity.hasComponent(Control))
                 .forEach(entity => {
                     const movement = entity.getComponent(Movement);
                     if (movement) movement.state.acceleration = -0.1;
                 });
         });
-        this.commandManager.on(Command.TURN_LEFT, () => {
-            this.entityManager.entities
+        this.commands.on(Command.TURN_LEFT, () => {
+            this.entities.entities
                 .filter(entity => entity.hasComponent(Control))
                 .forEach(entity => {
                     const movement = entity.getComponent(Movement);
                     if (!movement) return;
                     if (movement.state.turningSpeed === 0) return;
-                    this.eventManager.emit(
+                    this.events.emit(
                         new TurnEvent(entity.id, { turningSpeed: -movement.state.turningSpeed }));
                 });
         });
-        this.commandManager.on(Command.TURN_RIGHT, () => {
-            this.entityManager.entities
+        this.commands.on(Command.TURN_RIGHT, () => {
+            this.entities.entities
                 .filter(entity => entity.hasComponent(Control))
                 .forEach(entity => {
                     const movement = entity.getComponent(Movement);
                     if (!movement) return;
                     if (movement.state.turningSpeed === 0) return;
-                    this.eventManager.emit(
+                    this.events.emit(
                         new TurnEvent(entity.id, { turningSpeed: movement.state.turningSpeed }));
                 });
         });

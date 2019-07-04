@@ -1,6 +1,6 @@
-import { Command } from './Commands';
+import { Command } from './Command';
 
-export class CommandManager {
+export class Commands {
     private commands: Command[] = [];
     private listeners: Map<Command, ReadonlyArray<(command: Command) => void>> = new Map();
 

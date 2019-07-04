@@ -1,5 +1,5 @@
 import { ShapeType } from '../ui/Shape';
-import { Component, ComponentCode } from './Components';
+import { Component, ComponentCode } from './Component';
 
 export interface RenderState {
     type: ShapeType;

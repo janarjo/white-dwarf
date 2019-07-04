@@ -1,5 +1,4 @@
-import { Vector } from '../math/Vector';
-import { Component, ComponentCode } from './Components';
+import { Component, ComponentCode } from './Component';
 
 export interface ControlState {
     isFiring: boolean;

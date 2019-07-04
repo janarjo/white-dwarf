@@ -1,4 +1,4 @@
-import { Component, ComponentCode } from './Components';
+import { Component, ComponentCode } from './Component';
 
 export interface WeaponState {
     attackSpeed: number;
