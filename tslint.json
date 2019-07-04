@@ -9,6 +9,7 @@
         "object-literal-sort-keys": false,
         "curly": [true, "ignore-same-line"],
         "no-unused-expression": [true, "allow-fast-null-checks"],
-        "arrow-parens": false
+        "arrow-parens": false,
+        "max-classes-per-file": false
     }
 }
