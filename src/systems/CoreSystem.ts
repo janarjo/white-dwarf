@@ -1,5 +1,5 @@
-import { getProjectile } from '../Assembly';
 import { Core, CoreState } from '../components/Core';
+import { getProjectile } from '../entities/Assembly';
 import { Entities } from '../entities/Entities';
 import { EventType } from '../events/Event';
 import { Events } from '../events/Events';

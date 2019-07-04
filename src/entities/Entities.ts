@@ -1,7 +1,7 @@
-import { getPlayer } from '../Assembly';
 import { Component } from '../components/Component';
 import { Vector } from '../math/Vector';
 import { System } from '../systems/System';
+import { getPlayer } from './Assembly';
 import { Entity } from './Entity';
 
 export class Entities {

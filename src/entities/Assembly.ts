@@ -1,10 +1,10 @@
-import { Control } from './components/Control';
-import { Core } from './components/Core';
-import { Movement } from './components/Movement';
-import { Render } from './components/Render';
-import { Weapon } from './components/Weapon';
-import { Vector } from './math/Vector';
-import { ShapeType } from './ui/Shape';
+import { Control } from '../components/Control';
+import { Core } from '../components/Core';
+import { Movement } from '../components/Movement';
+import { Render } from '../components/Render';
+import { Weapon } from '../components/Weapon';
+import { Vector } from '../math/Vector';
+import { ShapeType } from '../ui/Shape';
 
 export const getPlayer = (position: Vector) => [
     new Core({
