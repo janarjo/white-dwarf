@@ -1,14 +1,14 @@
-import { Event, EventType } from './events/Event';
+import { Event, EventMap, EventType } from './events/Event';
 
 export class EventManager {
     private events: Event[] = [];
     private listeners: Map<EventType, ReadonlyArray<(event: Event) => void>> = new Map();
 
-    queueEvent(event: Event) {
+    emit(event: Event) {
         this.events.push(event);
     }
 
-    registerListener(eventType: EventType, callback: (event: Event) => void) {
+    on<T extends keyof EventMap>(eventType: T, callback: (event: EventMap[T]) => void) {
         if (this.listeners.has(eventType)) {
             const newCallbackArray = this.listeners.get(eventType)!
                 .concat([callback]);
@@ -18,7 +18,7 @@ export class EventManager {
         }
     }
 
-    removeListener(eventType: EventType, callback: (event: Event) => void) {
+    off<T extends keyof EventMap>(eventType: T, callback: (event: EventMap[T]) => void) {
         if (this.listeners.has(eventType)) {
             const newCallbackArray = this.listeners.get(eventType)!
                 .filter((cb) => cb !== callback);
@@ -26,7 +26,7 @@ export class EventManager {
         }
     }
 
-    processEvents() {
+    proccess() {
         this.events.forEach((event) => {
             const listeners = this.listeners.has(event.type) ?
                 this.listeners.get(event.type) as Array<(event: Event) => void> : [];

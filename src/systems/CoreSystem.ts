@@ -2,9 +2,7 @@ import { Core, CoreState } from '../components/Core';
 import { getProjectile } from '../EntityAssembly';
 import { EntityManager } from '../EntityManager';
 import { EventManager } from '../EventManager';
-import { Event, EventType } from '../events/Event';
-import { MoveEvent } from '../events/MoveEvent';
-import { TurnEvent } from '../events/TurnEvent';
+import { EventType } from '../events/Event';
 import { Vector } from '../math/Vector';
 import { System } from './System';
 
@@ -17,23 +15,21 @@ export class CoreSystem extends System {
     }
 
     registerListeners(): void {
-        this.eventManager.registerListener(EventType.TURN, event => {
+        this.eventManager.on(EventType.TURN, event => {
             const entity = this.entityManager.getEntity(event.entityId);
             const core = entity && entity.getComponent(Core);
             if (!core) return;
 
-            const turnEvent = (event as TurnEvent);
-            core.state = this.updateOrientation(core.state, turnEvent.data.turningSpeed);
+            core.state = this.updateOrientation(core.state, event.data.turningSpeed);
         });
-        this.eventManager.registerListener(EventType.MOVE, event => {
+        this.eventManager.on(EventType.MOVE, event => {
             const entity = this.entityManager.getEntity(event.entityId);
             const core = entity && entity.getComponent(Core);
             if (!core) return;
 
-            const moveEvent = (event as MoveEvent);
-            core.state = this.updatePosition(core.state, moveEvent.data.speed);
+            core.state = this.updatePosition(core.state, event.data.speed);
         });
-        this.eventManager.registerListener(EventType.FIRE, event => {
+        this.eventManager.on(EventType.FIRE, event => {
             const entity = this.entityManager.getEntity(event.entityId);
             const core = entity && entity.getComponent(Core);
             if (!core) return;

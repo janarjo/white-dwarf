@@ -21,12 +21,12 @@ export class WeaponSystem extends System {
     }
 
     registerListeners() {
-        this.commandManager.registerListener(Command.FIRE, () => {
+        this.commandManager.on(Command.FIRE, () => {
             this.entityManager.entities.forEach(entity => {
                 const weapon = entity.getComponent(Weapon);
                 if (!weapon) return;
 
-                this.eventManager.queueEvent(new FireEvent(entity.id));
+                this.eventManager.emit(new FireEvent(entity.id));
             });
         });
     }

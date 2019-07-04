@@ -25,12 +25,12 @@ export class MovementSystem extends System {
 
             movement.state = this.updateMomentum(movement.state);
             if (movement.state.speed === 0) return;
-            this.eventManager.queueEvent(new MoveEvent(entity.id, { speed: movement.state.speed }));
+            this.eventManager.emit(new MoveEvent(entity.id, { speed: movement.state.speed }));
         });
     }
 
     registerListeners() {
-        this.commandManager.registerListener(Command.ACCELERATE, () => {
+        this.commandManager.on(Command.ACCELERATE, () => {
             this.entityManager.entities
                 .filter(entity => entity.hasComponent(Control))
                 .forEach(entity => {
@@ -38,7 +38,7 @@ export class MovementSystem extends System {
                     if (movement) movement.state.acceleration = 0.1;
                 });
         });
-        this.commandManager.registerListener(Command.DECELERATE, () => {
+        this.commandManager.on(Command.DECELERATE, () => {
             this.entityManager.entities
                 .filter(entity => entity.hasComponent(Control))
                 .forEach(entity => {
@@ -46,25 +46,25 @@ export class MovementSystem extends System {
                     if (movement) movement.state.acceleration = -0.1;
                 });
         });
-        this.commandManager.registerListener(Command.TURN_LEFT, () => {
+        this.commandManager.on(Command.TURN_LEFT, () => {
             this.entityManager.entities
                 .filter(entity => entity.hasComponent(Control))
                 .forEach(entity => {
                     const movement = entity.getComponent(Movement);
                     if (!movement) return;
                     if (movement.state.turningSpeed === 0) return;
-                    this.eventManager.queueEvent(
+                    this.eventManager.emit(
                         new TurnEvent(entity.id, { turningSpeed: -movement.state.turningSpeed }));
                 });
         });
-        this.commandManager.registerListener(Command.TURN_RIGHT, () => {
+        this.commandManager.on(Command.TURN_RIGHT, () => {
             this.entityManager.entities
                 .filter(entity => entity.hasComponent(Control))
                 .forEach(entity => {
                     const movement = entity.getComponent(Movement);
                     if (!movement) return;
                     if (movement.state.turningSpeed === 0) return;
-                    this.eventManager.queueEvent(
+                    this.eventManager.emit(
                         new TurnEvent(entity.id, { turningSpeed: movement.state.turningSpeed }));
                 });
         });

@@ -1,6 +1,5 @@
 import { CommandManager } from '../CommandManager';
 import { Command } from '../Commands';
-import { ComponentCode } from '../components/Components';
 import { Control } from '../components/Control';
 import { EntityManager } from '../EntityManager';
 import { System } from './System';
@@ -19,11 +18,11 @@ export class ControlSystem extends System {
         this.entityManager.entities.forEach(entity => {
             const control = entity.getComponent(Control);
             if (!control) return;
-            if (control.state.isTurningLeft) this.commandManager.queueCommand(Command.TURN_LEFT);
-            if (control.state.isAccelerating) this.commandManager.queueCommand(Command.ACCELERATE);
-            if (control.state.isTurningRight) this.commandManager.queueCommand(Command.TURN_RIGHT);
-            if (control.state.isDecelerating) this.commandManager.queueCommand(Command.DECELERATE);
-            if (control.state.isFiring) this.commandManager.queueCommand(Command.FIRE);
+            if (control.state.isTurningLeft) this.commandManager.emit(Command.TURN_LEFT);
+            if (control.state.isAccelerating) this.commandManager.emit(Command.ACCELERATE);
+            if (control.state.isTurningRight) this.commandManager.emit(Command.TURN_RIGHT);
+            if (control.state.isDecelerating) this.commandManager.emit(Command.DECELERATE);
+            if (control.state.isFiring) this.commandManager.emit(Command.FIRE);
         });
     }
 

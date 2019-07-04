@@ -38,9 +38,9 @@ export class Controller {
 
         if (delta > this.interval) {
             this.then = now - (delta % (this.interval));
-            this.commandManager.processCommands();
-            this.eventManager.processEvents();
-            this.entityManager.processEntities(this.systems);
+            this.commandManager.proccess();
+            this.eventManager.proccess();
+            this.entityManager.proccess(this.systems);
         }
     }
 }

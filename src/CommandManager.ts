@@ -4,11 +4,11 @@ export class CommandManager {
     private commands: Command[] = [];
     private listeners: Map<Command, ReadonlyArray<(command: Command) => void>> = new Map();
 
-    queueCommand(command: Command) {
+    emit(command: Command) {
         this.commands.push(command);
     }
 
-    registerListener(command: Command, callback: (command: Command) => void) {
+    on(command: Command, callback: (command: Command) => void) {
         if (this.listeners.has(command)) {
             const newCallbackArray = this.listeners.get(command)!
                 .concat([callback]);
@@ -18,7 +18,7 @@ export class CommandManager {
         }
     }
 
-    removeListener(command: Command, callback: (command: Command) => void) {
+    off(command: Command, callback: (command: Command) => void) {
         if (this.listeners.has(command)) {
             const newCallbackArray = this.listeners.get(command)!
                 .filter((cb) => cb !== callback);
@@ -26,7 +26,7 @@ export class CommandManager {
         }
     }
 
-    processCommands() {
+    proccess() {
         this.commands.forEach((command) => {
             const listeners = this.listeners.has(command) ?
                 this.listeners.get(command) as Array<(command: Command) => void> : [];
