@@ -10,11 +10,11 @@ export class Events {
 
     on<T extends keyof EventMap>(eventType: T, callback: (event: EventMap[T]) => void) {
         if (this.listeners.has(eventType)) {
-            const newCallbackArray = this.listeners.get(eventType)!
-                .concat([callback]);
+            const newCallbackArray = (this.listeners.get(eventType) as ReadonlyArray<(event: Event) => void>)
+                .concat([(callback as (event: Event) => void)]);
             this.listeners.set(eventType, newCallbackArray);
         } else {
-            this.listeners.set(eventType, [callback]);
+            this.listeners.set(eventType, [callback as (event: Event) => void]);
         }
     }
 
