@@ -1,16 +1,22 @@
 import { Movement } from '../components/Movement';
 import { Transform, TransformState } from '../components/Transform';
 import { EntityManager } from '../EntityManager';
-import { add } from '../math/Vector';
+import { add, isWithin, Vector } from '../math/Vector';
 import { System } from './System';
 
 export class TransformSystem extends System {
     constructor(
-        readonly entities: EntityManager) {
+        readonly entities: EntityManager,
+        readonly mapSize: Vector) {
         super();
     }
 
     update() {
+        this.entities.withComponents(Transform).forEach(id => {
+            const transform = this.entities.getComponent(id, Transform);
+            if (!isWithin(transform.state.position, this.mapSize)) this.entities.remove(id);
+        });
+
         this.entities.withComponents(Transform, Movement).forEach(id => {
             const transform = this.entities.getComponent(id, Transform);
             const movement = this.entities.getComponent(id, Movement);

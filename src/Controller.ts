@@ -12,16 +12,17 @@ export class Controller {
     readonly interval = 1000 / this.fps;
     then: number = Date.now();
 
-    readonly entities = new EntityManager();
+    readonly entities: EntityManager;
 
     readonly systems: System[];
 
-    constructor(canvas: HTMLCanvasElement, size: Vector) {
+    constructor(canvas: HTMLCanvasElement, mapSize: Vector) {
+        this.entities = new EntityManager();
         this.systems = [
-            new TransformSystem(this.entities),
+            new TransformSystem(this.entities, mapSize),
             new MovementSystem(this.entities),
             new ControlSystem(this.entities, canvas),
-            new RenderSystem(this.entities, canvas.getContext('2d')!, size),
+            new RenderSystem(this.entities, canvas.getContext('2d')!, mapSize),
             new WeaponSystem(this.entities),
         ];
     }
@@ -35,6 +36,7 @@ export class Controller {
         if (delta > this.interval) {
             this.then = now - (delta % (this.interval));
             this.entities.proccess(this.systems);
+            this.entities.clean();
         }
     }
 }

@@ -1,19 +1,26 @@
 import { player } from './Assembly';
 import { Component } from './components/Component';
+import { Vector } from './math/Vector';
 import { System } from './systems/System';
 
 export class EntityManager {
     private entities: Map<number, Component[]>;
+    private markedForRemoval: Set<number>;
     private enumerator: number;
 
     constructor() {
         this.entities = new Map();
+        this.markedForRemoval = new Set();
         this.enumerator = 0;
         this.create(player([640, 360]));
     }
 
     proccess(systems: ReadonlyArray<System>) {
         systems.forEach(system => system.update());
+    }
+
+    clean() {
+        this.markedForRemoval.forEach(id => this.entities.delete(id));
     }
 
     create(components: Component[]) {
@@ -25,6 +32,10 @@ export class EntityManager {
         const found = this.entities.get(id);
         if (!found) throw new Error(`No such entity id: ${id}`);
         return found;
+    }
+
+    remove(id: number) {
+        this.markedForRemoval.add(id);
     }
 
     getComponent<T extends Component>(id: number, type: new (state: any) => T): T {
