@@ -1,5 +1,5 @@
 export enum ComponentCode {
-    CORE,
+    TRANSFORM,
     CONTROL,
     MOVEMENT,
     WEAPON,

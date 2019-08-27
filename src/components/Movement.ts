@@ -1,10 +1,12 @@
 import { Component, ComponentCode } from './Component';
 
 export interface MovementState {
-    speed: number;
+    currSpeed: number;
+    currAcceleration: number;
+    currRotationalSpeed: number;
     acceleration: number;
+    rotationalSpeed: number;
     maxSpeed: number;
-    turningSpeed: number;
 }
 
 export class Movement extends Component {

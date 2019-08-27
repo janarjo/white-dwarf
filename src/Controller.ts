@@ -1,12 +1,10 @@
-import { Commands } from './command/Commands';
-import { Entities } from './entities/Entities';
-import { Events } from './events/Events';
+import { EntityManager } from './EntityManager';
 import { Vector } from './math/Vector';
 import { ControlSystem } from './systems/ControlSystem';
-import { CoreSystem } from './systems/CoreSystem';
 import { MovementSystem } from './systems/MovementSystem';
 import { RenderSystem } from './systems/RenderSystem';
 import { System } from './systems/System';
+import { TransformSystem } from './systems/TransformSystem';
 import { WeaponSystem } from './systems/WeaponSystem';
 
 export class Controller {
@@ -14,19 +12,17 @@ export class Controller {
     readonly interval = 1000 / this.fps;
     then: number = Date.now();
 
-    readonly entities = new Entities();
-    readonly events = new Events();
-    readonly commands = new Commands();
+    readonly entities = new EntityManager();
 
     readonly systems: System[];
 
     constructor(canvas: HTMLCanvasElement, size: Vector) {
         this.systems = [
-            new CoreSystem(this.entities, this.events),
-            new MovementSystem(this.entities, this.events, this.commands),
-            new ControlSystem(this.entities, this.commands, canvas),
+            new TransformSystem(this.entities),
+            new MovementSystem(this.entities),
+            new ControlSystem(this.entities, canvas),
             new RenderSystem(this.entities, canvas.getContext('2d')!, size),
-            new WeaponSystem(this.entities, this.events, this.commands),
+            new WeaponSystem(this.entities),
         ];
     }
 
@@ -38,8 +34,6 @@ export class Controller {
 
         if (delta > this.interval) {
             this.then = now - (delta % (this.interval));
-            this.commands.proccess();
-            this.events.proccess();
             this.entities.proccess(this.systems);
         }
     }

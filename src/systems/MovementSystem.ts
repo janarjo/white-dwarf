@@ -1,84 +1,54 @@
-import { Command } from '../command/Command';
-import { Commands } from '../command/Commands';
-import { Control } from '../components/Control';
+import { Control, ControlState } from '../components/Control';
 import { Movement, MovementState } from '../components/Movement';
-import { Entities } from '../entities/Entities';
-import { Events } from '../events/Events';
-import { MoveEvent } from '../events/MoveEvent';
-import { TurnEvent } from '../events/TurnEvent';
+import { EntityManager } from '../EntityManager';
 import { System } from './System';
 
 export class MovementSystem extends System {
     constructor(
-        private readonly entities: Entities,
-        private readonly events: Events,
-        private readonly commands: Commands) {
+        private readonly entities: EntityManager) {
         super();
-        this.registerListeners();
     }
 
     update() {
-        this.entities.entities.forEach(entity => {
-            const movement = entity.getComponent(Movement);
-            if (!movement) return;
-
+        this.entities.withComponents(Movement).forEach(id => {
+            const movement = this.entities.getComponent(id, Movement);
             movement.state = this.updateMomentum(movement.state);
-            if (movement.state.speed === 0) return;
-            this.events.emit(new MoveEvent(entity.id, { speed: movement.state.speed }));
         });
-    }
 
-    registerListeners() {
-        this.commands.on(Command.ACCELERATE, () => {
-            this.entities.entities
-                .filter(entity => entity.hasComponent(Control))
-                .forEach(entity => {
-                    const movement = entity.getComponent(Movement);
-                    if (movement) movement.state.acceleration = 0.1;
-                });
-        });
-        this.commands.on(Command.DECELERATE, () => {
-            this.entities.entities
-                .filter(entity => entity.hasComponent(Control))
-                .forEach(entity => {
-                    const movement = entity.getComponent(Movement);
-                    if (movement) movement.state.acceleration = -0.1;
-                });
-        });
-        this.commands.on(Command.TURN_LEFT, () => {
-            this.entities.entities
-                .filter(entity => entity.hasComponent(Control))
-                .forEach(entity => {
-                    const movement = entity.getComponent(Movement);
-                    if (!movement) return;
-                    if (movement.state.turningSpeed === 0) return;
-                    this.events.emit(
-                        new TurnEvent(entity.id, { turningSpeed: -movement.state.turningSpeed }));
-                });
-        });
-        this.commands.on(Command.TURN_RIGHT, () => {
-            this.entities.entities
-                .filter(entity => entity.hasComponent(Control))
-                .forEach(entity => {
-                    const movement = entity.getComponent(Movement);
-                    if (!movement) return;
-                    if (movement.state.turningSpeed === 0) return;
-                    this.events.emit(
-                        new TurnEvent(entity.id, { turningSpeed: movement.state.turningSpeed }));
-                });
+        this.entities.withComponents(Movement, Control).forEach(id => {
+            const movement = this.entities.getComponent(id, Movement);
+            const control = this.entities.getComponent(id, Control);
+
+            movement.state = this.updateControl(movement.state, control.state);
         });
     }
 
     private updateMomentum(movementState: MovementState): MovementState {
-        const newSpeed = movementState.speed + movementState.acceleration;
+        const newSpeed = movementState.currSpeed + movementState.currAcceleration;
         if (newSpeed > 0 && newSpeed < movementState.maxSpeed) {
-            return { ...movementState, speed: newSpeed };
+            return { ...movementState, currSpeed: newSpeed };
         } else if (newSpeed <= 0) {
-            return { ...movementState, speed: 0 };
+            return { ...movementState, currSpeed: 0 };
         } else if (newSpeed > movementState.maxSpeed) {
-            return { ...movementState, speed: movementState.maxSpeed };
-        } else {
-            return movementState;
-        }
+            return { ...movementState, currSpeed: movementState.maxSpeed };
+        } else return movementState;
+    }
+
+    private updateControl(movementState: MovementState, controlState: ControlState): MovementState {
+        let newAcceleration: number;
+        if (controlState.isAccelerating) {
+            newAcceleration = movementState.acceleration;
+        } else if (controlState.isDecelerating) {
+            newAcceleration = -movementState.acceleration;
+        } else newAcceleration = 0;
+
+        let newRotationalSpeed: number;
+        if (controlState.isTurningLeft) {
+            newRotationalSpeed = -movementState.rotationalSpeed;
+        } else if (controlState.isTurningRight) {
+            newRotationalSpeed = movementState.rotationalSpeed;
+        } else newRotationalSpeed = 0;
+
+        return { ...movementState, currAcceleration: newAcceleration, currRotationalSpeed: newRotationalSpeed };
     }
 }

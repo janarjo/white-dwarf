@@ -1,6 +1,6 @@
-import { Core } from '../components/Core';
 import { Render } from '../components/Render';
-import { Entities } from '../entities/Entities';
+import { Transform } from '../components/Transform';
+import { EntityManager } from '../EntityManager';
 import { Vector } from '../math/Vector';
 import { Dot } from '../ui/Dot';
 import { Shape, ShapeType } from '../ui/Shape';
@@ -9,7 +9,7 @@ import { System } from './System';
 
 export class RenderSystem extends System {
     constructor(
-        private readonly entities: Entities,
+        private readonly entities: EntityManager,
         private readonly ctx: CanvasRenderingContext2D,
         private readonly size: Vector) {
         super();
@@ -17,23 +17,22 @@ export class RenderSystem extends System {
 
     update() {
         this.clear();
-        this.entities.entities.forEach(entity => {
-            const core = entity.getComponent(Core);
-            const render = entity.getComponent(Render);
-            if (core && render) {
-                let shape: Shape | undefined;
-                switch (render.state.type) {
-                    case ShapeType.DOT: {
-                        shape = new Dot(core.state.position);
-                        break;
-                    }
-                    case ShapeType.TRIANGLE: {
-                        shape = new Triangle(core.state.position, core.state.orientation);
-                        break;
-                    }
+        this.entities.withComponents(Transform, Render).forEach(id => {
+            const transform = this.entities.getComponent(id, Transform);
+            const render = this.entities.getComponent(id, Render);
+
+            let shape: Shape | undefined;
+            switch (render.state.type) {
+                case ShapeType.DOT: {
+                    shape = new Dot(transform.state.position);
+                    break;
                 }
-                shape && this.drawShape(shape);
+                case ShapeType.TRIANGLE: {
+                    shape = new Triangle(transform.state.position, transform.state.orientation);
+                    break;
+                }
             }
+            shape && this.drawShape(shape);
         });
     }
 

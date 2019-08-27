@@ -1,35 +1,19 @@
-import { Command } from '../command/Command';
-import { Commands } from '../command/Commands';
 import { Control } from '../components/Control';
-import { Entities } from '../entities/Entities';
+import { EntityManager } from '../EntityManager';
 import { System } from './System';
 
 export class ControlSystem extends System {
     constructor(
-        private readonly entities: Entities,
-        private readonly commands: Commands,
+        private readonly entities: EntityManager,
         canvas: HTMLCanvasElement) {
         super();
         canvas.addEventListener('keydown', (event) => this.handleInput(event, true));
         canvas.addEventListener('keyup', (event) => this.handleInput(event, false));
     }
 
-    update() {
-        this.entities.entities.forEach(entity => {
-            const control = entity.getComponent(Control);
-            if (!control) return;
-            if (control.state.isTurningLeft) this.commands.emit(Command.TURN_LEFT);
-            if (control.state.isAccelerating) this.commands.emit(Command.ACCELERATE);
-            if (control.state.isTurningRight) this.commands.emit(Command.TURN_RIGHT);
-            if (control.state.isDecelerating) this.commands.emit(Command.DECELERATE);
-            if (control.state.isFiring) this.commands.emit(Command.FIRE);
-        });
-    }
-
     handleInput(event: KeyboardEvent, isKeyDown: boolean) {
-        this.entities.entities.forEach(entity => {
-            const control = entity.getComponent(Control);
-            if (!control) return;
+        this.entities.withComponents(Control).forEach(id => {
+            const control = this.entities.getComponent(id, Control);
             switch (event.keyCode) {
                 case 32: {
                     control.state.isFiring = isKeyDown ? true : false;
