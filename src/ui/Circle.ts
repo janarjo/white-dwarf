@@ -14,7 +14,7 @@ export class Circle extends Shape {
         ctx.beginPath();
         ctx.strokeStyle = this.color;
         ctx.lineWidth = this.lineWidth;
-        ctx.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI);
+        ctx.arc(this.position[0], this.position[1], this.radius, 0, 2 * Math.PI);
         ctx.stroke();
     }
 }

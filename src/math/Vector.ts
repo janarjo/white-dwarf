@@ -1,20 +1,5 @@
-export class Vector {
-    constructor(readonly x: number, readonly y: number) { }
-
-    add(v: Vector): Vector {
-        return new Vector(this.x + v.x, this.y + v.y);
-    }
-
-    subtract(v: Vector): Vector {
-        return new Vector(this.x - v.x, this.y - v.y);
-    }
-
-    scale(n: number): Vector {
-        return new Vector(this.x * n, this.y * n);
-    }
-
-    isWithin(area: Vector): boolean {
-        return this.x >= 0 && this.x <= area.x
-            && this.y >= 0 && this.y <= area.y;
-    }
-}
+export type Vector = Readonly<[number, number]>;
+export const add = (v1: Vector, v2: Vector) => [v1[0] + v2[0], v1[1] + v2[1]] as const;
+export const subtract = (v1: Vector, v2: Vector) => [v1[0] - v2[0], v1[1] - v2[1]] as const;
+export const scale = (v: Vector, n: number) => [v[0] * n, v[1] * n] as const;
+export const isWithin = (v: Vector, area: Vector) => v[0] >= 0 && v[0] <= area[0] && v[1] >= 0 && v[1] <= area[1];

@@ -1,11 +1,11 @@
-import { Vector } from '../math/Vector';
+import { add, subtract, Vector } from './Vector';
 
 export function rotate(origin: Vector, angle: number, points: ReadonlyArray<Vector>): ReadonlyArray<Vector> {
     const cosMult = Math.cos(angle);
     const sinMult = Math.sin(angle);
 
     return points
-        .map(v => v.subtract(origin))
-        .map(v => new Vector(v.y * cosMult - v.x * sinMult, v.x * cosMult + v.y * sinMult))
-        .map(v => v.add(origin));
+        .map(v => subtract(v, origin))
+        .map(v => [v[1] * cosMult - v[0] * sinMult, v[0] * cosMult + v[1] * sinMult] as const)
+        .map(v => add(v, origin));
 }

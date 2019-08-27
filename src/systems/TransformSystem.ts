@@ -1,8 +1,7 @@
-import { projectile } from '../Assembly';
 import { Movement } from '../components/Movement';
 import { Transform, TransformState } from '../components/Transform';
 import { EntityManager } from '../EntityManager';
-import { Vector } from '../math/Vector';
+import { add } from '../math/Vector';
 import { System } from './System';
 
 export class TransformSystem extends System {
@@ -29,7 +28,7 @@ export class TransformSystem extends System {
     private updatePosition(state: TransformState, speed: number): TransformState {
         const motionX = speed * Math.cos(state.orientation);
         const motionY = speed * Math.sin(state.orientation);
-        const newPosition = state.position.add(new Vector(motionX, motionY));
+        const newPosition = add(state.position, [motionX, motionY]);
         return { ...state, position: newPosition };
     }
 }

@@ -16,14 +16,14 @@ export class Triangle extends Shape {
         ctx.beginPath();
         ctx.fillStyle = this.color;
 
-        const centerX = this.position.x;
-        const centerY = this.position.y;
+        const centerX = this.position[0];
+        const centerY = this.position[1];
         const halfHeight = (this.height / 2);
         const halfBase = (this.base / 2);
 
-        const pointA = new Vector(centerX - halfBase, centerY - halfHeight);
-        const pointB = new Vector(centerX, centerY + halfHeight);
-        const pointC = new Vector(centerX + halfBase, centerY - halfHeight);
+        const pointA = [centerX - halfBase, centerY - halfHeight] as const;
+        const pointB = [centerX, centerY + halfHeight] as const;
+        const pointC = [centerX + halfBase, centerY - halfHeight] as const;
 
         const rotatedPoints = rotate(this.position, this.orientation, [pointA, pointB, pointC]);
 
@@ -31,10 +31,10 @@ export class Triangle extends Shape {
         const rotatedPointB = rotatedPoints[1];
         const rotatedPointC = rotatedPoints[2];
 
-        ctx.moveTo(rotatedPointA.x, rotatedPointA.y);
-        ctx.lineTo(rotatedPointB.x, rotatedPointB.y);
-        ctx.lineTo(rotatedPointC.x, rotatedPointC.y);
-        ctx.lineTo(rotatedPointA.x, rotatedPointA.y);
+        ctx.moveTo(rotatedPointA[0], rotatedPointA[1]);
+        ctx.lineTo(rotatedPointB[0], rotatedPointB[1]);
+        ctx.lineTo(rotatedPointC[0], rotatedPointC[1]);
+        ctx.lineTo(rotatedPointA[0], rotatedPointA[1]);
         ctx.fill();
     }
 }

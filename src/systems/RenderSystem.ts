@@ -38,7 +38,7 @@ export class RenderSystem extends System {
 
     private clear() {
         this.ctx.fillStyle = 'black';
-        this.ctx.fillRect(0, 0, this.size.x, this.size.y);
+        this.ctx.fillRect(0, 0, this.size[0], this.size[1]);
     }
 
     private drawShape(shape: Shape) {

@@ -1,6 +1,5 @@
 import { player } from './Assembly';
 import { Component } from './components/Component';
-import { Vector } from './math/Vector';
 import { System } from './systems/System';
 
 export class EntityManager {
@@ -10,7 +9,7 @@ export class EntityManager {
     constructor() {
         this.entities = new Map();
         this.enumerator = 0;
-        this.create(player(new Vector(640, 360)));
+        this.create(player([640, 360]));
     }
 
     proccess(systems: ReadonlyArray<System>) {
