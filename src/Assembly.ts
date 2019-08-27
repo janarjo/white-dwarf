@@ -30,8 +30,8 @@ export const player = (position: Vector) => [
         rotationalSpeed: 0.1,
     }),
     new Weapon({
-        attackSpeed: 1,
-        projectileSpeed: 10,
+        lastFired: 0,
+        cooldown: 1000,
     }),
 ];
 
