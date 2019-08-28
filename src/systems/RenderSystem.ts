@@ -2,6 +2,7 @@ import { Render } from '../components/Render';
 import { Transform } from '../components/Transform';
 import { EntityManager } from '../EntityManager';
 import { Vector } from '../math/Vector';
+import { Circle } from '../ui/Circle';
 import { Dot } from '../ui/Dot';
 import { Shape, ShapeType } from '../ui/Shape';
 import { Triangle } from '../ui/Triangle';
@@ -29,6 +30,10 @@ export class RenderSystem extends System {
                 }
                 case ShapeType.TRIANGLE: {
                     shape = new Triangle(transform.state.position, transform.state.orientation);
+                    break;
+                }
+                case ShapeType.CIRCLE: {
+                    shape = new Circle(transform.state.position, 20);
                     break;
                 }
             }

@@ -52,3 +52,13 @@ export const projectile = (position: Vector, orientation: number) => [
         rotationalSpeed: 0,
     }),
 ];
+
+export const planetoid = (position: Vector) => [
+    new Transform({
+        position,
+        orientation: 0,
+    }),
+    new Render({
+        type: ShapeType.CIRCLE,
+    }),
+];
