@@ -1,61 +1,61 @@
-import { planetoid, player } from './Assembly';
-import { Component } from './components/Component';
-import { Vector } from './math/Vector';
-import { System } from './systems/System';
+import { planetoid, player } from './Assembly'
+import { Component } from './components/Component'
+import { Vector } from './math/Vector'
+import { System } from './systems/System'
 
 export class EntityManager {
-    private entities: Map<number, Component[]>;
-    private markedForRemoval: Set<number>;
-    private enumerator: number;
+    private entities: Map<number, Component[]>
+    private markedForRemoval: Set<number>
+    private enumerator: number
 
     constructor() {
-        this.entities = new Map();
-        this.markedForRemoval = new Set();
-        this.enumerator = 0;
-        this.create(player([640, 360]));
-        this.create(planetoid([320, 150]));
+        this.entities = new Map()
+        this.markedForRemoval = new Set()
+        this.enumerator = 0
+        this.create(player([640, 360]))
+        this.create(planetoid([320, 150]))
     }
 
     proccess(systems: ReadonlyArray<System>) {
-        systems.forEach(system => system.update());
+        systems.forEach(system => system.update())
     }
 
     clean() {
-        this.markedForRemoval.forEach(id => this.entities.delete(id));
+        this.markedForRemoval.forEach(id => this.entities.delete(id))
     }
 
     create(components: Component[]) {
-        this.entities.set(this.enumerator, components);
-        this.enumerator++;
+        this.entities.set(this.enumerator, components)
+        this.enumerator++
     }
 
     get(id: number): ReadonlyArray<Component> {
-        const found = this.entities.get(id);
-        if (!found) throw new Error(`No such entity id: ${id}`);
-        return found;
+        const found = this.entities.get(id)
+        if (!found) throw new Error(`No such entity id: ${id}`)
+        return found
     }
 
     remove(id: number) {
-        this.markedForRemoval.add(id);
+        this.markedForRemoval.add(id)
     }
 
     getComponent<T extends Component>(id: number, type: new (state: any) => T): T {
-        const found = this.get(id).find(component => component instanceof type);
-        if (!found) throw new Error(`No such component: ${type.name} for entity id: ${id}`);
-        return found as T;
+        const found = this.get(id).find(component => component instanceof type)
+        if (!found) throw new Error(`No such component: ${type.name} for entity id: ${id}`)
+        return found as T
     }
 
     withComponents(...types: Array<new (state: any) => Component>): ReadonlyArray<number> {
         return Array.from(this.entities.entries())
             .filter(([, components]) => this.hasComponents(components, types))
-            .map(([id, _]) => id);
+            .map(([id, _]) => id)
     }
 
     private hasComponents(components: Component[], types: Array<new (state: any) => Component>): boolean {
-        return types.every(type => this.hasComponent(components, type));
+        return types.every(type => this.hasComponent(components, type))
     }
 
     private hasComponent<T extends Component>(components: Component[], type: new (state: any) => T): boolean {
-        return components.find(component => component instanceof type) !== undefined;
+        return components.find(component => component instanceof type) !== undefined
     }
 }

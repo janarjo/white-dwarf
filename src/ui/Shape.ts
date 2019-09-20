@@ -1,4 +1,4 @@
-import { Vector } from '../math/Vector';
+import { Vector } from '../math/Vector'
 
 export enum ShapeType {
     CIRCLE,
@@ -14,5 +14,5 @@ export abstract class Shape {
             protected color: string) {
     }
 
-    abstract draw(ctx: CanvasRenderingContext2D): void;
+    abstract draw(ctx: CanvasRenderingContext2D): void
 }

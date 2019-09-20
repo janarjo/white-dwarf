@@ -1,11 +1,11 @@
-import { Collision } from './components/Collision';
-import { Control } from './components/Control';
-import { Movement } from './components/Movement';
-import { Render } from './components/Render';
-import { Transform } from './components/Transform';
-import { Weapon } from './components/Weapon';
-import { add, Vector } from './math/Vector';
-import { ShapeType } from './ui/Shape';
+import { Collision } from './components/Collision'
+import { Control } from './components/Control'
+import { Movement } from './components/Movement'
+import { Render } from './components/Render'
+import { Transform } from './components/Transform'
+import { Weapon } from './components/Weapon'
+import { add, Vector } from './math/Vector'
+import { ShapeType } from './ui/Shape'
 
 export const player = (position: Vector) => [
     new Transform({
@@ -38,7 +38,7 @@ export const player = (position: Vector) => [
         isColliding: false,
         boundingBox: [add(position, [-28, -28]), 56, 56],
     }),
-];
+]
 
 export const projectile = (position: Vector, orientation: number) => [
     new Transform({
@@ -56,7 +56,7 @@ export const projectile = (position: Vector, orientation: number) => [
         maxSpeed: 7,
         rotationalSpeed: 0,
     }),
-];
+]
 
 export const planetoid = (position: Vector) => [
     new Transform({
@@ -66,4 +66,4 @@ export const planetoid = (position: Vector) => [
     new Render({
         type: ShapeType.CIRCLE,
     }),
-];
+]

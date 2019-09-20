@@ -1,13 +1,13 @@
-import { Vector } from '../math/Vector';
-import { Component, ComponentCode } from './Component';
+import { Vector } from '../math/Vector'
+import { Component, ComponentCode } from './Component'
 
 export interface TransformState {
-    position: Vector;
-    orientation: number;
+    position: Vector
+    orientation: number
 }
 
 export class Transform extends Component {
     constructor(public state: TransformState) {
-        super(ComponentCode.TRANSFORM, 'Core', state);
+        super(ComponentCode.TRANSFORM, 'Core', state)
     }
 }

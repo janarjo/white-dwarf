@@ -1,12 +1,12 @@
-import { ShapeType } from '../ui/Shape';
-import { Component, ComponentCode } from './Component';
+import { ShapeType } from '../ui/Shape'
+import { Component, ComponentCode } from './Component'
 
 export interface RenderState {
-    type: ShapeType;
+    type: ShapeType
 }
 
 export class Render extends Component {
     constructor(public state: RenderState) {
-        super(ComponentCode.RENDER, 'Render', state);
+        super(ComponentCode.RENDER, 'Render', state)
     }
 }
