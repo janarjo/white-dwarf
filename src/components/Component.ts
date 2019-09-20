@@ -4,6 +4,7 @@ export enum ComponentCode {
     MOVEMENT,
     WEAPON,
     RENDER,
+    COLLISION,
 }
 
 export abstract class Component {

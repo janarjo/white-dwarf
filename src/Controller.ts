@@ -1,5 +1,6 @@
 import { EntityManager } from './EntityManager';
 import { Vector } from './math/Vector';
+import { CollisionSystem } from './systems/CollisionSystem';
 import { ControlSystem } from './systems/ControlSystem';
 import { MovementSystem } from './systems/MovementSystem';
 import { RenderSystem } from './systems/RenderSystem';
@@ -19,11 +20,12 @@ export class Controller {
     constructor(canvas: HTMLCanvasElement, mapSize: Vector) {
         this.entities = new EntityManager();
         this.systems = [
-            new TransformSystem(this.entities, mapSize),
-            new MovementSystem(this.entities),
             new ControlSystem(this.entities, canvas),
-            new RenderSystem(this.entities, canvas.getContext('2d')!, mapSize),
+            new MovementSystem(this.entities),
+            new TransformSystem(this.entities, mapSize),
+            new CollisionSystem(this.entities),
             new WeaponSystem(this.entities),
+            new RenderSystem(this.entities, canvas.getContext('2d')!, mapSize),
         ];
     }
 

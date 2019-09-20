@@ -1,9 +1,10 @@
+import { Collision } from './components/Collision';
 import { Control } from './components/Control';
 import { Movement } from './components/Movement';
 import { Render } from './components/Render';
 import { Transform } from './components/Transform';
 import { Weapon } from './components/Weapon';
-import { Vector } from './math/Vector';
+import { add, Vector } from './math/Vector';
 import { ShapeType } from './ui/Shape';
 
 export const player = (position: Vector) => [
@@ -32,6 +33,10 @@ export const player = (position: Vector) => [
     new Weapon({
         lastFired: 0,
         cooldown: 1000,
+    }),
+    new Collision({
+        isColliding: false,
+        boundingBox: [add(position, [-28, -28]), 56, 56],
     }),
 ];
 

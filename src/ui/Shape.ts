@@ -4,6 +4,7 @@ export enum ShapeType {
     CIRCLE,
     TRIANGLE,
     DOT,
+    RECTANGLE,
 }
 
 export abstract class Shape {

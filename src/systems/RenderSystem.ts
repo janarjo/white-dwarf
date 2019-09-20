@@ -1,9 +1,11 @@
+import { Collision } from '../components/Collision';
 import { Render } from '../components/Render';
 import { Transform } from '../components/Transform';
 import { EntityManager } from '../EntityManager';
-import { Vector } from '../math/Vector';
+import { add, subtract, Vector } from '../math/Vector';
 import { Circle } from '../ui/Circle';
 import { Dot } from '../ui/Dot';
+import { Rectangle } from '../ui/Rectangle';
 import { Shape, ShapeType } from '../ui/Shape';
 import { Triangle } from '../ui/Triangle';
 import { System } from './System';
@@ -38,6 +40,12 @@ export class RenderSystem extends System {
                 }
             }
             shape && this.drawShape(shape);
+        });
+        this.entities.withComponents(Render, Collision).forEach(id => {
+            const collision = this.entities.getComponent(id, Collision);
+            const [pos, width, height] = collision.state.boundingBox;
+
+            this.drawShape(new Rectangle(pos, width, height));
         });
     }
 
