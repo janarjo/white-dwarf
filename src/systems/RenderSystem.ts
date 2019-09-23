@@ -44,8 +44,9 @@ export class RenderSystem extends System {
         this.entities.withComponents(Render, Collision).forEach(id => {
             const collision = this.entities.getComponent(id, Collision)
             const [pos, width, height] = collision.state.boundingBox
+            const isColliding = collision.state.isColliding
 
-            this.drawShape(new Rectangle(pos, width, height))
+            this.drawShape(new Rectangle(pos, width, height, false, isColliding ? 'red' : 'white'))
         })
     }
 

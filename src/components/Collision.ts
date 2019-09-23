@@ -1,9 +1,9 @@
-import { Vector } from '../math/Vector'
+import { Rectangle } from '../math/Rectangle';
 import { Component, ComponentCode } from './Component'
 
 export interface CollisionState {
     isColliding: boolean
-    boundingBox: Readonly<[Vector, number, number]>
+    boundingBox: Rectangle
 }
 
 export class Collision extends Component {

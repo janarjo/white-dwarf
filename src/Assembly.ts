@@ -66,4 +66,8 @@ export const planetoid = (position: Vector) => [
     new Render({
         type: ShapeType.CIRCLE,
     }),
+    new Collision({
+        isColliding: false,
+        boundingBox: [add(position, [-28, -28]), 56, 56],
+    }),
 ]
