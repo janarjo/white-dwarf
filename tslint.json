@@ -11,6 +11,6 @@
         "no-unused-expression": [true, "allow-fast-null-checks"],
         "arrow-parens": false,
         "max-classes-per-file": false,
-        "semicolon": false
+        "semicolon": [true, "never"]
     }
 }

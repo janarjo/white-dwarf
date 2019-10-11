@@ -1,4 +1,4 @@
-import { Rectangle } from '../math/Rectangle';
+import { Rectangle } from '../math/Rectangle'
 import { Component, ComponentCode } from './Component'
 
 export interface CollisionState {

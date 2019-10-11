@@ -32,11 +32,7 @@ export const player = (position: Vector) => [
     }),
     new Weapon({
         lastFired: 0,
-        cooldown: 1000,
-    }),
-    new Collision({
-        isColliding: false,
-        boundingBox: [add(position, [-28, -28]), 56, 56],
+        cooldown: 500,
     }),
 ]
 
@@ -49,12 +45,16 @@ export const projectile = (position: Vector, orientation: number) => [
         type: ShapeType.DOT,
     }),
     new Movement({
-        currSpeed: 7,
+        currSpeed: 2,
         currAcceleration: 0,
         currRotationalSpeed: 0,
         acceleration: 0,
-        maxSpeed: 7,
+        maxSpeed: 2,
         rotationalSpeed: 0,
+    }),
+    new Collision({
+        isColliding: false,
+        boundingBox: [position, 1, 1],
     }),
 ]
 
@@ -68,6 +68,6 @@ export const planetoid = (position: Vector) => [
     }),
     new Collision({
         isColliding: false,
-        boundingBox: [add(position, [-28, -28]), 56, 56],
+        boundingBox: [add(position, [-20, -20]), 40, 40],
     }),
 ]
