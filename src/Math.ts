@@ -7,7 +7,7 @@ export type Position = Vector
 export type Offset = Vector
 export type Dimensions = Vector
 export const isWithin = (v: Position, area: Dimensions) => v[0] >= 0 && v[0] <= area[0] && v[1] >= 0 && v[1] <= area[1]
-export const rotate = (origin: Position, angle: number, points: ReadonlyArray<Position>) => {
+export const rotatePoints = (origin: Position, angle: number, points: ReadonlyArray<Position>) => {
     const cosMult = Math.cos(angle)
     const sinMult = Math.sin(angle)
 
@@ -16,6 +16,7 @@ export const rotate = (origin: Position, angle: number, points: ReadonlyArray<Po
         .map(v => [v[1] * cosMult - v[0] * sinMult, v[0] * cosMult + v[1] * sinMult] as const)
         .map(v => add(v, origin))
 }
+export const rotate = (origin: Position, angle: number, point: Position) => rotatePoints(origin, angle, [point])[0]
 
 export type Rectangle = Readonly<[Position, Dimensions]>
 export const isIntersect = (r1: Rectangle, r2: Rectangle) => {

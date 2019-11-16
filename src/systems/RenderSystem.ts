@@ -1,8 +1,9 @@
 import { Collision } from '../components/Collision'
 import { Render } from '../components/Render'
 import { Transform } from '../components/Transform'
+import { Weapon } from '../components/Weapon'
 import { EntityManager } from '../EntityManager'
-import { add, Vector } from '../Math'
+import { add, Vector, rotate } from '../Math'
 import { Circle } from '../ui/Circle'
 import { Dot } from '../ui/Dot'
 import { Rectangle } from '../ui/Rectangle'
@@ -49,6 +50,15 @@ export class RenderSystem extends System {
             const isColliding = collision.state.isColliding
 
             this.drawShape(new Rectangle(add(position, offset), dimensions, false, isColliding ? 'red' : 'white'))
+        })
+        this.entities.withComponents(Transform, Render, Weapon).forEach(id => {
+            const transform = this.entities.getComponent(id, Transform)
+            const { position, orientation } = transform.state
+            const weapon = this.entities.getComponent(id, Weapon)
+            const { offset } = weapon.state
+            const firePosition = rotate(position, orientation, add(position, offset))
+
+            this.drawShape(new Dot(firePosition, 'red'))
         })
     }
 

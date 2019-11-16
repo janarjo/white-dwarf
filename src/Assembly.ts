@@ -28,11 +28,12 @@ export const player = (position: Vector) => [
         currRotationalSpeed: 0,
         acceleration: 0.1,
         maxSpeed: 5,
-        rotationalSpeed: 0.1,
+        rotationalSpeed: 0.075,
     }),
     new Weapon({
         lastFired: 0,
         cooldown: 500,
+        offset: [0, 23],
     }),
 ]
 
@@ -45,11 +46,11 @@ export const projectile = (position: Vector, orientation: number) => [
         type: ShapeType.DOT,
     }),
     new Movement({
-        currSpeed: 2,
+        currSpeed: 5,
         currAcceleration: 0,
         currRotationalSpeed: 0,
         acceleration: 0,
-        maxSpeed: 2,
+        maxSpeed: 5,
         rotationalSpeed: 0,
     }),
     new Collision({

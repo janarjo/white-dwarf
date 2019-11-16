@@ -1,4 +1,4 @@
-import { Position, rotate, Vector } from '../Math'
+import { Position, rotatePoints, Vector } from '../Math'
 import { Shape, ShapeType } from './Shape'
 
 export class Triangle extends Shape {
@@ -24,7 +24,7 @@ export class Triangle extends Shape {
         const pointB = [centerX, centerY + halfHeight] as const
         const pointC = [centerX + halfBase, centerY - halfHeight] as const
 
-        const rotatedPoints = rotate(this.position, this.orientation, [pointA, pointB, pointC])
+        const rotatedPoints = rotatePoints(this.position, this.orientation, [pointA, pointB, pointC])
 
         const rotatedPointA = rotatedPoints[0]
         const rotatedPointB = rotatedPoints[1]
