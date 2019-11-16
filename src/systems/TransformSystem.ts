@@ -1,7 +1,7 @@
 import { Movement } from '../components/Movement'
 import { Transform, TransformState } from '../components/Transform'
 import { EntityManager } from '../EntityManager'
-import { add, isWithin, Vector } from '../math/Vector'
+import { add, isWithin, Vector } from '../Math'
 import { System } from './System'
 
 export class TransformSystem extends System {

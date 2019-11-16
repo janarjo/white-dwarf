@@ -1,9 +1,9 @@
-import { Vector } from '../math/Vector'
+import { Position } from '../Math'
 import { Shape, ShapeType } from './Shape'
 
 export class Circle extends Shape {
     constructor(
-            position: Vector,
+            position: Position,
             protected radius: number,
             protected fill: boolean = false,
             color: string = 'white',

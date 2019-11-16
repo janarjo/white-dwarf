@@ -4,7 +4,7 @@ import { Movement } from './components/Movement'
 import { Render } from './components/Render'
 import { Transform } from './components/Transform'
 import { Weapon } from './components/Weapon'
-import { add, Vector } from './math/Vector'
+import { add, Vector } from './Math'
 import { ShapeType } from './ui/Shape'
 
 export const player = (position: Vector) => [
@@ -54,7 +54,7 @@ export const projectile = (position: Vector, orientation: number) => [
     }),
     new Collision({
         isColliding: false,
-        boundingBox: [position, 1, 1],
+        boundingBox: [[0, 0], [1, 1]],
     }),
 ]
 
@@ -68,6 +68,6 @@ export const planetoid = (position: Vector) => [
     }),
     new Collision({
         isColliding: false,
-        boundingBox: [add(position, [-20, -20]), 40, 40],
+        boundingBox: [[-20, -20], [40, 40]],
     }),
 ]

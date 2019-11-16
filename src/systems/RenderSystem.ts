@@ -2,7 +2,7 @@ import { Collision } from '../components/Collision'
 import { Render } from '../components/Render'
 import { Transform } from '../components/Transform'
 import { EntityManager } from '../EntityManager'
-import { add, subtract, Vector } from '../math/Vector'
+import { add, Vector } from '../Math'
 import { Circle } from '../ui/Circle'
 import { Dot } from '../ui/Dot'
 import { Rectangle } from '../ui/Rectangle'
@@ -41,12 +41,14 @@ export class RenderSystem extends System {
             }
             shape && this.drawShape(shape)
         })
-        this.entities.withComponents(Render, Collision).forEach(id => {
+        this.entities.withComponents(Transform, Render, Collision).forEach(id => {
+            const transform = this.entities.getComponent(id, Transform)
+            const position = transform.state.position
             const collision = this.entities.getComponent(id, Collision)
-            const [pos, width, height] = collision.state.boundingBox
+            const [offset, dimensions] = collision.state.boundingBox
             const isColliding = collision.state.isColliding
 
-            this.drawShape(new Rectangle(pos, width, height, false, isColliding ? 'red' : 'white'))
+            this.drawShape(new Rectangle(add(position, offset), dimensions, false, isColliding ? 'red' : 'white'))
         })
     }
 

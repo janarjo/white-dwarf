@@ -1,6 +1,5 @@
 import { planetoid, player } from './Assembly'
 import { Component } from './components/Component'
-import { Vector } from './math/Vector'
 import { System } from './systems/System'
 
 export class EntityManager {

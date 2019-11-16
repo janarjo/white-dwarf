@@ -1,11 +1,10 @@
-import { Vector } from '../math/Vector'
+import { Dimensions, Position } from '../Math'
 import { Shape, ShapeType } from './Shape'
 
 export class Rectangle extends Shape {
     constructor(
-            position: Vector,
-            protected width: number,
-            protected height: number,
+            position: Position,
+            protected dimensions: Dimensions,
             protected fill: boolean = false,
             color: string = 'white') {
         super(ShapeType.DOT, position, color)
@@ -14,7 +13,7 @@ export class Rectangle extends Shape {
     draw(ctx: CanvasRenderingContext2D) {
         ctx.beginPath()
         ctx.strokeStyle = this.color
-        ctx.strokeRect(this.position[0], this.position[1], this.width, this.height)
+        ctx.strokeRect(this.position[0], this.position[1], this.dimensions[0], this.dimensions[1])
         ctx.stroke()
     }
 }

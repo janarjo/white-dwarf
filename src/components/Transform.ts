@@ -1,8 +1,8 @@
-import { Vector } from '../math/Vector'
+import { Position } from '../Math'
 import { Component, ComponentCode } from './Component'
 
 export interface TransformState {
-    position: Vector
+    position: Position
     orientation: number
 }
 

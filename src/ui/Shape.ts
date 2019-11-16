@@ -1,4 +1,4 @@
-import { Vector } from '../math/Vector'
+import { Position, Vector } from '../Math'
 
 export enum ShapeType {
     CIRCLE,
@@ -10,7 +10,7 @@ export enum ShapeType {
 export abstract class Shape {
     constructor(
             protected type: ShapeType,
-            protected position: Vector,
+            protected position: Position,
             protected color: string) {
     }
 

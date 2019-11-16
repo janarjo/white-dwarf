@@ -1,10 +1,9 @@
-import { rotate } from '../math/Utils'
-import { Vector } from '../math/Vector'
+import { Position, rotate, Vector } from '../Math'
 import { Shape, ShapeType } from './Shape'
 
 export class Triangle extends Shape {
     constructor(
-            position: Vector,
+            position: Position,
             protected orientation: number,
             color: string = 'white',
             protected base: number = 30,

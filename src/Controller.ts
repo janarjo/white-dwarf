@@ -1,5 +1,5 @@
 import { EntityManager } from './EntityManager'
-import { Vector } from './math/Vector'
+import { Vector } from './Math'
 import { CollisionSystem } from './systems/CollisionSystem'
 import { ControlSystem } from './systems/ControlSystem'
 import { MovementSystem } from './systems/MovementSystem'

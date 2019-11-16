@@ -1,5 +1,4 @@
 import { Controller } from './Controller'
-import { Vector } from './math/Vector'
 
 window.onload = () => {
     const canvas = document.getElementById('canvas') as HTMLCanvasElement

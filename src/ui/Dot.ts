@@ -1,9 +1,9 @@
-import { Vector } from '../math/Vector'
+import { Position } from '../Math'
 import { Shape, ShapeType } from './Shape'
 
 export class Dot extends Shape {
     constructor(
-            position: Vector,
+            position: Position,
             color: string = 'white') {
         super(ShapeType.DOT, position, color)
     }

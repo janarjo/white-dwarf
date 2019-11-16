@@ -1,9 +1,7 @@
 import { Collision, CollisionState } from '../components/Collision'
-import { Movement } from '../components/Movement'
-import { Transform } from '../components/Transform'
+import { Transform, TransformState } from '../components/Transform'
 import { EntityManager } from '../EntityManager'
-import { isIntersect } from '../math/Rectangle'
-import { add, subtract, Vector } from '../math/Vector'
+import { add, isIntersect, Rectangle } from '../Math'
 import { System } from './System'
 
 export class CollisionSystem extends System {
@@ -13,35 +11,27 @@ export class CollisionSystem extends System {
     }
 
     update() {
-        this.entities.withComponents(Transform, Collision, Movement).forEach(id => {
-            const transform = this.entities.getComponent(id, Transform)
-            const { orientation } = transform.state
-            const movement = this.entities.getComponent(id, Movement)
-            const { currSpeed } = movement.state
-            const collision = this.entities.getComponent(id, Collision)
-
-            collision.state = this.updateBoundingPoxPosition(collision.state, currSpeed, orientation)
-        })
-
-        const collideableEntities = this.entities.withComponents(Collision)
+        const collideableEntities = this.entities.withComponents(Transform, Collision)
         collideableEntities.forEach(id => {
+            const transform = this.entities.getComponent(id, Transform)
             const collision = this.entities.getComponent(id, Collision)
+            const thisBoundingBox = this.getBoundingBox(transform.state, collision.state)
 
             const anyCollision = collideableEntities.some(otherId => {
                 if (id === otherId) return false
                 const otherCollision = this.entities.getComponent(otherId, Collision)
-                return isIntersect(collision.state.boundingBox, otherCollision.state.boundingBox)
+                const otherTransform = this.entities.getComponent(otherId, Transform)
+                const otherBoundingBox: Rectangle = this.getBoundingBox(otherTransform.state, otherCollision.state)
+
+                return isIntersect(thisBoundingBox, otherBoundingBox)
             })
             collision.state.isColliding = anyCollision
         })
     }
 
-    private updateBoundingPoxPosition(state: CollisionState, speed: number, orientation: number): CollisionState {
-        const [pos, width, height] = state.boundingBox
-        const motionX = speed * Math.cos(orientation)
-        const motionY = speed * Math.sin(orientation)
-        const newPos = add(pos, [motionX, motionY])
-
-        return { ...state, boundingBox: [newPos, width, height] }
+    private getBoundingBox(transformState: TransformState, collisionState: CollisionState): Rectangle {
+        const pos = transformState.position
+        const [offset, dimensions] = collisionState.boundingBox
+        return [add(pos, offset), dimensions]
     }
 }
