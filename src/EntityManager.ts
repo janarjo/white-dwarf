@@ -12,7 +12,6 @@ export class EntityManager {
         this.markedForRemoval = new Set()
         this.enumerator = 0
         this.create(player([640, 360]))
-        this.create(planetoid([320, 150]))
     }
 
     proccess(systems: ReadonlyArray<System>) {

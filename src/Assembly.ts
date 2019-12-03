@@ -59,13 +59,21 @@ export const projectile = (position: Vector, orientation: number) => [
     }),
 ]
 
-export const planetoid = (position: Vector) => [
+export const planetoid = (position: Vector, orientation: number) => [
     new Transform({
         position,
-        orientation: 0,
+        orientation,
     }),
     new Render({
         type: ShapeType.CIRCLE,
+    }),
+    new Movement({
+        currSpeed: 1.5,
+        currAcceleration: 0,
+        currRotationalSpeed: 0,
+        acceleration: 0,
+        maxSpeed: 1.5,
+        rotationalSpeed: 0,
     }),
     new Collision({
         isColliding: false,

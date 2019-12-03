@@ -1,5 +1,6 @@
 import { EntityManager } from './EntityManager'
-import { Vector } from './Math'
+import { Generator } from './Generator'
+import { Dimensions, Vector } from './Math'
 import { CollisionSystem } from './systems/CollisionSystem'
 import { ControlSystem } from './systems/ControlSystem'
 import { MovementSystem } from './systems/MovementSystem'
@@ -14,11 +15,13 @@ export class Controller {
     then: number = Date.now()
 
     readonly entities: EntityManager
+    readonly generator: Generator
 
     readonly systems: System[]
 
-    constructor(canvas: HTMLCanvasElement, mapSize: Vector) {
+    constructor(canvas: HTMLCanvasElement, mapSize: Dimensions) {
         this.entities = new EntityManager()
+        this.generator = new Generator(this.entities)
         this.systems = [
             new ControlSystem(this.entities, canvas),
             new MovementSystem(this.entities),
@@ -37,6 +40,7 @@ export class Controller {
 
         if (delta > this.interval) {
             this.then = now - (delta % (this.interval))
+            this.generator.generateAsteroids()
             this.entities.proccess(this.systems)
             this.entities.clean()
         }
