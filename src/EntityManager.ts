@@ -1,4 +1,4 @@
-import { planetoid, player } from './Assembly'
+import { player } from './Assembly'
 import { Component } from './components/Component'
 import { System } from './systems/System'
 

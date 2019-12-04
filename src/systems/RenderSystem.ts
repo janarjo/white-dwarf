@@ -1,4 +1,5 @@
 import { Collision } from '../components/Collision'
+import { Health } from '../components/Health'
 import { Render } from '../components/Render'
 import { Transform } from '../components/Transform'
 import { Weapon } from '../components/Weapon'
@@ -42,6 +43,21 @@ export class RenderSystem extends System {
             }
             shape && this.drawShape(shape)
         })
+
+        this.entities.withComponents(Transform, Render, Health).forEach(id => {
+            const transform = this.entities.getComponent(id, Transform)
+            const position = transform.state.position
+            const health = this.entities.getComponent(id, Health)
+            if (!health.state.showIndicator) return
+
+            const maxWidth = 32
+            const offset = health.state.verticalOffset
+            const width = (health.state.health / health.state.maxHealth) * maxWidth
+
+            this.drawShape(new Rectangle(add(position, [-(maxWidth / 2), offset]), [width, 2], true, 'white'))
+        })
+
+        // Debug elements
         this.entities.withComponents(Transform, Render, Collision).forEach(id => {
             const transform = this.entities.getComponent(id, Transform)
             const position = transform.state.position
@@ -51,6 +67,7 @@ export class RenderSystem extends System {
 
             this.drawShape(new Rectangle(add(position, offset), dimensions, false, isColliding ? 'red' : 'white'))
         })
+
         this.entities.withComponents(Transform, Render, Weapon).forEach(id => {
             const transform = this.entities.getComponent(id, Transform)
             const { position, orientation } = transform.state

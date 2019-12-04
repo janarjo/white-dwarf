@@ -1,4 +1,4 @@
-import { planetoid } from './Assembly'
+import { asteroid } from './Assembly'
 import { EntityManager } from './EntityManager'
 
 export class Generator {
@@ -13,7 +13,7 @@ export class Generator {
         const now = Date.now()
         if (now - this.then > 1500) {
             this.then = now
-            this.entities.create(planetoid([320, 150], Math.random() * Math.PI))
+            this.entities.create(asteroid([320, 150], Math.random() * Math.PI))
         }
     }
 }

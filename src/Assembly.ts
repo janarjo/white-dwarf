@@ -61,10 +61,12 @@ export const projectile = (position: Vector, orientation: number) => [
     new Health({
         health: 1,
         maxHealth: 1,
+        showIndicator: false,
+        verticalOffset: 0,
     }),
 ]
 
-export const planetoid = (position: Vector, orientation: number) => [
+export const asteroid = (position: Vector, orientation: number) => [
     new Transform({
         position,
         orientation,
@@ -87,5 +89,7 @@ export const planetoid = (position: Vector, orientation: number) => [
     new Health({
         health: 100,
         maxHealth: 100,
+        showIndicator: true,
+        verticalOffset: -30,
     }),
 ]

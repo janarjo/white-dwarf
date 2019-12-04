@@ -1,6 +1,6 @@
 import { EntityManager } from './EntityManager'
 import { Generator } from './Generator'
-import { Dimensions, Vector } from './Math'
+import { Dimensions } from './Math'
 import { CollisionSystem } from './systems/CollisionSystem'
 import { ControlSystem } from './systems/ControlSystem'
 import { HealthSystem } from './systems/HealthSystem'
