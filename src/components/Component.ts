@@ -5,6 +5,7 @@ export enum ComponentCode {
     WEAPON,
     RENDER,
     COLLISION,
+    HEALTH,
 }
 
 export abstract class Component {

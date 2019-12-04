@@ -3,6 +3,7 @@ import { Generator } from './Generator'
 import { Dimensions, Vector } from './Math'
 import { CollisionSystem } from './systems/CollisionSystem'
 import { ControlSystem } from './systems/ControlSystem'
+import { HealthSystem } from './systems/HealthSystem'
 import { MovementSystem } from './systems/MovementSystem'
 import { RenderSystem } from './systems/RenderSystem'
 import { System } from './systems/System'
@@ -28,6 +29,7 @@ export class Controller {
             new TransformSystem(this.entities, mapSize),
             new CollisionSystem(this.entities),
             new WeaponSystem(this.entities),
+            new HealthSystem(this.entities),
             new RenderSystem(this.entities, canvas.getContext('2d')!, mapSize),
         ]
     }
