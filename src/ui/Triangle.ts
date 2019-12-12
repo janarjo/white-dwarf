@@ -1,4 +1,4 @@
-import { Position, rotatePoints, Vector } from '../Math'
+import { Position, rotatePoints, subtract } from '../Math'
 import { Shape, ShapeType } from './Shape'
 
 export class Triangle extends Shape {
@@ -15,8 +15,7 @@ export class Triangle extends Shape {
         ctx.beginPath()
         ctx.fillStyle = this.color
 
-        const centerX = this.position[0]
-        const centerY = this.position[1]
+        const [ centerX, centerY ] = this.position
         const halfHeight = (this.height / 2)
         const halfBase = (this.base / 2)
 

@@ -6,6 +6,7 @@ export enum ComponentCode {
     RENDER,
     COLLISION,
     HEALTH,
+    CAMERA,
 }
 
 export abstract class Component {

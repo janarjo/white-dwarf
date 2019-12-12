@@ -1,3 +1,4 @@
+import { Camera } from './components/Camera'
 import { Collision } from './components/Collision'
 import { Control } from './components/Control'
 import { Health } from './components/Health'
@@ -15,6 +16,9 @@ export const player = (position: Vector) => [
     }),
     new Render({
         type: ShapeType.TRIANGLE,
+    }),
+    new Camera({
+        origin: position,
     }),
     new Control({
         isAccelerating: false,

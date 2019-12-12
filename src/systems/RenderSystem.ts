@@ -1,10 +1,11 @@
+import { Camera } from '../components/Camera'
 import { Collision } from '../components/Collision'
 import { Health } from '../components/Health'
 import { Render } from '../components/Render'
 import { Transform } from '../components/Transform'
 import { Weapon } from '../components/Weapon'
 import { EntityManager } from '../EntityManager'
-import { add, rotate, Vector } from '../Math'
+import { add, rotate, subtract } from '../Math'
 import { Circle } from '../ui/Circle'
 import { Dot } from '../ui/Dot'
 import { Rectangle } from '../ui/Rectangle'
@@ -15,29 +16,36 @@ import { System } from './System'
 export class RenderSystem extends System {
     constructor(
         private readonly entities: EntityManager,
-        private readonly ctx: CanvasRenderingContext2D,
-        private readonly size: Vector) {
+        private readonly ctx: CanvasRenderingContext2D) {
         super()
     }
 
     update() {
+        const camera = this.entities
+            .withComponents(Camera)
+            .map(id => this.entities.getComponent(id, Camera))[0]
+        if (!camera) throw Error('No camera found!')
+        const origin = camera.state.origin
         this.clear()
+
         this.entities.withComponents(Transform, Render).forEach(id => {
             const transform = this.entities.getComponent(id, Transform)
+            const position = subtract(transform.state.position, origin)
+            const orientation = transform.state.orientation
             const render = this.entities.getComponent(id, Render)
 
             let shape: Shape | undefined
             switch (render.state.type) {
                 case ShapeType.DOT: {
-                    shape = new Dot(transform.state.position)
+                    shape = new Dot(position)
                     break
                 }
                 case ShapeType.TRIANGLE: {
-                    shape = new Triangle(transform.state.position, transform.state.orientation)
+                    shape = new Triangle(position, orientation)
                     break
                 }
                 case ShapeType.CIRCLE: {
-                    shape = new Circle(transform.state.position, 20)
+                    shape = new Circle(position, 20)
                     break
                 }
             }
@@ -46,7 +54,7 @@ export class RenderSystem extends System {
 
         this.entities.withComponents(Transform, Render, Health).forEach(id => {
             const transform = this.entities.getComponent(id, Transform)
-            const position = transform.state.position
+            const position = subtract(transform.state.position, origin)
             const health = this.entities.getComponent(id, Health)
             if (!health.state.showIndicator) return
 
@@ -54,23 +62,27 @@ export class RenderSystem extends System {
             const offset = health.state.verticalOffset
             const width = (health.state.health / health.state.maxHealth) * maxWidth
 
-            this.drawShape(new Rectangle(add(position, [-(maxWidth / 2), offset]), [width, 2], true, 'white'))
+            const shape = new Rectangle(add(position, [-(maxWidth / 2), offset]), [width, 2], true, 'white')
+            this.drawShape(shape)
         })
 
-        // Debug elements
+        /* Debug elements */
+
         this.entities.withComponents(Transform, Render, Collision).forEach(id => {
             const transform = this.entities.getComponent(id, Transform)
-            const position = transform.state.position
+            const position = subtract(transform.state.position, origin)
             const collision = this.entities.getComponent(id, Collision)
             const [offset, dimensions] = collision.state.boundingBox
             const isColliding = collision.state.isColliding
 
-            this.drawShape(new Rectangle(add(position, offset), dimensions, false, isColliding ? 'red' : 'white'))
+            const shape = new Rectangle(add(position, offset), dimensions, false, isColliding ? 'red' : 'white')
+            this.drawShape(shape)
         })
 
         this.entities.withComponents(Transform, Render, Weapon).forEach(id => {
             const transform = this.entities.getComponent(id, Transform)
-            const { position, orientation } = transform.state
+            const position = subtract(transform.state.position, origin)
+            const orientation = transform.state.orientation
             const weapon = this.entities.getComponent(id, Weapon)
             const { offset } = weapon.state
             const firePosition = rotate(position, orientation, add(position, offset))
@@ -81,7 +93,8 @@ export class RenderSystem extends System {
 
     private clear() {
         this.ctx.fillStyle = 'black'
-        this.ctx.fillRect(0, 0, this.size[0], this.size[1])
+        const { width, height } = this.ctx.canvas
+        this.ctx.fillRect(0, 0, width, height)
     }
 
     private drawShape(shape: Shape) {

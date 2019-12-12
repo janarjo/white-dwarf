@@ -1,6 +1,7 @@
 import { EntityManager } from './EntityManager'
 import { Generator } from './Generator'
 import { Dimensions } from './Math'
+import { CameraSystem } from './systems/CameraSystem'
 import { CollisionSystem } from './systems/CollisionSystem'
 import { ControlSystem } from './systems/ControlSystem'
 import { HealthSystem } from './systems/HealthSystem'
@@ -20,17 +21,20 @@ export class Controller {
 
     readonly systems: System[]
 
-    constructor(canvas: HTMLCanvasElement, mapSize: Dimensions) {
+    readonly mapSize: Dimensions = [4000, 4000]
+
+    constructor(canvas: HTMLCanvasElement) {
         this.entities = new EntityManager()
         this.generator = new Generator(this.entities)
         this.systems = [
             new ControlSystem(this.entities, canvas),
             new MovementSystem(this.entities),
-            new TransformSystem(this.entities, mapSize),
+            new TransformSystem(this.entities, this.mapSize),
             new CollisionSystem(this.entities),
             new WeaponSystem(this.entities),
             new HealthSystem(this.entities),
-            new RenderSystem(this.entities, canvas.getContext('2d')!, mapSize),
+            new CameraSystem(this.entities, [canvas.width, canvas.height], this.mapSize),
+            new RenderSystem(this.entities, canvas.getContext('2d')!),
         ]
     }
 

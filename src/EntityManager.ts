@@ -45,6 +45,7 @@ export class EntityManager {
 
     withComponents(...types: Array<new (state: any) => Component>): ReadonlyArray<number> {
         return Array.from(this.entities.entries())
+            .filter(([id]) => !this.markedForRemoval.has(id))
             .filter(([, components]) => this.hasComponents(components, types))
             .map(([id, _]) => id)
     }

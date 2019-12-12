@@ -1,4 +1,4 @@
-import { Position } from '../Math'
+import { Position, subtract } from '../Math'
 import { Shape, ShapeType } from './Shape'
 
 export class Dot extends Shape {
@@ -11,7 +11,8 @@ export class Dot extends Shape {
     draw(ctx: CanvasRenderingContext2D) {
         ctx.beginPath()
         ctx.fillStyle = this.color
-        ctx.fillRect(this.position[0], this.position[1], 2, 2)
+        const [x, y] = this.position
+        ctx.fillRect(x, y, 2, 2)
         ctx.stroke()
     }
 }

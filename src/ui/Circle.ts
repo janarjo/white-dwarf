@@ -1,4 +1,4 @@
-import { Position } from '../Math'
+import { Position, subtract } from '../Math'
 import { Shape, ShapeType } from './Shape'
 
 export class Circle extends Shape {
@@ -15,7 +15,8 @@ export class Circle extends Shape {
         ctx.beginPath()
         ctx.fillStyle = this.color
         ctx.lineWidth = this.lineWidth
-        ctx.arc(this.position[0], this.position[1], this.radius, 0, 2 * Math.PI, true)
+        const [x, y] = this.position
+        ctx.arc(x, y, this.radius, 0, 2 * Math.PI, true)
         ctx.closePath()
         ctx.fill()
     }

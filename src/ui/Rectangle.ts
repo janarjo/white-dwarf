@@ -1,4 +1,4 @@
-import { Dimensions, Position } from '../Math'
+import { Dimensions, Position, subtract } from '../Math'
 import { Shape, ShapeType } from './Shape'
 
 export class Rectangle extends Shape {
@@ -12,12 +12,14 @@ export class Rectangle extends Shape {
 
     draw(ctx: CanvasRenderingContext2D) {
         ctx.beginPath()
+        const [ x, y ] = this.position
+        const [ w, h ] = this.dimensions
         if (this.fill) {
             ctx.fillStyle = this.color
-            ctx.fillRect(this.position[0], this.position[1], this.dimensions[0], this.dimensions[1])
+            ctx.fillRect(x, y, w, h)
         } else {
             ctx.strokeStyle = this.color
-            ctx.strokeRect(this.position[0], this.position[1], this.dimensions[0], this.dimensions[1])
+            ctx.strokeRect(x, y, w, h)
         }
         ctx.stroke()
     }
