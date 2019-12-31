@@ -1,3 +1,4 @@
+import { AttachmentInfo, RemoveBehavior } from './components/Attachment'
 import { Camera } from './components/Camera'
 import { Collision } from './components/Collision'
 import { Control } from './components/Control'
@@ -9,6 +10,16 @@ import { Weapon } from './components/Weapon'
 import { Vector } from './Math'
 import { ShapeType } from './ui/Shape'
 
+export const camera = () => [
+    new Transform({
+        position: [0, 0],
+        orientation: 0,
+    }),
+    new Camera({
+        origin: [0, 0],
+    }),
+]
+
 export const player = (position: Vector) => [
     new Transform({
         position,
@@ -16,9 +27,6 @@ export const player = (position: Vector) => [
     }),
     new Render({
         type: ShapeType.TRIANGLE,
-    }),
-    new Camera({
-        origin: position,
     }),
     new Control({
         isAccelerating: false,

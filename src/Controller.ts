@@ -1,6 +1,7 @@
 import { EntityManager } from './EntityManager'
-import { Generator } from './Generator'
+import { GameManager } from './GameManager'
 import { Dimensions } from './Math'
+import { AttachmentSystem } from './systems/AttachmentSystem'
 import { CameraSystem } from './systems/CameraSystem'
 import { CollisionSystem } from './systems/CollisionSystem'
 import { ControlSystem } from './systems/ControlSystem'
@@ -17,7 +18,7 @@ export class Controller {
     then: number = Date.now()
 
     readonly entities: EntityManager
-    readonly generator: Generator
+    readonly gameManager: GameManager
 
     readonly systems: System[]
 
@@ -25,7 +26,7 @@ export class Controller {
 
     constructor(canvas: HTMLCanvasElement) {
         this.entities = new EntityManager()
-        this.generator = new Generator(this.entities)
+        this.gameManager = new GameManager(this.entities)
         this.systems = [
             new ControlSystem(this.entities, canvas),
             new MovementSystem(this.entities),
@@ -34,8 +35,10 @@ export class Controller {
             new WeaponSystem(this.entities),
             new HealthSystem(this.entities),
             new CameraSystem(this.entities, [canvas.width, canvas.height], this.mapSize),
+            new AttachmentSystem(this.entities),
             new RenderSystem(this.entities, canvas.getContext('2d')!),
         ]
+        this.gameManager.initWorld()
     }
 
     gameLoop() {
@@ -46,7 +49,7 @@ export class Controller {
 
         if (delta > this.interval) {
             this.then = now - (delta % (this.interval))
-            this.generator.generateAsteroids()
+            this.gameManager.generateAsteroids()
             this.entities.proccess(this.systems)
             this.entities.clean()
         }

@@ -1,4 +1,4 @@
-import { player } from './Assembly'
+import { Attachment, AttachmentInfo, RemoveBehavior } from './components/Attachment'
 import { Component } from './components/Component'
 import { System } from './systems/System'
 
@@ -11,7 +11,6 @@ export class EntityManager {
         this.entities = new Map()
         this.markedForRemoval = new Set()
         this.enumerator = 0
-        this.create(player([640, 360]))
     }
 
     proccess(systems: ReadonlyArray<System>) {
@@ -22,9 +21,17 @@ export class EntityManager {
         this.markedForRemoval.forEach(id => this.entities.delete(id))
     }
 
-    create(components: Component[]) {
-        this.entities.set(this.enumerator, components)
+    create(components: Component[]): number {
+        const id = this.enumerator
+        this.entities.set(id, components)
         this.enumerator++
+        return id
+    }
+
+    attach(parentId: number, attachment: AttachmentInfo) {
+        const attachmentComponent = this.getComponentOrNone(parentId, Attachment)
+        if (!attachmentComponent) this.addComponent(parentId, new Attachment({ attachments: [ attachment ] }))
+        else attachmentComponent.state.attachments.push(attachment)
     }
 
     get(id: number): ReadonlyArray<Component> {
@@ -37,9 +44,21 @@ export class EntityManager {
         this.markedForRemoval.add(id)
     }
 
+    addComponent(id: number, component: Component) {
+        const found = this.entities.get(id)
+        if (!found) throw new Error(`No such entity id: ${id}`)
+        found.push(component)
+    }
+
     getComponent<T extends Component>(id: number, type: new (state: any) => T): T {
-        const found = this.get(id).find(component => component instanceof type)
+        const found = this.getComponentOrNone(id, type)
         if (!found) throw new Error(`No such component: ${type.name} for entity id: ${id}`)
+        return found
+    }
+
+    getComponentOrNone<T extends Component>(id: number , type: new (state: any) => T): T | undefined {
+        const found = this.get(id).find(component => component instanceof type)
+        if (!found) return undefined
         return found as T
     }
 
@@ -50,11 +69,19 @@ export class EntityManager {
             .map(([id, _]) => id)
     }
 
-    private hasComponents(components: Component[], types: Array<new (state: any) => Component>): boolean {
+    exists(id: number): boolean {
+        return this.markedForRemoval.has(id) || this.entities.has(id)
+    }
+
+    private hasComponents(
+            components: ReadonlyArray<Component>,
+            types: Array<new (state: any) => Component>): boolean {
         return types.every(type => this.hasComponent(components, type))
     }
 
-    private hasComponent<T extends Component>(components: Component[], type: new (state: any) => T): boolean {
+    private hasComponent<T extends Component>(
+            components: ReadonlyArray<Component>,
+            type: new (state: any) => T): boolean {
         return components.find(component => component instanceof type) !== undefined
     }
 }

@@ -7,6 +7,7 @@ export enum ComponentCode {
     COLLISION,
     HEALTH,
     CAMERA,
+    ATTACHMENT,
 }
 
 export abstract class Component {
