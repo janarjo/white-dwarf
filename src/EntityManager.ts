@@ -1,4 +1,4 @@
-import { Attachment, AttachmentInfo, RemoveBehavior } from './components/Attachment'
+import { Attachment, AttachmentInfo } from './components/Attachment'
 import { Component } from './components/Component'
 import { System } from './systems/System'
 
@@ -73,6 +73,16 @@ export class EntityManager {
         return this.markedForRemoval.has(id) || this.entities.has(id)
     }
 
+    getDebugInfo(): DebugInfo {
+        const componentCount = Array.from(this.entities.values())
+            .map(components => components.length)
+            .reduce((sum, current) => sum + current)
+        return {
+            entityCount: this.entities.size,
+            componentCount,
+        }
+    }
+
     private hasComponents(
             components: ReadonlyArray<Component>,
             types: Array<new (state: any) => Component>): boolean {
@@ -84,4 +94,9 @@ export class EntityManager {
             type: new (state: any) => T): boolean {
         return components.find(component => component instanceof type) !== undefined
     }
+}
+
+export interface DebugInfo {
+    entityCount: number,
+    componentCount: number,
 }

@@ -13,16 +13,17 @@ import { TransformSystem } from './systems/TransformSystem'
 import { WeaponSystem } from './systems/WeaponSystem'
 
 export class Controller {
+    readonly isDebug = true
     readonly fps = 60
     readonly interval = 1000 / this.fps
-    then: number = Date.now()
+    then: number = performance.now()
 
     readonly entities: EntityManager
     readonly gameManager: GameManager
 
     readonly systems: System[]
 
-    readonly mapSize: Dimensions = [4000, 4000]
+    readonly mapSize: Dimensions = [2000, 2000]
 
     constructor(canvas: HTMLCanvasElement) {
         this.entities = new EntityManager()
@@ -36,7 +37,7 @@ export class Controller {
             new HealthSystem(this.entities),
             new CameraSystem(this.entities, [canvas.width, canvas.height], this.mapSize),
             new AttachmentSystem(this.entities),
-            new RenderSystem(this.entities, canvas.getContext('2d')!),
+            new RenderSystem(this.entities, canvas.getContext('2d')!, this.isDebug),
         ]
         this.gameManager.initWorld()
     }
@@ -44,7 +45,7 @@ export class Controller {
     gameLoop() {
         requestAnimationFrame(() => this.gameLoop())
 
-        const now = Date.now()
+        const now = performance.now()
         const delta = now - this.then
 
         if (delta > this.interval) {

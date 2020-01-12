@@ -1,4 +1,4 @@
-import { Attachment, AttachmentInfo, RemoveBehavior } from '../components/Attachment'
+import { Attachment, RemoveBehavior } from '../components/Attachment'
 import { EntityManager } from '../EntityManager'
 import { System } from './System'
 

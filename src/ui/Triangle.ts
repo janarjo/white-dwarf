@@ -1,4 +1,4 @@
-import { Position, rotatePoints, subtract } from '../Math'
+import { Position, rotatePoints } from '../Math'
 import { Shape, ShapeType } from './Shape'
 
 export class Triangle extends Shape {

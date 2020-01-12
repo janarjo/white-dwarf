@@ -16,7 +16,8 @@ import { System } from './System'
 export class RenderSystem extends System {
     constructor(
         private readonly entities: EntityManager,
-        private readonly ctx: CanvasRenderingContext2D) {
+        private readonly ctx: CanvasRenderingContext2D,
+        private readonly isDebug: boolean) {
         super()
     }
 
@@ -67,6 +68,8 @@ export class RenderSystem extends System {
         })
 
         /* Debug elements */
+        if (!this.isDebug) return
+        this.drawDebugInfo()
 
         this.entities.withComponents(Transform, Render, Collision).forEach(id => {
             const transform = this.entities.getComponent(id, Transform)
@@ -89,6 +92,17 @@ export class RenderSystem extends System {
 
             this.drawShape(new Dot(firePosition, 'red'))
         })
+    }
+
+    private drawDebugInfo() {
+        const { entityCount, componentCount } = this.entities.getDebugInfo()
+
+        this.ctx.save()
+        this.ctx.font = '12px Arial'
+        this.ctx.fillStyle = 'white'
+        this.ctx.fillText(`Entities: ${entityCount}`, 10, 20)
+        this.ctx.fillText(`Components: ${componentCount}`, 10, 34)
+        this.ctx.restore()
     }
 
     private clear() {
