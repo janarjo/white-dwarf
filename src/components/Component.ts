@@ -8,6 +8,7 @@ export enum ComponentCode {
     HEALTH,
     CAMERA,
     ATTACHMENT,
+    HUB,
 }
 
 export abstract class Component {

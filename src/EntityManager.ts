@@ -1,6 +1,7 @@
-import { Attachment, AttachmentInfo } from './components/Attachment'
 import { Component } from './components/Component'
+import { Hub } from './components/Hub'
 import { System } from './systems/System'
+import { isUndefined } from './Util'
 
 export class EntityManager {
     private entities: Map<number, Component[]>
@@ -28,10 +29,14 @@ export class EntityManager {
         return id
     }
 
-    attach(parentId: number, attachment: AttachmentInfo) {
-        const attachmentComponent = this.getComponentOrNone(parentId, Attachment)
-        if (!attachmentComponent) this.addComponent(parentId, new Attachment({ attachments: [ attachment ] }))
-        else attachmentComponent.state.attachments.push(attachment)
+    attach(parentId: number, attachmentId: number) {
+        const hub = this.getComponentOrNone(parentId, Hub)
+        if (!hub) return
+
+        const emptySlot = hub.state.slots.find(slot => isUndefined(slot.attachmentId))
+        if (!emptySlot) return
+
+        emptySlot.attachmentId = attachmentId
     }
 
     get(id: number): ReadonlyArray<Component> {

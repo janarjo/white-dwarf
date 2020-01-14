@@ -6,6 +6,7 @@ import { CameraSystem } from './systems/CameraSystem'
 import { CollisionSystem } from './systems/CollisionSystem'
 import { ControlSystem } from './systems/ControlSystem'
 import { HealthSystem } from './systems/HealthSystem'
+import { HubSystem } from './systems/HubSystem'
 import { MovementSystem } from './systems/MovementSystem'
 import { RenderSystem } from './systems/RenderSystem'
 import { System } from './systems/System'
@@ -37,6 +38,7 @@ export class Controller {
             new HealthSystem(this.entities),
             new CameraSystem(this.entities, [canvas.width, canvas.height], this.mapSize),
             new AttachmentSystem(this.entities),
+            new HubSystem(this.entities),
             new RenderSystem(this.entities, canvas.getContext('2d')!, this.isDebug),
         ]
         this.gameManager.initWorld()

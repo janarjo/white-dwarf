@@ -1,19 +1,12 @@
-import { Offset } from '../Math'
 import { Component, ComponentCode } from './Component'
 
 export enum RemoveBehavior {
-    REMOVE,
+    DISCARD,
     DETACH,
 }
 
-export interface AttachmentInfo {
-    childId: number,
-    offset: Offset,
-    onRemove: RemoveBehavior
-}
-
 export interface AttachmentState {
-    attachments: AttachmentInfo[]
+    onRemove: RemoveBehavior,
 }
 
 export class Attachment extends Component {

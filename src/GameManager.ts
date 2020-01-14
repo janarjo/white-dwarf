@@ -3,7 +3,7 @@ import { RemoveBehavior } from './components/Attachment'
 import { EntityManager } from './EntityManager'
 
 export class GameManager {
-    private then: number = Date.now()
+    private then: number = performance.now()
     private readonly entities: EntityManager
 
     constructor(entities: EntityManager) {
@@ -11,7 +11,7 @@ export class GameManager {
     }
 
     generateAsteroids() {
-        const now = Date.now()
+        const now = performance.now()
         if (now - this.then > 1500) {
             this.then = now
             this.entities.create(asteroid([320, 150], Math.random() * Math.PI))
@@ -21,6 +21,6 @@ export class GameManager {
     initWorld() {
         const playerId = this.entities.create(player([640, 360]))
         const cameraId = this.entities.create(camera())
-        this.entities.attach(playerId, { childId: cameraId, offset: [30, 30], onRemove: RemoveBehavior.DETACH })
+        this.entities.attach(playerId, cameraId)
     }
 }

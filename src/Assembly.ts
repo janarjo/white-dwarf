@@ -1,8 +1,8 @@
-import { AttachmentInfo, RemoveBehavior } from './components/Attachment'
 import { Camera } from './components/Camera'
 import { Collision } from './components/Collision'
 import { Control } from './components/Control'
 import { Health } from './components/Health'
+import { Hub, SlotType } from './components/Hub'
 import { Movement } from './components/Movement'
 import { Render } from './components/Render'
 import { Transform } from './components/Transform'
@@ -47,6 +47,11 @@ export const player = (position: Vector) => [
         lastFired: 0,
         cooldown: 500,
         offset: [0, 23],
+    }),
+    new Hub({
+        slots: [
+            { attachmentId: undefined, offset: [0, 0], type: SlotType.CAMERA },
+        ],
     }),
 ]
 

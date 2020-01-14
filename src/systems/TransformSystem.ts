@@ -1,4 +1,4 @@
-import { Attachment } from '../components/Attachment'
+import { Hub } from '../components/Hub'
 import { Movement } from '../components/Movement'
 import { Transform, TransformState } from '../components/Transform'
 import { EntityManager } from '../EntityManager'
@@ -26,16 +26,18 @@ export class TransformSystem extends System {
             transform.state = this.updatePosition(transform.state, movement.state.currSpeed)
         })
 
-        this.entities.withComponents(Transform, Attachment).forEach((id) => {
+        this.entities.withComponents(Transform, Hub).forEach((id) => {
             const transform = this.entities.getComponent(id, Transform)
-            const position = transform.state.position
-            const attachment = this.entities.getComponent(id, Attachment)
-            attachment.state.attachments.forEach(attachmentInfo => {
-                const { childId, offset } = attachmentInfo
-                const childTransform = this.entities.getComponentOrNone(childId, Transform)
+            const parentPosition = transform.state.position
+            const hub = this.entities.getComponent(id, Hub)
+            hub.state.slots.forEach(slot => {
+                const { attachmentId, offset } = slot
+                if (!attachmentId) return
+
+                const childTransform = this.entities.getComponentOrNone(attachmentId, Transform)
                 if (!childTransform) return
 
-                childTransform.state.position = add(position, offset)
+                childTransform.state.position = add(parentPosition, offset)
             })
         })
     }
