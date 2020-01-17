@@ -1,7 +1,6 @@
 import { EntityManager } from './EntityManager'
 import { GameManager } from './GameManager'
 import { Dimensions } from './Math'
-import { AttachmentSystem } from './systems/AttachmentSystem'
 import { CameraSystem } from './systems/CameraSystem'
 import { CollisionSystem } from './systems/CollisionSystem'
 import { ControlSystem } from './systems/ControlSystem'
@@ -37,7 +36,6 @@ export class Controller {
             new WeaponSystem(this.entities),
             new HealthSystem(this.entities),
             new CameraSystem(this.entities, [canvas.width, canvas.height], this.mapSize),
-            new AttachmentSystem(this.entities),
             new HubSystem(this.entities),
             new RenderSystem(this.entities, canvas.getContext('2d')!, this.isDebug),
         ]
