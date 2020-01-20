@@ -1,3 +1,4 @@
+import { Attachment, RemoveBehavior } from './components/Attachment'
 import { Camera } from './components/Camera'
 import { Collision } from './components/Collision'
 import { Control } from './components/Control'
@@ -17,6 +18,10 @@ export const camera = () => [
     }),
     new Camera({
         origin: [0, 0],
+    }),
+    new Attachment({
+        type: SlotType.CAMERA,
+        onRemove: RemoveBehavior.DETACH,
     }),
 ]
 
@@ -51,6 +56,7 @@ export const player = (position: Vector) => [
     new Hub({
         slots: [
             { attachmentId: undefined, offset: [0, 0], type: SlotType.CAMERA },
+            { attachmentId: undefined, offset: [0, 23], type: SlotType.WEAPON },
         ],
     }),
 ]

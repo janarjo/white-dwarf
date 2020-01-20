@@ -8,6 +8,7 @@ export enum RemoveBehavior {
 
 export enum SlotType {
     CAMERA,
+    WEAPON,
 }
 
 export interface Slot {

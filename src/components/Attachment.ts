@@ -1,4 +1,5 @@
 import { Component, ComponentCode } from './Component'
+import { SlotType } from './Hub'
 
 export enum RemoveBehavior {
     DISCARD,
@@ -6,6 +7,7 @@ export enum RemoveBehavior {
 }
 
 export interface AttachmentState {
+    type: SlotType
     onRemove: RemoveBehavior,
 }
 

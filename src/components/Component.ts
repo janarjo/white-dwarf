@@ -18,3 +18,5 @@ export abstract class Component {
             state: { [key: string]: any }) {
     }
 }
+
+export type Entity = Component[]
