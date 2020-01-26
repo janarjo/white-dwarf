@@ -1,4 +1,5 @@
 import { Attachment, RemoveBehavior } from '../components/Attachment'
+import { Control } from '../components/Control'
 import { Hub, Slot } from '../components/Hub'
 import { EntityManager } from '../EntityManager'
 import { isDefined } from '../Util'
@@ -11,29 +12,33 @@ export class HubSystem extends System {
     }
 
     update() {
-        this.entities.withComponents(Hub).forEach((id) => {
-            const hub = this.entities.getComponent(id, Hub)
+        this.entities.withComponents(Hub).forEach((parentId) => {
+            const hub = this.entities.getComponent(parentId, Hub)
             const slots = hub.state.slots
 
-            this.removeMissingAttachments(slots)
-            if (!this.entities.exists(id)) this.removeAttachments(slots)
+            slots
+                .filter(slot => slot.attachmentId && !this.entities.exists(slot.attachmentId))
+                .forEach(slot => slot.attachmentId === undefined)
+
+            if (!this.entities.exists(parentId)) {
+                const filledSlots = slots
+                    .map(slot => slot.attachmentId)
+                    .filter(isDefined)
+
+                filledSlots
+                    .filter(attachmentId => {
+                        const attachment = this.entities.getComponent(attachmentId, Attachment)
+                        return attachment.state.onRemove === RemoveBehavior.DISCARD
+                    })
+                    .forEach(attachmentId => this.entities.remove(attachmentId))
+
+                filledSlots
+                    .filter(attachmentId => {
+                        const attachment = this.entities.getComponent(attachmentId, Attachment)
+                        return attachment.state.onRemove === RemoveBehavior.DETACH
+                    })
+                    .forEach(attachmentId => this.entities.detach(parentId, attachmentId))
+            }
         })
-    }
-
-    private removeMissingAttachments(slots: Slot[]) {
-        slots
-            .filter(slot => slot.attachmentId && !this.entities.exists(slot.attachmentId))
-            .forEach(slot => slot.attachmentId === undefined)
-    }
-
-    private removeAttachments(slots: Slot[]) {
-        slots
-            .map(slot => slot.attachmentId)
-            .filter(isDefined)
-            .filter(attachmentId => {
-                const attachment = this.entities.getComponent(attachmentId, Attachment)
-                return attachment.state.onRemove === RemoveBehavior.DISCARD
-            })
-            .forEach(attachmentId => this.entities.remove(attachmentId))
     }
 }

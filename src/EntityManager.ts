@@ -1,5 +1,6 @@
 import { Attachment } from './components/Attachment'
 import { Component, Entity } from './components/Component'
+import { Control } from './components/Control'
 import { Hub, SlotType } from './components/Hub'
 import { System } from './systems/System'
 import { isDefined, isUndefined } from './Util'
@@ -30,44 +31,58 @@ export class EntityManager {
         return id
     }
 
-    attach(parentId: number, attachmentId: number) {
-        const hub = this.getComponentOrNone(parentId, Hub)
-        if (!hub) return
-        const attachment = this.getComponentOrNone(attachmentId, Attachment)
-        if (!attachment) return
-        const availableSlot = hub.state.slots
-            .filter(slot => slot.type === attachment.state.type)
-            .find(slot => isUndefined(slot.attachmentId))
-        if (!availableSlot) return
-
-        availableSlot.attachmentId = attachmentId
-    }
-
     get(id: number): Entity {
         const found = this.entities.get(id)
         if (!found) throw new Error(`No such entity id: ${id}`)
         return found
     }
 
-    getAttachments(parentId: number, type?: SlotType): ReadonlyArray<Entity> {
-        const hub = this.getComponentOrNone(parentId, Hub)
-        if (!hub) return []
-
-        return hub.state.slots
-            .filter(slot => isUndefined(type) || slot.type === type)
-            .map(slot => slot.attachmentId)
-            .filter(isDefined)
-            .map(id => this.get(id))
-    }
-
     remove(id: number) {
         this.markedForRemoval.add(id)
     }
 
+    attach(parentId: number, attachmentId: number) {
+        const hub = this.getComponentOrNone(parentId, Hub)
+        if (!hub) return
+
+        const attachment = this.getComponentOrNone(attachmentId, Attachment)
+        if (!attachment) return
+
+        const availableSlot = hub.state.slots
+            .filter(slot => slot.type === attachment.state.type)
+            .find(slot => isUndefined(slot.attachmentId))
+        if (!availableSlot) return
+
+        const control = this.getComponentOrNone(parentId, Control)
+        if (control) this.addComponent(attachmentId, control)
+
+        availableSlot.attachmentId = attachmentId
+    }
+
+    detach(parentId: number, attachmentId: number) {
+        const hub = this.getComponentOrNone(parentId, Hub)
+        if (!hub) return
+
+        const attachment = this.getComponentOrNone(attachmentId, Attachment)
+        if (!attachment) return
+
+        const attachmentSlot = hub.state.slots
+            .find(slot => slot.attachmentId === attachmentId)
+        if (!attachmentSlot) return
+
+        this.removeComponent(attachmentId, Control)
+
+        attachmentSlot.attachmentId = undefined
+    }
+
     addComponent(id: number, component: Component) {
-        const found = this.entities.get(id)
-        if (!found) throw new Error(`No such entity id: ${id}`)
+        const found = this.get(id)
         found.push(component)
+    }
+
+    removeComponent<T extends Component>(id: number, type: new (state: any) => T): void {
+        let found = this.get(id)
+        found = found.filter(component => !(component instanceof type))
     }
 
     getComponent<T extends Component>(id: number, type: new (state: any) => T): T {
@@ -87,6 +102,16 @@ export class EntityManager {
             .filter(([id]) => !this.markedForRemoval.has(id))
             .filter(([, components]) => this.hasComponents(components, types))
             .map(([id, _]) => id)
+    }
+
+    getAttachments(id: number, type?: SlotType): ReadonlySet<number> {
+        const hub = this.getComponentOrNone(id, Hub)
+        if (!hub) return new Set()
+
+        return new Set(hub.state.slots
+            .filter(slot => isUndefined(type) || slot.type === type)
+            .map(slot => slot.attachmentId)
+            .filter(isDefined))
     }
 
     exists(id: number): boolean {

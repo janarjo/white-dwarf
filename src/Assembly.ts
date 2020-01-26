@@ -48,11 +48,6 @@ export const player = (position: Vector) => [
         maxSpeed: 5,
         rotationalSpeed: 0.075,
     }),
-    new Weapon({
-        lastFired: 0,
-        cooldown: 500,
-        offset: [0, 23],
-    }),
     new Hub({
         slots: [
             { attachmentId: undefined, offset: [0, 0], type: SlotType.CAMERA },
@@ -114,5 +109,24 @@ export const asteroid = (position: Vector, orientation: number) => [
         maxHealth: 100,
         showIndicator: true,
         verticalOffset: -30,
+    }),
+]
+
+export const blaster = () => [
+    new Transform({
+        position: [0, 0],
+        orientation: 0,
+    }),
+    new Render({
+        type: ShapeType.DOT,
+    }),
+    new Weapon({
+        lastFired: 0,
+        cooldown: 500,
+        offset: [0, 0],
+    }),
+    new Attachment({
+        type: SlotType.WEAPON,
+        onRemove: RemoveBehavior.DISCARD,
     }),
 ]

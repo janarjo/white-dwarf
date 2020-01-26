@@ -85,7 +85,7 @@ export class RenderSystem extends System {
         this.entities.withComponents(Transform, Render, Weapon).forEach(id => {
             const transform = this.entities.getComponent(id, Transform)
             const position = subtract(transform.state.position, origin)
-            const orientation = transform.state.orientation
+            const { orientation } = transform.state
             const weapon = this.entities.getComponent(id, Weapon)
             const { offset } = weapon.state
             const firePosition = rotate(position, orientation, add(position, offset))

@@ -1,5 +1,4 @@
-import { asteroid, camera, player } from './Assembly'
-import { RemoveBehavior } from './components/Attachment'
+import { asteroid, blaster, camera, player } from './Assembly'
 import { EntityManager } from './EntityManager'
 
 export class GameManager {
@@ -20,7 +19,11 @@ export class GameManager {
 
     initWorld() {
         const playerId = this.entities.create(player([640, 360]))
+
         const cameraId = this.entities.create(camera())
         this.entities.attach(playerId, cameraId)
+
+        const blasterId = this.entities.create(blaster())
+        this.entities.attach(playerId, blasterId)
     }
 }
