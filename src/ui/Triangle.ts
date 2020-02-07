@@ -5,7 +5,7 @@ export class Triangle extends Shape {
     constructor(
             position: Position,
             protected orientation: number,
-            color: string = 'white',
+            color = 'white',
             protected base: number = 30,
             protected height: number = 50) {
         super(ShapeType.TRIANGLE, position, color)

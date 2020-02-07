@@ -13,8 +13,8 @@ export enum SlotType {
 
 export interface Slot {
     type: SlotType
-    attachmentId: number | undefined,
-    offset: Offset,
+    attachmentId: number | undefined
+    offset: Offset
 }
 
 export interface HubState {
@@ -23,6 +23,6 @@ export interface HubState {
 
 export class Hub extends Component {
     constructor(public state: HubState) {
-        super(ComponentCode.HUB, 'Hub', state)
+        super(ComponentCode.HUB, 'Hub')
     }
 }

@@ -14,8 +14,7 @@ export enum ComponentCode {
 export abstract class Component {
     constructor(
             readonly code: ComponentCode,
-            readonly name: string,
-            state: { [key: string]: any }) {
+            readonly name: string) {
     }
 }
 

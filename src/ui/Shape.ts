@@ -1,4 +1,4 @@
-import { Position, Vector } from '../Math'
+import { Position } from '../Math'
 
 export enum ShapeType {
     CIRCLE,

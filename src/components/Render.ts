@@ -7,6 +7,6 @@ export interface RenderState {
 
 export class Render extends Component {
     constructor(public state: RenderState) {
-        super(ComponentCode.RENDER, 'Render', state)
+        super(ComponentCode.RENDER, 'Render')
     }
 }

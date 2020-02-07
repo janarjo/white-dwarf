@@ -1,6 +1,5 @@
 import { Attachment, RemoveBehavior } from '../components/Attachment'
-import { Control } from '../components/Control'
-import { Hub, Slot } from '../components/Hub'
+import { Hub } from '../components/Hub'
 import { EntityManager } from '../EntityManager'
 import { isDefined } from '../Util'
 import { System } from './System'

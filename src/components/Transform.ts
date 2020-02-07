@@ -8,6 +8,6 @@ export interface TransformState {
 
 export class Transform extends Component {
     constructor(public state: TransformState) {
-        super(ComponentCode.TRANSFORM, 'Core', state)
+        super(ComponentCode.TRANSFORM, 'Core')
     }
 }

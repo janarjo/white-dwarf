@@ -142,6 +142,6 @@ export class EntityManager {
 }
 
 export interface DebugInfo {
-    entityCount: number,
-    componentCount: number,
+    entityCount: number
+    componentCount: number
 }

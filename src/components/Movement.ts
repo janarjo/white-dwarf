@@ -11,6 +11,6 @@ export interface MovementState {
 
 export class Movement extends Component {
     constructor(public state: MovementState) {
-        super(ComponentCode.MOVEMENT, 'Movement', state)
+        super(ComponentCode.MOVEMENT, 'Movement')
     }
 }

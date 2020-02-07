@@ -8,6 +8,6 @@ export interface CollisionState {
 
 export class Collision extends Component {
     constructor(public state: CollisionState) {
-        super(ComponentCode.COLLISION, 'Collision', state)
+        super(ComponentCode.COLLISION, 'Collision')
     }
 }

@@ -10,6 +10,6 @@ export interface ControlState {
 
 export class Control extends Component {
     constructor(public state: ControlState) {
-        super(ComponentCode.CONTROL, 'Control', state)
+        super(ComponentCode.CONTROL, 'Control')
     }
 }

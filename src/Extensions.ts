@@ -3,8 +3,8 @@ interface Array<T> {
 }
 
 Object.defineProperty(Array.prototype, 'flatMap', {
-    // tslint:disable-next-line:ban-types
     value(callback: Function) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return (this as any[]).reduce((ys: any, x: any) => {
             return ys.concat(callback.call(this, x))
         }, [])

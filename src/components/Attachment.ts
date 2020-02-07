@@ -8,11 +8,11 @@ export enum RemoveBehavior {
 
 export interface AttachmentState {
     type: SlotType
-    onRemove: RemoveBehavior,
+    onRemove: RemoveBehavior
 }
 
 export class Attachment extends Component {
     constructor(public state: AttachmentState) {
-        super(ComponentCode.ATTACHMENT, 'Attachment', state)
+        super(ComponentCode.ATTACHMENT, 'Attachment')
     }
 }

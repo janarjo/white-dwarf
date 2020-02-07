@@ -37,6 +37,7 @@ export class Game {
             new HealthSystem(this.entities),
             new CameraSystem(this.entities, viewport, mapSize),
             new HubSystem(this.entities),
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             new RenderSystem(this.entities, canvas.getContext('2d')!, stars, this.isDebug),
         ]
         level.init()

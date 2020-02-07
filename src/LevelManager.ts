@@ -11,7 +11,7 @@ export class Level {
 }
 
 export interface Star {
-    intensity: number,
+    intensity: number
     position: Position
 }
 

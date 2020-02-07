@@ -4,7 +4,7 @@ import { Shape, ShapeType } from './Shape'
 export class Dot extends Shape {
     constructor(
             position: Position,
-            color: string = 'white') {
+            color = 'white') {
         super(ShapeType.DOT, position, color)
     }
 

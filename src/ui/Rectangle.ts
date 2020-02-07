@@ -6,7 +6,7 @@ export class Rectangle extends Shape {
             position: Position,
             protected dimensions: Dimensions,
             protected fill: boolean = false,
-            color: string = 'white') {
+            color = 'white') {
         super(ShapeType.DOT, position, color)
     }
 

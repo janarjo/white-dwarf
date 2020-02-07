@@ -6,7 +6,7 @@ export class Circle extends Shape {
             position: Position,
             protected radius: number,
             protected fill: boolean = false,
-            color: string = 'white',
+            color = 'white',
             protected lineWidth: number = 2) {
         super(ShapeType.CIRCLE, position, color)
     }

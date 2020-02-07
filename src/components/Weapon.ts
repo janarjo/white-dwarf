@@ -9,6 +9,6 @@ export interface WeaponState {
 
 export class Weapon extends Component {
     constructor(public state: WeaponState) {
-        super(ComponentCode.WEAPON, 'Weapon', state)
+        super(ComponentCode.WEAPON, 'Weapon')
     }
 }
