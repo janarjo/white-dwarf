@@ -7,7 +7,7 @@ import { System } from './System'
 export class CameraSystem extends System {
     constructor(
         private readonly entities: EntityManager,
-        private readonly viewPort: Dimensions,
+        private readonly viewport: Dimensions,
         private readonly mapSize: Dimensions) {
         super()
     }
@@ -19,9 +19,9 @@ export class CameraSystem extends System {
             const camera = this.entities.getComponent(id, Camera)
             const origin = camera.state.origin
 
-            const newOrigin = subtract(position, divide(this.viewPort, 2))
-            const isOutsideHorizontalViewPort = newOrigin[0] < 0 || (newOrigin[0] + this.viewPort[0]) > this.mapSize[0]
-            const isOutsideVerticalViewPort = newOrigin[1] < 0 || (newOrigin[1] + this.viewPort[1]) > this.mapSize[1]
+            const newOrigin = subtract(position, divide(this.viewport, 2))
+            const isOutsideHorizontalViewPort = newOrigin[0] < 0 || (newOrigin[0] + this.viewport[0]) > this.mapSize[0]
+            const isOutsideVerticalViewPort = newOrigin[1] < 0 || (newOrigin[1] + this.viewport[1]) > this.mapSize[1]
 
             if (isOutsideHorizontalViewPort && isOutsideVerticalViewPort) return
             else if (isOutsideHorizontalViewPort) camera.state.origin = [origin[0], newOrigin[1]]

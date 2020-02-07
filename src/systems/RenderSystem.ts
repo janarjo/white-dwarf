@@ -5,6 +5,7 @@ import { Render } from '../components/Render'
 import { Transform } from '../components/Transform'
 import { Weapon } from '../components/Weapon'
 import { EntityManager } from '../EntityManager'
+import { Star } from '../LevelManager'
 import { add, rotate, subtract } from '../Math'
 import { Circle } from '../ui/Circle'
 import { Dot } from '../ui/Dot'
@@ -17,6 +18,7 @@ export class RenderSystem extends System {
     constructor(
         private readonly entities: EntityManager,
         private readonly ctx: CanvasRenderingContext2D,
+        private readonly stars: ReadonlyArray<Star>,
         private readonly isDebug: boolean) {
         super()
     }
@@ -28,6 +30,7 @@ export class RenderSystem extends System {
         if (!camera) throw Error('No camera found!')
         const origin = camera.state.origin
         this.clear()
+        this.drawStars()
 
         this.entities.withComponents(Transform, Render).forEach(id => {
             const transform = this.entities.getComponent(id, Transform)
@@ -109,6 +112,17 @@ export class RenderSystem extends System {
         this.ctx.fillStyle = 'black'
         const { width, height } = this.ctx.canvas
         this.ctx.fillRect(0, 0, width, height)
+    }
+
+    private drawStars() {
+        this.ctx.save()
+        this.stars.forEach(star => {
+            const { intensity, position } = star
+            const rgb = `rgb(${intensity},${intensity},${intensity})`
+            this.ctx.fillStyle = rgb
+            this.ctx.fillRect(position[0], position[1], 1, 1)
+        })
+        this.ctx.restore()
     }
 
     private drawShape(shape: Shape) {

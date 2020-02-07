@@ -1,6 +1,5 @@
 import { EntityManager } from './EntityManager'
-import { GameManager } from './GameManager'
-import { Dimensions } from './Math'
+import { LevelManager } from './LevelManager'
 import { CameraSystem } from './systems/CameraSystem'
 import { CollisionSystem } from './systems/CollisionSystem'
 import { ControlSystem } from './systems/ControlSystem'
@@ -12,34 +11,35 @@ import { System } from './systems/System'
 import { TransformSystem } from './systems/TransformSystem'
 import { WeaponSystem } from './systems/WeaponSystem'
 
-export class Controller {
+export class Game {
     readonly isDebug = true
     readonly fps = 60
     readonly interval = 1000 / this.fps
     then: number = performance.now()
 
     readonly entities: EntityManager
-    readonly gameManager: GameManager
+    readonly levelManager: LevelManager
 
     readonly systems: System[]
 
-    readonly mapSize: Dimensions = [2000, 2000]
-
     constructor(canvas: HTMLCanvasElement) {
-        this.entities = new EntityManager()
-        this.gameManager = new GameManager(this.entities)
+        const viewport = [canvas.width, canvas.height] as const
+        this.levelManager = new LevelManager(viewport)
+        const level = this.levelManager.getLevel(0)
+        const { mapSize, entities, stars } = level
+        this.entities = entities
         this.systems = [
             new ControlSystem(this.entities, canvas),
             new MovementSystem(this.entities),
-            new TransformSystem(this.entities, this.mapSize),
+            new TransformSystem(this.entities, mapSize),
             new CollisionSystem(this.entities),
             new WeaponSystem(this.entities),
             new HealthSystem(this.entities),
-            new CameraSystem(this.entities, [canvas.width, canvas.height], this.mapSize),
+            new CameraSystem(this.entities, viewport, mapSize),
             new HubSystem(this.entities),
-            new RenderSystem(this.entities, canvas.getContext('2d')!, this.isDebug),
+            new RenderSystem(this.entities, canvas.getContext('2d')!, stars, this.isDebug),
         ]
-        this.gameManager.initWorld()
+        level.init()
     }
 
     gameLoop() {
@@ -50,7 +50,6 @@ export class Controller {
 
         if (delta > this.interval) {
             this.then = now - (delta % (this.interval))
-            this.gameManager.generateAsteroids()
             this.entities.proccess(this.systems)
             this.entities.clean()
         }

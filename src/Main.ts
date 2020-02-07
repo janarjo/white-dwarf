@@ -1,8 +1,8 @@
-import { Controller } from './Controller'
+import { Game } from './Game'
 
 window.onload = () => {
     const canvas = document.getElementById('canvas') as HTMLCanvasElement
-    const controller: Controller = new Controller(canvas)
+    const game: Game = new Game(canvas)
 
-    controller.gameLoop()
+    game.gameLoop()
 }
