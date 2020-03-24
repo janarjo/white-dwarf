@@ -1,6 +1,6 @@
-import { Component, ComponentCode } from './Component'
+import { Component, ComponentCode, ComponentState } from './Component'
 
-export interface MovementState {
+export interface MovementState  extends ComponentState {
     currSpeed: number
     currAcceleration: number
     currRotationalSpeed: number
@@ -11,6 +11,6 @@ export interface MovementState {
 
 export class Movement extends Component {
     constructor(public state: MovementState) {
-        super(ComponentCode.MOVEMENT, 'Movement')
+        super(ComponentCode.MOVEMENT, 'Movement', state)
     }
 }

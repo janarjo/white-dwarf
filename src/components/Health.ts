@@ -1,6 +1,6 @@
-import { Component, ComponentCode } from './Component'
+import { Component, ComponentCode, ComponentState } from './Component'
 
-export interface HealthState {
+export interface HealthState extends ComponentState {
     health: number
     maxHealth: number
     showIndicator: boolean
@@ -9,6 +9,6 @@ export interface HealthState {
 
 export class Health extends Component {
     constructor(public state: HealthState) {
-        super(ComponentCode.HEALTH, 'Health')
+        super(ComponentCode.HEALTH, 'Health', state)
     }
 }

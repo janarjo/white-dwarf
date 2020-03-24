@@ -26,7 +26,7 @@ export class TransformSystem extends System {
                 ...transform.state,
                 orientation: this.getOrientation(transform.state, movement.state.currRotationalSpeed),
                 position: this.getPosition(transform.state, movement.state.currSpeed),
-             }
+            }
         })
 
         this.entities.withComponents(Transform, Hub).forEach((id) => {

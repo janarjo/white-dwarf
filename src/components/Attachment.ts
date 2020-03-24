@@ -1,4 +1,4 @@
-import { Component, ComponentCode } from './Component'
+import { Component, ComponentCode, ComponentState } from './Component'
 import { SlotType } from './Hub'
 
 export enum RemoveBehavior {
@@ -6,13 +6,13 @@ export enum RemoveBehavior {
     DETACH,
 }
 
-export interface AttachmentState {
+export interface AttachmentState extends ComponentState {
     type: SlotType
     onRemove: RemoveBehavior
 }
 
 export class Attachment extends Component {
     constructor(public state: AttachmentState) {
-        super(ComponentCode.ATTACHMENT, 'Attachment')
+        super(ComponentCode.ATTACHMENT, 'Attachment', state)
     }
 }

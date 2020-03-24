@@ -1,4 +1,4 @@
-import { Position, subtract } from '../Math'
+import { Position } from '../Math'
 import { Shape, ShapeType } from './Shape'
 
 export class Circle extends Shape {

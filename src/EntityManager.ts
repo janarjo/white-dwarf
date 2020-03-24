@@ -1,5 +1,5 @@
 import { Attachment } from './components/Attachment'
-import { Component, Entity } from './components/Component'
+import { Component, Entity, ComponentState } from './components/Component'
 import { Control } from './components/Control'
 import { Hub, SlotType } from './components/Hub'
 import { System } from './systems/System'
@@ -80,28 +80,36 @@ export class EntityManager {
         found.push(component)
     }
 
-    removeComponent<T extends Component>(id: number, type: new (state: any) => T): void {
+    removeComponent<T extends Component, Y extends ComponentState>(
+            id: number,
+            type: new (state: Y) => T): void {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         let found = this.get(id)
         found = found.filter(component => !(component instanceof type))
     }
 
-    getComponent<T extends Component>(id: number, type: new (state: any) => T): T {
+    getComponent<T extends Component, Y extends ComponentState>(
+            id: number,
+            type: new (state: Y) => T): T {
         const found = this.getComponentOrNone(id, type)
         if (!found) throw new Error(`No such component: ${type.name} for entity id: ${id}`)
         return found
     }
 
-    getComponentOrNone<T extends Component>(id: number, type: new (state: any) => T): T | undefined {
+    getComponentOrNone<T extends Component, Y extends ComponentState>(
+            id: number,
+            type: new (state: Y) => T): T | undefined {
         const found = this.get(id).find(component => component instanceof type)
         if (!found) return undefined
         return found as T
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     withComponents(...types: Array<new (state: any) => Component>): ReadonlyArray<number> {
         return Array.from(this.entities.entries())
             .filter(([id]) => !this.markedForRemoval.has(id))
             .filter(([, components]) => this.hasComponents(components, types))
-            .map(([id, _]) => id)
+            .map(([id,]) => id)
     }
 
     getAttachments(id: number, type?: SlotType): ReadonlySet<number> {
@@ -128,15 +136,15 @@ export class EntityManager {
         }
     }
 
-    private hasComponents(
-        entity: Entity,
-        types: Array<new (state: any) => Component>): boolean {
+    private hasComponents<T extends Component, Y extends ComponentState>(
+            entity: Entity,
+            types: Array<new (state: Y) => T>): boolean {
         return types.every(type => this.hasComponent(entity, type))
     }
 
-    private hasComponent<T extends Component>(
-        entity: Entity,
-        type: new (state: any) => T): boolean {
+    private hasComponent<T extends Component, Y extends ComponentState>(
+            entity: Entity,
+            type: new (state: Y) => T): boolean {
         return entity.find(component => component instanceof type) !== undefined
     }
 }

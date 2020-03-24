@@ -1,5 +1,5 @@
 import { Offset } from '../Math'
-import { Component, ComponentCode } from './Component'
+import { Component, ComponentCode, ComponentState } from './Component'
 
 export enum RemoveBehavior {
     DISCARD,
@@ -17,12 +17,12 @@ export interface Slot {
     offset: Offset
 }
 
-export interface HubState {
+export interface HubState extends ComponentState {
     slots: Slot[]
 }
 
 export class Hub extends Component {
     constructor(public state: HubState) {
-        super(ComponentCode.HUB, 'Hub')
+        super(ComponentCode.HUB, 'Hub', state)
     }
 }

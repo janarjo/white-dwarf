@@ -11,10 +11,15 @@ export enum ComponentCode {
     HUB,
 }
 
+export interface ComponentState {
+    [key: string]: string | number | boolean | object | undefined
+}
+
 export abstract class Component {
     constructor(
             readonly code: ComponentCode,
-            readonly name: string) {
+            readonly name: string,
+            readonly state: ComponentState) {
     }
 }
 

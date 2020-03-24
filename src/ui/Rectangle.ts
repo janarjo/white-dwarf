@@ -1,4 +1,4 @@
-import { Dimensions, Position, subtract } from '../Math'
+import { Dimensions, Position } from '../Math'
 import { Shape, ShapeType } from './Shape'
 
 export class Rectangle extends Shape {

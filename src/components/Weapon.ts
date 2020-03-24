@@ -1,7 +1,7 @@
 import { Offset } from '../Math'
-import { Component, ComponentCode } from './Component'
+import { Component, ComponentCode, ComponentState } from './Component'
 
-export interface WeaponState {
+export interface WeaponState extends ComponentState {
     lastFired: number
     cooldown: number
     offset: Offset
@@ -9,6 +9,6 @@ export interface WeaponState {
 
 export class Weapon extends Component {
     constructor(public state: WeaponState) {
-        super(ComponentCode.WEAPON, 'Weapon')
+        super(ComponentCode.WEAPON, 'Weapon', state)
     }
 }
