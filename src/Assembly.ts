@@ -1,6 +1,6 @@
 import { Attachment, RemoveBehavior } from './components/Attachment'
 import { Camera } from './components/Camera'
-import { Collision } from './components/Collision'
+import { Collision, CollisionGroup } from './components/Collision'
 import { Control } from './components/Control'
 import { Health } from './components/Health'
 import { Hub, SlotType } from './components/Hub'
@@ -54,6 +54,12 @@ export const player = (position: Vector) => [
             { attachmentId: undefined, offset: [0, 23], type: SlotType.WEAPON },
         ],
     }),
+    new Collision({
+        boundingBox: [[-30, -30], [60, 60]],
+        isColliding: false,
+        group: CollisionGroup.PLAYER,
+        mask: [CollisionGroup.ENEMY],
+    })
 ]
 
 export const projectile = (position: Vector, orientation: number) => [
@@ -75,6 +81,8 @@ export const projectile = (position: Vector, orientation: number) => [
     new Collision({
         isColliding: false,
         boundingBox: [[0, 0], [1, 1]],
+        group: CollisionGroup.PLAYER,
+        mask: [CollisionGroup.ENEMY],
     }),
     new Health({
         health: 1,
@@ -103,6 +111,9 @@ export const asteroid = (position: Vector, orientation: number) => [
     new Collision({
         isColliding: false,
         boundingBox: [[-20, -20], [40, 40]],
+        categories: [],
+        group: CollisionGroup.ENEMY,
+        mask: [CollisionGroup.PLAYER],
     }),
     new Health({
         health: 100,

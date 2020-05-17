@@ -17,15 +17,18 @@ export class CollisionSystem extends System {
             const collision = this.entities.getComponent(id, Collision)
             const thisBoundingBox = this.getBoundingBox(transform.state, collision.state)
 
-            const anyCollision = collideableEntities.some(otherId => {
-                if (id === otherId) return false
-                const otherCollision = this.entities.getComponent(otherId, Collision)
-                const otherTransform = this.entities.getComponent(otherId, Transform)
-                const otherBoundingBox: Rectangle = this.getBoundingBox(otherTransform.state, otherCollision.state)
+            const hasAnyCollision = collideableEntities
+                .filter(otherId => id !== otherId)
+                .some(otherId => {
+                    const otherCollision = this.entities.getComponent(otherId, Collision)
+                    if (!collision.state.mask.includes(otherCollision.state.group)) return false
+                    
+                    const otherTransform = this.entities.getComponent(otherId, Transform)
+                    const otherBoundingBox: Rectangle = this.getBoundingBox(otherTransform.state, otherCollision.state)
 
-                return isIntersect(thisBoundingBox, otherBoundingBox)
-            })
-            collision.state.isColliding = anyCollision
+                    return isIntersect(thisBoundingBox, otherBoundingBox)
+                })
+            collision.state.isColliding = hasAnyCollision
         })
     }
 
