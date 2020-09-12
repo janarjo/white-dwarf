@@ -2,8 +2,9 @@ import { Attachment } from './components/Attachment'
 import { Component, Entity, ComponentState } from './components/Component'
 import { Control } from './components/Control'
 import { Hub, SlotType } from './components/Hub'
-import { System } from './systems/System'
 import { isDefined, isUndefined } from './Util'
+import { Position } from './Math'
+import { Transform } from './components/Transform'
 
 export class EntityManager {
     private entities: Map<number, Entity>
@@ -14,10 +15,6 @@ export class EntityManager {
         this.entities = new Map()
         this.markedForRemoval = new Set()
         this.enumerator = 0
-    }
-
-    proccess(systems: ReadonlyArray<System>) {
-        systems.forEach(system => system.update())
     }
 
     clean() {
@@ -127,10 +124,13 @@ export class EntityManager {
     }
 
     getDebugInfo(): DebugInfo {
+        const playerId = this.withComponents(Control, Hub)[0]
+        const playerPosition = this.getComponent(playerId, Transform).state.position
         const componentCount = Array.from(this.entities.values())
             .map(components => components.length)
             .reduce((sum, current) => sum + current)
         return {
+            playerPosition,
             entityCount: this.entities.size,
             componentCount,
         }
@@ -150,6 +150,7 @@ export class EntityManager {
 }
 
 export interface DebugInfo {
+    playerPosition: Position
     entityCount: number
     componentCount: number
 }

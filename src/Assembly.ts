@@ -132,8 +132,8 @@ export const blaster = () => [
         type: ShapeType.DOT,
     }),
     new Weapon({
-        lastFired: 0,
-        cooldown: 500,
+        lastFiredMs: 0,
+        cooldownMs: 500,
         offset: [0, 0],
     }),
     new Attachment({

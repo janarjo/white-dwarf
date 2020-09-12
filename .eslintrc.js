@@ -8,10 +8,11 @@ module.exports = {
         sourceType: 'module',
     },
     rules: {
-        '@typescript-eslint/explicit-function-return-type': 'off',
         'semi': 'off',
+        '@typescript-eslint/explicit-function-return-type': 'off',
         'indent': [2, 4, { 'FunctionExpression': { 'body': 1, 'parameters': 2 }, 'SwitchCase': 1}],
         '@typescript-eslint/semi': ['error', 'never'],
+        '@typescript-eslint/quotes': ['error', 'single', { 'avoidEscape': true }],
         '@typescript-eslint/member-delimiter-style': ['error',
             {
                 'multiline': {

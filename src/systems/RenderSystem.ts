@@ -98,13 +98,15 @@ export class RenderSystem extends System {
     }
 
     private drawDebugInfo() {
-        const { entityCount, componentCount } = this.entities.getDebugInfo()
+        const { playerPosition, entityCount, componentCount } = this.entities.getDebugInfo()
+        const [ playerX, playerY ] = playerPosition
 
         this.ctx.save()
         this.ctx.font = '12px Arial'
         this.ctx.fillStyle = 'white'
-        this.ctx.fillText(`Entities: ${entityCount}`, 10, 20)
-        this.ctx.fillText(`Components: ${componentCount}`, 10, 34)
+        this.ctx.fillText(`Position: ${playerX.toFixed(0)}, ${playerY.toFixed(0)}`, 10, 20)
+        this.ctx.fillText(`Entities: ${entityCount}`, 10, 34)
+        this.ctx.fillText(`Components: ${componentCount}`, 10, 48)
         this.ctx.restore()
     }
 

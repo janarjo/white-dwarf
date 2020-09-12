@@ -7,6 +7,8 @@ export const divide = (v: Vector, n: number) => [v[0] / n, v[1] / n] as const
 export type Position = Vector
 export type Offset = Vector
 export type Dimensions = Vector
+export type Range = Vector
+
 export const rotatePoints = (origin: Position, angle: number, points: ReadonlyArray<Position>) => {
     const cosMult = Math.cos(angle)
     const sinMult = Math.sin(angle)
@@ -17,6 +19,14 @@ export const rotatePoints = (origin: Position, angle: number, points: ReadonlyAr
         .map(v => add(v, origin))
 }
 export const rotate = (origin: Position, angle: number, point: Position) => rotatePoints(origin, angle, [point])[0]
+
+export const rand = (min = 0, max = 1) => Math.random() * (max - min) + min
+export const randInt = (r: Range) => {
+    const min = Math.ceil(r[0])
+    const max = Math.floor(r[1])
+
+    return Math.floor(Math.random() * (max - min + 1)) + min
+}
 
 export type Rectangle = Readonly<[Position, Dimensions]>
 export const isWithin = (v: Position, r: Rectangle) => {

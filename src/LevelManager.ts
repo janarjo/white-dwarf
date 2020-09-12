@@ -1,12 +1,15 @@
-import { asteroid, blaster, camera, player } from './Assembly'
+import { blaster, camera, player } from './Assembly'
 import { EntityManager } from './EntityManager'
 import { Dimensions, Position } from './Math'
+import { AsteroidField } from './fields/AsteroidField'
+import { Field } from './fields/Field'
 
 export class Level {
     constructor(
         readonly mapSize: Dimensions,
         readonly stars: ReadonlyArray<Star>,
         readonly entities: EntityManager,
+        readonly fields: ReadonlyArray<Field> = [],
         readonly init: () => void) {}
 }
 
@@ -30,7 +33,7 @@ export class LevelManager {
         return level
     }
 
-    generateStars(size: Dimensions, count: number): Star[] {
+    private generateStars(size: Dimensions, count: number): Star[] {
         const stars: Star[] = []
         for (let i = 0; i < count; i++) {
             stars.push({
@@ -44,17 +47,18 @@ export class LevelManager {
     private getLevel0(): Level {
         const stars = this.generateStars(this.viewport, 500)
         const entities = new EntityManager()
-
-        return new Level([2000, 2000], stars, entities, () => {
+        const mapSize = [2000, 2000] as const
+        const fields = [new AsteroidField(entities, mapSize, 2000)]
+        const init = () => {
             const playerId = entities.create(player([640, 360]))
 
             const cameraId = entities.create(camera())
             entities.attach(playerId, cameraId)
 
-            setInterval(() => entities.create(asteroid([320, 150], Math.random() * Math.PI)), 1000)
-
             const blasterId = entities.create(blaster())
             entities.attach(playerId, blasterId)
-        })
+        }
+
+        return new Level(mapSize, stars, entities, fields, init)
     }
 }

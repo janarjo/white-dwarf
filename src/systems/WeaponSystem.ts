@@ -18,8 +18,8 @@ export class WeaponSystem extends System {
             if (!control.state.isFiring) return
 
             const weapon = this.entities.getComponent(id, Weapon)
-            const { lastFired, cooldown, offset } = weapon.state
-            const now = Date.now()
+            const { lastFiredMs: lastFired, cooldownMs: cooldown, offset } = weapon.state
+            const now = performance.now()
             const isCooledDown = now - lastFired >= cooldown
             if (!isCooledDown) return
 
@@ -27,7 +27,7 @@ export class WeaponSystem extends System {
             const { position, orientation } = transform.state
             const firePosition = rotate(position, orientation, add(position, offset))
             this.entities.create(projectile(firePosition, orientation))
-            weapon.state = { ...weapon.state, lastFired: now }
+            weapon.state = { ...weapon.state, lastFiredMs: now }
         })
     }
 }

@@ -2,7 +2,7 @@ import { Hub } from '../components/Hub'
 import { Movement } from '../components/Movement'
 import { Transform, TransformState } from '../components/Transform'
 import { EntityManager } from '../EntityManager'
-import { add, isWithin, Position, rotate, Vector, Rectangle } from '../Math'
+import { add, isWithin, Position, rotate, Vector } from '../Math'
 import { System } from './System'
 
 export class TransformSystem extends System {
@@ -12,11 +12,12 @@ export class TransformSystem extends System {
         super()
     }
 
+    private readonly paddedMapSize = [[-100, -100], add(this.mapSize, [100, 100])] as const
+
     update() {
         this.entities.withComponents(Transform).forEach(id => {
             const transform = this.entities.getComponent(id, Transform)
-            const killRect: Rectangle = [[-100, -100], add(this.mapSize, [100, 100])] as const
-            if (!isWithin(transform.state.position, killRect)) this.entities.remove(id)
+            if (!isWithin(transform.state.position, this.paddedMapSize)) this.entities.remove(id)
         })
 
         this.entities.withComponents(Transform, Movement).forEach(id => {

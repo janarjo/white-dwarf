@@ -11,11 +11,12 @@ import { System } from './systems/System'
 import { TransformSystem } from './systems/TransformSystem'
 import { WeaponSystem } from './systems/WeaponSystem'
 import { Dimensions } from './Math'
+import { Field } from './fields/Field'
 
 export class Game {
     readonly isDebug = true
     readonly fps = 60
-    readonly interval = 1000 / this.fps
+    readonly intervalMs = 1000 / this.fps
     then: number = performance.now()
 
     readonly levelManager: LevelManager
@@ -30,7 +31,7 @@ export class Game {
 
     start(levelNo: number) {
         const level = this.levelManager.getLevel(levelNo)
-        const { mapSize, entities, stars } = level
+        const { mapSize, entities, fields, stars } = level
         const systems = [
             new ControlSystem(entities, this.canvas),
             new MovementSystem(entities),
@@ -42,21 +43,26 @@ export class Game {
             new HubSystem(entities),
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             new RenderSystem(entities, this.canvas.getContext('2d')!, stars, this.isDebug),
-        ]
+        ] as const
 
         level.init()
-        this.gameLoop(entities, systems)
+        this.gameLoop(entities, systems, fields)
     }
 
-    gameLoop(entities: EntityManager, systems: System[]) {
-        requestAnimationFrame(() => this.gameLoop(entities, systems))
+    gameLoop(
+            entities: EntityManager, 
+            systems: ReadonlyArray<System>, 
+            fields: ReadonlyArray<Field>) {
+        requestAnimationFrame(() => this.gameLoop(entities, systems, fields))
 
         const now = performance.now()
         const delta = now - this.then
 
-        if (delta > this.interval) {
-            this.then = now - (delta % (this.interval))
-            entities.proccess(systems)
+        if (delta > this.intervalMs) {
+            this.then = now - (delta % (this.intervalMs))
+
+            fields.forEach(field => field.generate())
+            systems.forEach(system => system.update())
             entities.clean()
         }
     }
