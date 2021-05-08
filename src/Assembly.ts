@@ -2,6 +2,7 @@ import { Attachment, RemoveBehavior } from './components/Attachment'
 import { Camera } from './components/Camera'
 import { Collision, CollisionGroup } from './components/Collision'
 import { Control } from './components/Control'
+import { TriggerType, Emitter } from './components/Emitter'
 import { Health } from './components/Health'
 import { Hub, SlotType } from './components/Hub'
 import { Movement } from './components/Movement'
@@ -59,6 +60,13 @@ export const player = (position: Vector) => [
         isColliding: false,
         group: CollisionGroup.PLAYER,
         mask: [CollisionGroup.ENEMY],
+    }),
+    new Emitter({
+        trigger: TriggerType.ACCELERATION,
+        rateMs: 500,
+        decayMs: 0,
+        lastEmittedMs: 0,
+        offset: [0, -23],
     })
 ]
 
@@ -138,5 +146,15 @@ export const blaster = () => [
     new Attachment({
         type: SlotType.WEAPON,
         onRemove: RemoveBehavior.DISCARD,
+    }),
+]
+
+export const exhaust = (position: Vector) => [
+    new Transform({
+        position,
+        orientation: 0,
+    }),
+    new Render({
+        type: ShapeType.CIRCLE,
     }),
 ]

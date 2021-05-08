@@ -9,6 +9,7 @@ export enum ComponentCode {
     CAMERA,
     ATTACHMENT,
     HUB,
+    EMITTER,
 }
 
 export interface ComponentState {
