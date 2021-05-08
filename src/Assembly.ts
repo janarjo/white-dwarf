@@ -6,11 +6,10 @@ import { TriggerType, Emitter } from './components/Emitter'
 import { Health } from './components/Health'
 import { Hub, SlotType } from './components/Hub'
 import { Movement } from './components/Movement'
-import { Render } from './components/Render'
+import { Render, ShapeType } from './components/Render'
 import { Transform } from './components/Transform'
 import { Weapon } from './components/Weapon'
 import { Vector } from './Math'
-import { ShapeType } from './ui/Shape'
 
 export const camera = () => [
     new Transform({
@@ -32,7 +31,7 @@ export const player = (position: Vector) => [
         orientation: 0,
     }),
     new Render({
-        type: ShapeType.TRIANGLE,
+        shape: { type: ShapeType.TRIANGLE, color: 'white', base: 30, height: 50 }
     }),
     new Control({
         isAccelerating: false,
@@ -76,7 +75,7 @@ export const projectile = (position: Vector, orientation: number) => [
         orientation,
     }),
     new Render({
-        type: ShapeType.DOT,
+        shape: { type: ShapeType.DOT, color: 'white' }
     }),
     new Movement({
         currSpeed: 5,
@@ -106,7 +105,7 @@ export const asteroid = (position: Vector, orientation: number) => [
         orientation,
     }),
     new Render({
-        type: ShapeType.CIRCLE,
+        shape: { type: ShapeType.CIRCLE, color: 'white', radius: 20 }
     }),
     new Movement({
         currSpeed: 1.5,
@@ -136,7 +135,7 @@ export const blaster = () => [
         orientation: 0,
     }),
     new Render({
-        type: ShapeType.DOT,
+        shape: { type: ShapeType.DOT, color: 'white' }
     }),
     new Weapon({
         lastFiredMs: 0,
@@ -155,6 +154,6 @@ export const exhaust = (position: Vector) => [
         orientation: 0,
     }),
     new Render({
-        type: ShapeType.CIRCLE,
+        shape: { type: ShapeType.CIRCLE, color: 'white', radius: 20 }
     }),
 ]

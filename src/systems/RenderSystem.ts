@@ -1,17 +1,13 @@
 import { Camera } from '../components/Camera'
 import { Collision } from '../components/Collision'
 import { Health } from '../components/Health'
-import { Render } from '../components/Render'
+import { Circle, Render, ShapeType, Triangle, Shape, Rectangle } from '../components/Render'
 import { Transform } from '../components/Transform'
 import { Weapon } from '../components/Weapon'
 import { EntityManager } from '../EntityManager'
 import { Star } from '../LevelManager'
-import { add, rotate, subtract } from '../Math'
-import { Circle } from '../ui/Circle'
-import { Dot } from '../ui/Dot'
-import { Rectangle } from '../ui/Rectangle'
-import { Shape, ShapeType } from '../ui/Shape'
-import { Triangle } from '../ui/Triangle'
+import { add, Position, rotate, rotatePoints, subtract } from '../Math'
+import { Dot } from '../components/Render'
 import { System } from './System'
 
 export class RenderSystem extends System {
@@ -38,27 +34,13 @@ export class RenderSystem extends System {
             const orientation = transform.state.orientation
             const render = this.entities.getComponent(id, Render)
 
-            let shape: Shape | undefined
-            switch (render.state.type) {
-                case ShapeType.DOT: {
-                    shape = new Dot(position)
-                    break
-                }
-                case ShapeType.TRIANGLE: {
-                    shape = new Triangle(position, orientation)
-                    break
-                }
-                case ShapeType.CIRCLE: {
-                    shape = new Circle(position, 20)
-                    break
-                }
-            }
-            shape && this.drawShape(shape)
+            this.drawShape(position, orientation, render.state.shape)
         })
 
         this.entities.withComponents(Transform, Render, Health).forEach(id => {
             const transform = this.entities.getComponent(id, Transform)
             const position = subtract(transform.state.position, origin)
+            const orientation = transform.state.orientation
             const health = this.entities.getComponent(id, Health)
             if (!health.state.showIndicator) return
 
@@ -66,8 +48,8 @@ export class RenderSystem extends System {
             const offset = health.state.verticalOffset
             const width = (health.state.health / health.state.maxHealth) * maxWidth
 
-            const shape = new Rectangle(add(position, [-(maxWidth / 2), offset]), [width, 2], true, 'white')
-            this.drawShape(shape)
+            const shape: Rectangle = { type: ShapeType.RECTANGLE, color: 'white', dimensions: [width, 2], fill: true }
+            this.drawShape(add(position, [-(maxWidth / 2), offset]), orientation, shape)
         })
 
         /* Debug elements */
@@ -77,12 +59,13 @@ export class RenderSystem extends System {
         this.entities.withComponents(Transform, Render, Collision).forEach(id => {
             const transform = this.entities.getComponent(id, Transform)
             const position = subtract(transform.state.position, origin)
+            const orientation = transform.state.orientation
             const collision = this.entities.getComponent(id, Collision)
             const [offset, dimensions] = collision.state.boundingBox
             const isColliding = collision.state.isColliding
 
-            const shape = new Rectangle(add(position, offset), dimensions, false, isColliding ? 'red' : 'white')
-            this.drawShape(shape)
+            const shape: Rectangle = { type: ShapeType.RECTANGLE, color: isColliding ? 'red' : 'white', dimensions, fill: false }
+            this.drawShape(add(position, offset), orientation, shape)
         })
 
         this.entities.withComponents(Transform, Render, Weapon).forEach(id => {
@@ -93,7 +76,7 @@ export class RenderSystem extends System {
             const { offset } = weapon.state
             const firePosition = rotate(position, orientation, add(position, offset))
 
-            this.drawShape(new Dot(firePosition, 'red'))
+            this.drawShape(firePosition, orientation, { type: ShapeType.DOT, color: 'red'})
         })
     }
 
@@ -127,9 +110,79 @@ export class RenderSystem extends System {
         this.ctx.restore()
     }
 
-    private drawShape(shape: Shape) {
+    private drawShape(position: Position, orientation: number, shape: Shape) {
         this.ctx.save()
-        shape.draw(this.ctx)
+        switch (shape.type) {
+            case ShapeType.DOT:
+                this.drawDot(position, shape)
+                break
+            case ShapeType.CIRCLE:
+                this.drawCircle(position, shape)
+                break
+            case ShapeType.TRIANGLE:
+                this.drawTriangle(position, orientation, shape)
+                break
+            case ShapeType.RECTANGLE:
+                this.drawRectangle(position, shape)
+                break
+        }
         this.ctx.restore()
+    }
+    
+    drawDot(position: Position, shape: Dot) {
+        this.ctx.beginPath()
+        this.ctx.fillStyle = shape.color
+        const [x, y] = position
+        this.ctx.fillRect(x, y, 2, 2)
+        this.ctx.stroke()
+    }
+
+    drawCircle(position: Position, shape: Circle) {
+        this.ctx.beginPath()
+        this.ctx.fillStyle = shape.color
+        this.ctx.lineWidth = 2
+        const [x, y] = position
+        this.ctx.arc(x, y, shape.radius, 0, 2 * Math.PI, true)
+        this.ctx.closePath()
+        this.ctx.fill()
+    }
+
+    drawTriangle(position: Position, orientation: number, shape: Triangle) {
+        this.ctx.beginPath()
+        this.ctx.fillStyle = shape.color
+    
+        const [ centerX, centerY ] = position
+        const halfHeight = (shape.height / 2)
+        const halfBase = (shape.base / 2)
+    
+        const pointA = [centerX - halfBase, centerY - halfHeight] as const
+        const pointB = [centerX, centerY + halfHeight] as const
+        const pointC = [centerX + halfBase, centerY - halfHeight] as const
+    
+        const rotatedPoints = rotatePoints(position, orientation, [pointA, pointB, pointC])
+    
+        const rotatedPointA = rotatedPoints[0]
+        const rotatedPointB = rotatedPoints[1]
+        const rotatedPointC = rotatedPoints[2]
+    
+        this.ctx.moveTo(rotatedPointA[0], rotatedPointA[1])
+        this.ctx.lineTo(rotatedPointB[0], rotatedPointB[1])
+        this.ctx.lineTo(rotatedPointC[0], rotatedPointC[1])
+        this.ctx.lineTo(rotatedPointA[0], rotatedPointA[1])
+        this.ctx.fill()
+    }
+
+    drawRectangle(position: Position, shape: Rectangle) {
+        this.ctx.beginPath()
+        const [ x, y ] = position
+        const [ w, h ] = shape.dimensions
+        if (shape.fill) {
+            this.ctx.fillStyle = shape.color
+            this.ctx.fillRect(x, y, w, h)
+        } else {
+            this.ctx.strokeStyle = shape.color
+            this.ctx.strokeRect(x, y, w, h)
+        }
+        this.ctx.stroke()
     }
 }
