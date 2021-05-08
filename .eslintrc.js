@@ -4,7 +4,7 @@ module.exports = {
     extends: ['plugin:@typescript-eslint/recommended'],
     parserOptions: {
         ecmaVersion: 2018,
-        project: './tsconfig.json',
+        project: ['./tsconfig.json'],
         sourceType: 'module',
     },
     rules: {
@@ -13,6 +13,7 @@ module.exports = {
         'indent': [2, 4, { 'FunctionExpression': { 'body': 1, 'parameters': 2 }, 'SwitchCase': 1}],
         '@typescript-eslint/semi': ['error', 'never'],
         '@typescript-eslint/quotes': ['error', 'single', { 'avoidEscape': true }],
+        '@typescript-eslint/explicit-module-boundary-types':  'off',
         '@typescript-eslint/member-delimiter-style': ['error',
             {
                 'multiline': {
@@ -25,7 +26,7 @@ module.exports = {
                 },
             }]
     },
-    ignorePatterns: ['node_modules/'],
+    ignorePatterns: ['node_modules/', '.eslintrc.js'],
     overrides: [
         {
             files: ['*.ts']

@@ -111,7 +111,6 @@ export const asteroid = (position: Vector, orientation: number) => [
     new Collision({
         isColliding: false,
         boundingBox: [[-20, -20], [40, 40]],
-        categories: [],
         group: CollisionGroup.ENEMY,
         mask: [CollisionGroup.PLAYER],
     }),

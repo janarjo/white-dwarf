@@ -80,8 +80,8 @@ export class EntityManager {
     removeComponent<T extends Component, Y extends ComponentState>(
             id: number,
             type: new (state: Y) => T): void {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         let found = this.get(id)
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         found = found.filter(component => !(component instanceof type))
     }
 

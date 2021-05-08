@@ -12,7 +12,7 @@ export enum ComponentCode {
 }
 
 export interface ComponentState {
-    [key: string]: string | number | boolean | object | undefined
+    [key: string]: unknown
 }
 
 export abstract class Component {
