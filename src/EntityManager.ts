@@ -1,7 +1,7 @@
 import { Attachment } from './components/Attachment'
 import { Component, Entity, ComponentState } from './components/Component'
 import { Control } from './components/Control'
-import { Hub, SlotType } from './components/Hub'
+import { EntityHub, SlotType } from './components/EntityHub'
 import { isDefined, isUndefined } from './Util'
 import { Position } from './Math'
 import { Transform } from './components/Transform'
@@ -39,7 +39,7 @@ export class EntityManager {
     }
 
     attach(parentId: number, attachmentId: number) {
-        const hub = this.getComponentOrNone(parentId, Hub)
+        const hub = this.getComponentOrNone(parentId, EntityHub)
         if (!hub) return
 
         const attachment = this.getComponentOrNone(attachmentId, Attachment)
@@ -57,7 +57,7 @@ export class EntityManager {
     }
 
     detach(parentId: number, attachmentId: number) {
-        const hub = this.getComponentOrNone(parentId, Hub)
+        const hub = this.getComponentOrNone(parentId, EntityHub)
         if (!hub) return
 
         const attachment = this.getComponentOrNone(attachmentId, Attachment)
@@ -110,7 +110,7 @@ export class EntityManager {
     }
 
     getAttachments(id: number, type?: SlotType): ReadonlySet<number> {
-        const hub = this.getComponentOrNone(id, Hub)
+        const hub = this.getComponentOrNone(id, EntityHub)
         if (!hub) return new Set()
 
         return new Set(hub.state.slots
@@ -124,7 +124,7 @@ export class EntityManager {
     }
 
     getDebugInfo(): DebugInfo {
-        const playerId = this.withComponents(Control, Hub)[0]
+        const playerId = this.withComponents(Control, EntityHub)[0]
         const playerPosition = this.getComponent(playerId, Transform).state.position
         const componentCount = Array.from(this.entities.values())
             .map(components => components.length)

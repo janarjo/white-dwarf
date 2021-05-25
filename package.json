@@ -2,7 +2,6 @@
   "name": "white-dwarf",
   "version": "1.0.0",
   "description": "An asteroids-like game with Typescript",
-  "main": "webpack.config.js",
   "scripts": {
     "start": "snowpack dev",
     "build": "snowpack build",

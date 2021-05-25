@@ -1,4 +1,4 @@
-import { Hub } from '../components/Hub'
+import { EntityHub } from '../components/EntityHub'
 import { Movement } from '../components/Movement'
 import { Transform, TransformState } from '../components/Transform'
 import { EntityManager } from '../EntityManager'
@@ -31,11 +31,11 @@ export class TransformSystem extends System {
             }
         })
 
-        this.entities.withComponents(Transform, Hub).forEach((id) => {
+        this.entities.withComponents(Transform, EntityHub).forEach((id) => {
             const transform = this.entities.getComponent(id, Transform)
             const { position, orientation } = transform.state
 
-            const hub = this.entities.getComponent(id, Hub)
+            const hub = this.entities.getComponent(id, EntityHub)
             hub.state.slots.forEach(slot => {
                 const { attachmentId, offset } = slot
                 if (!attachmentId) return

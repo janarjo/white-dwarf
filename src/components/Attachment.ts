@@ -1,5 +1,5 @@
 import { Component, ComponentCode, ComponentState } from './Component'
-import { SlotType } from './Hub'
+import { SlotType } from './EntityHub'
 
 export enum RemoveBehavior {
     DISCARD,

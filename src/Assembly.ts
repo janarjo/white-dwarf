@@ -4,7 +4,7 @@ import { Collision, CollisionGroup } from './components/Collision'
 import { Control } from './components/Control'
 import { TriggerType, Emitter } from './components/Emitter'
 import { Health } from './components/Health'
-import { Hub, SlotType } from './components/Hub'
+import { EntityHub, SlotType } from './components/EntityHub'
 import { Movement } from './components/Movement'
 import { Render, ShapeType } from './components/Render'
 import { Transform } from './components/Transform'
@@ -48,7 +48,7 @@ export const player = (position: Vector) => [
         maxSpeed: 5,
         rotationalSpeed: 0.075,
     }),
-    new Hub({
+    new EntityHub({
         slots: [
             { attachmentId: undefined, offset: [0, 0], type: SlotType.CAMERA },
             { attachmentId: undefined, offset: [0, 23], type: SlotType.WEAPON },
@@ -62,7 +62,7 @@ export const player = (position: Vector) => [
     }),
     new Emitter({
         trigger: TriggerType.ACCELERATION,
-        rateMs: 500,
+        rateMs: 250,
         decayMs: 0,
         lastEmittedMs: 0,
         offset: [0, -23],
@@ -148,12 +148,12 @@ export const blaster = () => [
     }),
 ]
 
-export const exhaust = (position: Vector) => [
+export const exhaust = (position: Vector, orientation: number) => [
     new Transform({
         position,
-        orientation: 0,
+        orientation,
     }),
     new Render({
-        shape: { type: ShapeType.CIRCLE, color: 'white', radius: 20 }
+        shape: { type: ShapeType.TRIANGLE, color: 'white', base: 6, height: 10 }
     }),
 ]

@@ -17,12 +17,12 @@ export interface Slot {
     offset: Offset
 }
 
-export interface HubState extends ComponentState {
+export interface EntityHubState extends ComponentState {
     slots: Slot[]
 }
 
-export class Hub extends Component {
-    constructor(public state: HubState) {
+export class EntityHub extends Component {
+    constructor(public state: EntityHubState) {
         super(ComponentCode.HUB, 'Hub', state)
     }
 }

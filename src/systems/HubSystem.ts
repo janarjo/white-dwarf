@@ -1,5 +1,5 @@
 import { Attachment, RemoveBehavior } from '../components/Attachment'
-import { Hub } from '../components/Hub'
+import { EntityHub } from '../components/EntityHub'
 import { EntityManager } from '../EntityManager'
 import { isDefined } from '../Util'
 import { System } from './System'
@@ -11,8 +11,8 @@ export class HubSystem extends System {
     }
 
     update() {
-        this.entities.withComponents(Hub).forEach((parentId) => {
-            const hub = this.entities.getComponent(parentId, Hub)
+        this.entities.withComponents(EntityHub).forEach((parentId) => {
+            const hub = this.entities.getComponent(parentId, EntityHub)
             const slots = hub.state.slots
 
             slots
