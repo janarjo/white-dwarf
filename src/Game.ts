@@ -4,7 +4,7 @@ import { CameraSystem } from './systems/CameraSystem'
 import { CollisionSystem } from './systems/CollisionSystem'
 import { ControlSystem } from './systems/ControlSystem'
 import { HealthSystem } from './systems/HealthSystem'
-import { HubSystem } from './systems/HubSystem'
+import { EntityHubSystem } from './systems/EntityHubSystem'
 import { MovementSystem } from './systems/MovementSystem'
 import { RenderSystem } from './systems/RenderSystem'
 import { System } from './systems/System'
@@ -41,7 +41,7 @@ export class Game {
             new WeaponSystem(entities),
             new HealthSystem(entities),
             new CameraSystem(entities, this.viewPort, mapSize),
-            new HubSystem(entities),
+            new EntityHubSystem(entities),
             new EmitterSystem(entities),
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             new RenderSystem(entities, this.canvas.getContext('2d')!, stars, this.isDebug),

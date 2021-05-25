@@ -8,7 +8,8 @@ export enum ComponentCode {
     HEALTH,
     CAMERA,
     ATTACHMENT,
-    HUB,
+    ENTITY_HUB,
+    EFFECT_HUB,
     EMITTER,
 }
 

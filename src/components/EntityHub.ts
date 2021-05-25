@@ -23,6 +23,6 @@ export interface EntityHubState extends ComponentState {
 
 export class EntityHub extends Component {
     constructor(public state: EntityHubState) {
-        super(ComponentCode.HUB, 'Hub', state)
+        super(ComponentCode.ENTITY_HUB, 'Entity Hub', state)
     }
 }
