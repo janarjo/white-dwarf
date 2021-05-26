@@ -13,6 +13,7 @@ import { WeaponSystem } from './systems/WeaponSystem'
 import { Dimensions } from './Math'
 import { Field } from './fields/Field'
 import { EmitterSystem } from './systems/EmitterSystem'
+import { EffectHubSystem } from './systems/EffectHubSystem'
 
 export class Game {
     readonly isDebug = true
@@ -43,6 +44,7 @@ export class Game {
             new CameraSystem(entities, this.viewPort, mapSize),
             new EntityHubSystem(entities),
             new EmitterSystem(entities),
+            new EffectHubSystem(entities),
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             new RenderSystem(entities, this.canvas.getContext('2d')!, stars, this.isDebug),
         ] as const

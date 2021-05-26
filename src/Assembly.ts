@@ -2,7 +2,7 @@ import { Attachment, RemoveBehavior } from './components/Attachment'
 import { Camera } from './components/Camera'
 import { Collision, CollisionGroup } from './components/Collision'
 import { Control } from './components/Control'
-import { TriggerType, Emitter } from './components/Emitter'
+import { TriggerType as EmitterTriggerType, Emitter } from './components/Emitter'
 import { Health } from './components/Health'
 import { EntityHub, SlotType } from './components/EntityHub'
 import { Movement } from './components/Movement'
@@ -10,6 +10,7 @@ import { Render, ShapeType } from './components/Render'
 import { Transform } from './components/Transform'
 import { Weapon } from './components/Weapon'
 import { Vector } from './Math'
+import { TriggerType as EffectTriggerType, EffectHub, EffectType } from './components/EffectHub'
 
 export const camera = () => [
     new Transform({
@@ -61,7 +62,7 @@ export const player = (position: Vector) => [
         mask: [CollisionGroup.ENEMY],
     }),
     new Emitter({
-        trigger: TriggerType.ACCELERATION,
+        trigger: EmitterTriggerType.ACCELERATION,
         rateMs: 250,
         decayMs: 0,
         lastEmittedMs: 0,
@@ -156,4 +157,7 @@ export const exhaust = (position: Vector, orientation: number) => [
     new Render({
         shape: { type: ShapeType.TRIANGLE, color: 'white', base: 6, height: 10 }
     }),
+    new EffectHub({
+        effects: [{ type: EffectType.DEATH, durationMs: 500, startedMs: performance.now(), trigger: EffectTriggerType.END }]
+    })
 ]

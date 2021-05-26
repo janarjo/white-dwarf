@@ -8,6 +8,7 @@ module.exports = {
         sourceType: 'module',
     },
     rules: {
+        'eqeqeq': 1,
         'semi': 'off',
         '@typescript-eslint/explicit-function-return-type': 'off',
         'indent': [2, 4, { 'FunctionExpression': { 'body': 1, 'parameters': 2 }, 'SwitchCase': 1}],
