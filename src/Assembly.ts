@@ -63,10 +63,10 @@ export const player = (position: Vector) => [
     }),
     new Emitter({
         trigger: EmitterTriggerType.ACCELERATION,
-        rateMs: 250,
+        rateMs: 125,
         decayMs: 0,
         lastEmittedMs: 0,
-        offset: [0, -23],
+        offset: [0, -30],
     })
 ]
 
@@ -155,9 +155,10 @@ export const exhaust = (position: Vector, orientation: number) => [
         orientation,
     }),
     new Render({
-        shape: { type: ShapeType.TRIANGLE, color: 'white', base: 6, height: 10 }
+        shape: { type: ShapeType.TRIANGLE, color: 'white', base: 6, height: 10 },
+        effect: { durationMs: 275, startedMs: performance.now() }
     }),
     new EffectHub({
-        effects: [{ type: EffectType.DEATH, durationMs: 500, startedMs: performance.now(), trigger: EffectTriggerType.END }]
+        effects: [{ type: EffectType.DEATH, durationMs: 250, startedMs: performance.now(), trigger: EffectTriggerType.END }]
     })
 ]

@@ -1,7 +1,7 @@
 import { Camera } from '../components/Camera'
 import { Collision } from '../components/Collision'
 import { Health } from '../components/Health'
-import { Circle, Render, ShapeType, Triangle, Shape, Rectangle } from '../components/Render'
+import { Circle, Render, ShapeType, Triangle, Shape, Rectangle, Effect } from '../components/Render'
 import { Transform } from '../components/Transform'
 import { Weapon } from '../components/Weapon'
 import { EntityManager } from '../EntityManager'
@@ -33,8 +33,9 @@ export class RenderSystem extends System {
             const position = subtract(transform.state.position, origin)
             const orientation = transform.state.orientation
             const render = this.entities.getComponent(id, Render)
+            const { shape, effect } = render.state
 
-            this.drawShape(position, orientation, render.state.shape)
+            this.drawShape(position, orientation, shape, effect)
         })
 
         this.entities.withComponents(Transform, Render, Health).forEach(id => {
@@ -110,46 +111,51 @@ export class RenderSystem extends System {
         this.ctx.restore()
     }
 
-    private drawShape(position: Position, orientation: number, shape: Shape) {
+    private drawShape(position: Position, orientation: number, shape: Shape, effect?: Effect) {
         this.ctx.save()
         switch (shape.type) {
             case ShapeType.DOT:
-                this.drawDot(position, shape)
+                this.drawDot(position, shape, effect)
                 break
             case ShapeType.CIRCLE:
-                this.drawCircle(position, shape)
+                this.drawCircle(position, shape, effect)
                 break
             case ShapeType.TRIANGLE:
-                this.drawTriangle(position, orientation, shape)
+                this.drawTriangle(position, orientation, shape, effect)
                 break
             case ShapeType.RECTANGLE:
-                this.drawRectangle(position, shape)
+                this.drawRectangle(position, shape, effect)
                 break
         }
         this.ctx.restore()
     }
     
-    drawDot(position: Position, shape: Dot) {
+    drawDot(position: Position, shape: Dot, effect?: Effect) {
         this.ctx.beginPath()
         this.ctx.fillStyle = shape.color
+        this.addEffect(effect)
+
         const [x, y] = position
         this.ctx.fillRect(x, y, 2, 2)
         this.ctx.stroke()
     }
 
-    drawCircle(position: Position, shape: Circle) {
+    drawCircle(position: Position, shape: Circle, effect?: Effect) {
         this.ctx.beginPath()
         this.ctx.fillStyle = shape.color
         this.ctx.lineWidth = 2
+        this.addEffect(effect)
+
         const [x, y] = position
         this.ctx.arc(x, y, shape.radius, 0, 2 * Math.PI, true)
         this.ctx.closePath()
         this.ctx.fill()
     }
 
-    drawTriangle(position: Position, orientation: number, shape: Triangle) {
+    drawTriangle(position: Position, orientation: number, shape: Triangle, effect?: Effect) {
         this.ctx.beginPath()
         this.ctx.fillStyle = shape.color
+        this.addEffect(effect)
     
         const [ centerX, centerY ] = position
         const halfHeight = (shape.height / 2)
@@ -172,8 +178,10 @@ export class RenderSystem extends System {
         this.ctx.fill()
     }
 
-    drawRectangle(position: Position, shape: Rectangle) {
+    drawRectangle(position: Position, shape: Rectangle, effect?: Effect) {
         this.ctx.beginPath()
+        this.addEffect(effect)
+
         const [ x, y ] = position
         const [ w, h ] = shape.dimensions
         if (shape.fill) {
@@ -184,5 +192,19 @@ export class RenderSystem extends System {
             this.ctx.strokeRect(x, y, w, h)
         }
         this.ctx.stroke()
+    }
+
+    addEffect(effect?: Effect) {
+        if (!effect) return
+        
+        const now = performance.now()
+        const { durationMs, startedMs } = effect
+
+        if (now - startedMs > durationMs) {
+            effect.startedMs = performance.now()
+            return
+        }
+
+        this.ctx.globalAlpha = 1 - ((now - startedMs) / durationMs)
     }
 }
