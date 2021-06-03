@@ -5,7 +5,7 @@ export enum ShapeType {
     DOT, CIRCLE, TRIANGLE, RECTANGLE
 }
 
-interface BaseShape {
+export interface BaseShape {
     color: string
 }
 

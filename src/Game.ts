@@ -14,6 +14,7 @@ import { Dimensions } from './Math'
 import { Field } from './fields/Field'
 import { EmitterSystem } from './systems/EmitterSystem'
 import { EffectHubSystem } from './systems/EffectHubSystem'
+import { Drawer } from './ui/Drawer'
 
 export class Game {
     readonly isDebug = true
@@ -46,7 +47,7 @@ export class Game {
             new EmitterSystem(entities),
             new EffectHubSystem(entities),
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            new RenderSystem(entities, this.canvas.getContext('2d')!, stars, this.isDebug),
+            new RenderSystem(entities, new Drawer(this.canvas.getContext('2d')!), stars, this.isDebug),
         ] as const
 
         level.init()
