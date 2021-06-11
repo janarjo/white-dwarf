@@ -1,24 +1,42 @@
 export type Vector = Readonly<[number, number]>
-export const add = (v1: Vector, v2: Vector) => [v1[0] + v2[0], v1[1] + v2[1]] as const
-export const subtract = (v1: Vector, v2: Vector) => [v1[0] - v2[0], v1[1] - v2[1]] as const
-export const scale = (v: Vector, n: number) => [v[0] * n, v[1] * n] as const
-export const divide = (v: Vector, n: number) => [v[0] / n, v[1] / n] as const
-
 export type Position = Vector
 export type Offset = Vector
 export type Dimensions = Vector
 export type Range = Vector
 
-export const rotatePoints = (origin: Position, angle: number, points: ReadonlyArray<Position>) => {
+export const add = (v1: Vector, v2: Vector) => [v1[0] + v2[0], v1[1] + v2[1]] as const
+export const subtract = (v1: Vector, v2: Vector) => [v1[0] - v2[0], v1[1] - v2[1]] as const
+export const scale = (v: Vector, n: number) => [v[0] * n, v[1] * n] as const
+export const divide = (v: Vector, n: number) => [v[0] / n, v[1] / n] as const
+export const neg = (v: Vector) => scale(v, -1)
+export const mag = (v: Vector) => Math.sqrt(v[0] * v[0] + v[1] * v[1])
+export const norm = (v: Vector) => divide(v, mag(v))
+export const rad = (v: Vector) => Math.atan2(v[1], v[0])
+export const hvec = (rad: number) => [Math.cos(rad), Math.sin(rad)] as const
+export const limit = (v: Vector, max: number) => {
+    const magnitude = mag(v)
+    return magnitude > max ? scale(divide(v, magnitude), max) : v
+}
+
+export type Direction = Vector
+export class Directions {
+    static readonly EAST = [1, 0] as const
+    static readonly SOUTH = [0, 1] as const
+    static readonly WEST = [-1, 0] as const
+    static readonly NORTH = [0, -1] as const
+}
+
+export const rotatePoints = (points: ReadonlyArray<Position>, direction: Direction, origin: Position = [0, 0]) => {
+    const angle = rad(direction)
     const cosMult = Math.cos(angle)
     const sinMult = Math.sin(angle)
-
+    
     return points
         .map(v => subtract(v, origin))
-        .map(v => [v[1] * cosMult - v[0] * sinMult, v[0] * cosMult + v[1] * sinMult] as const)
+        .map(v => [v[0] * cosMult - v[1] * sinMult, v[0] * sinMult + v[1] * cosMult] as const)
         .map(v => add(v, origin))
 }
-export const rotate = (origin: Position, angle: number, point: Position) => rotatePoints(origin, angle, [point])[0]
+export const rotate = (point: Position, direction: Direction, origin: Position = [0, 0]) => rotatePoints([point], direction, origin)[0]
 
 export const rand = (min = 0, max = 1) => Math.random() * (max - min) + min
 export const randInt = (r: Range) => {

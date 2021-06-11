@@ -1,8 +1,8 @@
 import { EntityHub } from '../components/EntityHub'
 import { Movement } from '../components/Movement'
-import { Transform, TransformState } from '../components/Transform'
+import { Transform } from '../components/Transform'
 import { EntityManager } from '../EntityManager'
-import { add, isWithin, Position, rotate, Vector } from '../Math'
+import { add, hvec, isWithin, rotate, Vector } from '../Math'
 import { System } from './System'
 
 export class TransformSystem extends System {
@@ -24,16 +24,19 @@ export class TransformSystem extends System {
             const transform = this.entities.getComponent(id, Transform)
             const movement = this.entities.getComponent(id, Movement)
 
+            const { position, direction } = transform.state
+            const { currVelocity, currRotationalSpeed } = movement.state
+
             transform.state = {
                 ...transform.state,
-                orientation: this.getOrientation(transform.state, movement.state.currRotationalSpeed),
-                position: this.getPosition(transform.state, movement.state.currSpeed),
+                position: add(position, currVelocity),
+                direction: rotate(direction, hvec(currRotationalSpeed))
             }
         })
 
         this.entities.withComponents(Transform, EntityHub).forEach((id) => {
             const transform = this.entities.getComponent(id, Transform)
-            const { position, orientation } = transform.state
+            const { position, direction } = transform.state
 
             const hub = this.entities.getComponent(id, EntityHub)
             hub.state.slots.forEach(slot => {
@@ -45,21 +48,10 @@ export class TransformSystem extends System {
 
                 attachmentTransform.state = {
                     ...attachmentTransform.state,
-                    orientation,
-                    position: rotate(position, orientation, add(position, offset)),
+                    position: rotate(add(position, offset), direction, position),
+                    direction: direction
                 }
             })
         })
-    }
-
-    private getOrientation(state: TransformState, turningSpeed: number): number {
-        return state.orientation + turningSpeed
-    }
-
-    private getPosition(state: TransformState, speed: number): Position {
-        const { position, orientation } = state
-        const motionX = speed * Math.cos(orientation)
-        const motionY = speed * Math.sin(orientation)
-        return add(position, [motionX, motionY])
     }
 }

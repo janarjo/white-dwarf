@@ -1,9 +1,9 @@
-import { Position } from '../Math'
+import { Position, Vector } from '../Math'
 import { Component, ComponentCode, ComponentState } from './Component'
 
 export interface TransformState extends ComponentState {
     position: Position
-    orientation: number
+    direction: Vector
 }
 
 export class Transform extends Component {

@@ -31,17 +31,17 @@ export class RenderSystem extends System {
         this.entities.withComponents(Transform, Render).forEach(id => {
             const transform = this.entities.getComponent(id, Transform)
             const position = subtract(transform.state.position, origin)
-            const orientation = transform.state.orientation
+            const direction = transform.state.direction
+            
             const render = this.entities.getComponent(id, Render)
             const { shape, effect } = render.state
 
-            this.drawer.drawShape(shape, { position, orientation, effect })
+            this.drawer.drawShape(shape, { position, direction, effect })
         })
 
         this.entities.withComponents(Transform, Render, Health).forEach(id => {
             const transform = this.entities.getComponent(id, Transform)
             const position = subtract(transform.state.position, origin)
-            const orientation = transform.state.orientation
             const health = this.entities.getComponent(id, Health)
             if (!health.state.showIndicator) return
 
@@ -50,7 +50,7 @@ export class RenderSystem extends System {
             const width = (health.state.health / health.state.maxHealth) * maxWidth
 
             const shape: Rectangle = { type: ShapeType.RECTANGLE, color: 'white', dimensions: [width, 2], fill: true }
-            this.drawer.drawShape(shape, { position: add(position, [-(maxWidth / 2), offset]), orientation } )
+            this.drawer.drawShape(shape, { position: add(position, [-(maxWidth / 2), offset]) } )
         })
 
         /* Debug elements */
@@ -60,24 +60,24 @@ export class RenderSystem extends System {
         this.entities.withComponents(Transform, Render, Collision).forEach(id => {
             const transform = this.entities.getComponent(id, Transform)
             const position = subtract(transform.state.position, origin)
-            const orientation = transform.state.orientation
             const collision = this.entities.getComponent(id, Collision)
             const [offset, dimensions] = collision.state.boundingBox
             const isColliding = collision.state.isColliding
 
             const shape: Rectangle = { type: ShapeType.RECTANGLE, color: isColliding ? 'red' : 'white', dimensions, fill: false }
-            this.drawer.drawShape(shape, { position: add(position, offset), orientation } )
+            this.drawer.drawShape(shape, { position: add(position, offset) } )
         })
 
         this.entities.withComponents(Transform, Render, Weapon).forEach(id => {
             const transform = this.entities.getComponent(id, Transform)
             const position = subtract(transform.state.position, origin)
-            const { orientation } = transform.state
+            const direction = transform.state.direction
+
             const weapon = this.entities.getComponent(id, Weapon)
             const { offset } = weapon.state
-            const firePosition = rotate(position, orientation, add(position, offset))
+            const firePosition = rotate(position, direction, add(position, offset))
 
-            this.drawer.drawShape({ type: ShapeType.DOT, color: 'red'}, { position: firePosition, orientation } )
+            this.drawer.drawShape({ type: ShapeType.DOT, color: 'red'}, { position: firePosition } )
         })
     }
 }

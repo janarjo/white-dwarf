@@ -24,9 +24,10 @@ export class WeaponSystem extends System {
             if (!isCooledDown) return
 
             const transform = this.entities.getComponent(id, Transform)
-            const { position, orientation } = transform.state
-            const firePosition = rotate(position, orientation, add(position, offset))
-            this.entities.create(projectile(firePosition, orientation))
+            const { position, direction } = transform.state
+
+            const firePosition = rotate(add(position, offset), direction, position)
+            this.entities.create(projectile(firePosition, direction))
             weapon.state = { ...weapon.state, lastFiredMs: now }
         })
     }

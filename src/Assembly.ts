@@ -9,13 +9,13 @@ import { Movement } from './components/Movement'
 import { Render, ShapeType } from './components/Render'
 import { Transform } from './components/Transform'
 import { Weapon } from './components/Weapon'
-import { Vector } from './Math'
+import { Directions, scale, Vector } from './Math'
 import { TriggerType as EffectTriggerType, EffectHub, EffectType } from './components/EffectHub'
 
 export const camera = () => [
     new Transform({
         position: [0, 0],
-        orientation: 0,
+        direction: Directions.NORTH
     }),
     new Camera({
         origin: [0, 0],
@@ -29,7 +29,7 @@ export const camera = () => [
 export const player = (position: Vector) => [
     new Transform({
         position,
-        orientation: 0,
+        direction: Directions.EAST
     }),
     new Render({
         shape: { type: ShapeType.TRIANGLE, color: 'white', base: 30, height: 50 }
@@ -42,8 +42,9 @@ export const player = (position: Vector) => [
         isFiring: false,
     }),
     new Movement({
-        currSpeed: 0,
-        currAcceleration: 0,
+        currDirection: [1, 0],
+        currVelocity: [0, 0],
+        currAcceleration: [0, 0],
         currRotationalSpeed: 0,
         acceleration: 0.1,
         maxSpeed: 5,
@@ -52,7 +53,7 @@ export const player = (position: Vector) => [
     new EntityHub({
         slots: [
             { attachmentId: undefined, offset: [0, 0], type: SlotType.CAMERA },
-            { attachmentId: undefined, offset: [0, 23], type: SlotType.WEAPON },
+            { attachmentId: undefined, offset: [23, 0], type: SlotType.WEAPON },
         ],
     }),
     new Collision({
@@ -66,21 +67,21 @@ export const player = (position: Vector) => [
         rateMs: 125,
         decayMs: 0,
         lastEmittedMs: 0,
-        offset: [0, -30],
+        offset: [-30, 0],
     })
 ]
 
-export const projectile = (position: Vector, orientation: number) => [
+export const projectile = (position: Vector, direction: Vector) => [
     new Transform({
         position,
-        orientation,
+        direction
     }),
     new Render({
         shape: { type: ShapeType.DOT, color: 'white' }
     }),
     new Movement({
-        currSpeed: 5,
-        currAcceleration: 0,
+        currVelocity: scale(direction, 5),
+        currAcceleration: [0, 0],
         currRotationalSpeed: 0,
         acceleration: 0,
         maxSpeed: 5,
@@ -100,17 +101,17 @@ export const projectile = (position: Vector, orientation: number) => [
     }),
 ]
 
-export const asteroid = (position: Vector, orientation: number) => [
+export const asteroid = (position: Vector, direction: Vector) => [
     new Transform({
         position,
-        orientation,
+        direction
     }),
     new Render({
         shape: { type: ShapeType.CIRCLE, color: 'white', radius: 20 }
     }),
     new Movement({
-        currSpeed: 1.5,
-        currAcceleration: 0,
+        currVelocity: scale(direction, 1.5),
+        currAcceleration: [0, 0],
         currRotationalSpeed: 0,
         acceleration: 0,
         maxSpeed: 1.5,
@@ -133,7 +134,7 @@ export const asteroid = (position: Vector, orientation: number) => [
 export const blaster = () => [
     new Transform({
         position: [0, 0],
-        orientation: 0,
+        direction: Directions.NORTH
     }),
     new Render({
         shape: { type: ShapeType.DOT, color: 'white' }
@@ -149,10 +150,18 @@ export const blaster = () => [
     }),
 ]
 
-export const exhaust = (position: Vector, orientation: number) => [
+export const exhaust = (position: Vector, direction: Vector) => [
     new Transform({
         position,
-        orientation,
+        direction
+    }),
+    new Movement({
+        currVelocity: scale(direction, 1.5),
+        currAcceleration: [0, 0],
+        currRotationalSpeed: 0,
+        acceleration: 0,
+        maxSpeed: 0,
+        rotationalSpeed: 0,
     }),
     new Render({
         shape: { type: ShapeType.TRIANGLE, color: 'white', base: 6, height: 10 },

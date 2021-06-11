@@ -1,10 +1,10 @@
 import { Circle, Triangle, Rectangle, Effect, BaseShape } from '../components/Render'
-import { Position, rotatePoints } from '../Math'
+import { Position, rotatePoints, Direction } from '../Math'
 import { Dot } from '../components/Render'
 
 export interface DrawParameters {
     position: Position
-    orientation: number
+    direction?: Direction
     effect?: Effect
 }
 
@@ -66,7 +66,7 @@ export class CircleDrawer extends ShapeDrawer<Circle> {
 
 export class TriangleDrawer extends ShapeDrawer<Triangle> {
     protected drawInternal(shape: Triangle, instructions: DrawParameters): void {
-        const { position, orientation, effect } = instructions
+        const { position, direction, effect } = instructions
 
         this.ctx.beginPath()
         this.ctx.fillStyle = shape.color
@@ -75,12 +75,12 @@ export class TriangleDrawer extends ShapeDrawer<Triangle> {
         const [ centerX, centerY ] = position
         const halfHeight = (shape.height / 2)
         const halfBase = (shape.base / 2)
+
+        const pointA = [centerX + halfHeight, centerY] as const
+        const pointB = [centerX - halfHeight, centerY - halfBase] as const
+        const pointC = [centerX - halfHeight, centerY + halfBase] as const
     
-        const pointA = [centerX - halfBase, centerY - halfHeight] as const
-        const pointB = [centerX, centerY + halfHeight] as const
-        const pointC = [centerX + halfBase, centerY - halfHeight] as const
-    
-        const rotatedPoints = rotatePoints(position, orientation, [pointA, pointB, pointC])
+        const rotatedPoints = rotatePoints([pointA, pointB, pointC], direction ?? [0, 0], position)
     
         const rotatedPointA = rotatedPoints[0]
         const rotatedPointB = rotatedPoints[1]

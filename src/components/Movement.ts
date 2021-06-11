@@ -1,8 +1,9 @@
+import { Vector } from '../Math'
 import { Component, ComponentCode, ComponentState } from './Component'
 
-export interface MovementState  extends ComponentState {
-    currSpeed: number
-    currAcceleration: number
+export interface MovementState extends ComponentState {
+    currVelocity: Vector
+    currAcceleration: Vector
     currRotationalSpeed: number
     acceleration: number
     rotationalSpeed: number
