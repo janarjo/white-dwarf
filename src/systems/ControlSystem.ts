@@ -14,24 +14,24 @@ export class ControlSystem extends System {
     handleInput(event: KeyboardEvent, isKeyDown: boolean) {
         this.entities.withComponents(Control).forEach(id => {
             const control = this.entities.getComponent(id, Control)
-            switch (event.keyCode) {
-                case 32: {
+            switch (event.key) {
+                case ' ': {
                     control.state.isFiring = isKeyDown ? true : false
                     break
                 }
-                case 37: {
+                case 'ArrowLeft': {
                     control.state.isTurningLeft = isKeyDown ? true : false
                     break
                 }
-                case 38: {
+                case 'ArrowUp': {
                     control.state.isAccelerating = isKeyDown ? true : false
                     break
                 }
-                case 39: {
+                case 'ArrowRight': {
                     control.state.isTurningRight = isKeyDown ? true : false
                     break
                 }
-                case 40: {
+                case 'ArrowDown': {
                     control.state.isDecelerating = isKeyDown ? true : false
                     break
                 }
