@@ -2,7 +2,7 @@ import { EntityHub } from '../components/EntityHub'
 import { Movement } from '../components/Movement'
 import { Transform } from '../components/Transform'
 import { EntityManager } from '../EntityManager'
-import { add, hvec, isWithin, rotate, scale, Vector, rad } from '../Math'
+import { add, hvec, isWithin, rotate, scale, Vector } from '../Math'
 import { System } from './System'
 
 export class TransformSystem extends System {
