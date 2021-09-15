@@ -27,10 +27,15 @@ export class MovementSystem extends System {
     }
 
     private updateVelocity(movementState: MovementState): MovementState {
-        const { currVelocity, currAcceleration, maxSpeed } = movementState
+        const { currVelocity, currAcceleration, maxSpeed, lastUpdated } = movementState
+
+        const now = performance.now()
+        const elapsedSec = (now - lastUpdated) * 0.001
+        
         return {
             ...movementState, 
-            currVelocity: limit(add(currVelocity, currAcceleration), maxSpeed)
+            currVelocity: limit(add(currVelocity, scale(currAcceleration, elapsedSec)), maxSpeed.toPxPerSec()),
+            lastUpdated: now
         }
     }
 
@@ -44,16 +49,16 @@ export class MovementSystem extends System {
 
         let newAcceleration: Vector
         if (isAccelerating) {
-            newAcceleration = scale(direction, acceleration)
+            newAcceleration = scale(direction, acceleration.toPxPerSec())
         } else if (isDecelerating) {
-            newAcceleration = scale(direction, -acceleration)
+            newAcceleration = scale(direction, -acceleration.toPxPerSec())
         } else newAcceleration = [0, 0]
 
         let newRotationalSpeed: number
         if (isTurningLeft) {
-            newRotationalSpeed = -rotationalSpeed
+            newRotationalSpeed = -rotationalSpeed.toRadPerSec()
         } else if (isTurningRight) {
-            newRotationalSpeed = rotationalSpeed
+            newRotationalSpeed = rotationalSpeed.toRadPerSec()
         } else newRotationalSpeed = 0
 
         return { 

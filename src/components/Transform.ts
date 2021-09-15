@@ -4,6 +4,7 @@ import { Component, ComponentCode, ComponentState } from './Component'
 export interface TransformState extends ComponentState {
     position: Position
     direction: Vector
+    lastUpdated: number
 }
 
 export class Transform extends Component {

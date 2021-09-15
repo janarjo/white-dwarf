@@ -11,11 +11,13 @@ import { Transform } from './components/Transform'
 import { Weapon } from './components/Weapon'
 import { Directions, scale, Vector } from './Math'
 import { TriggerType as EffectTriggerType, EffectHub, EffectType } from './components/EffectHub'
+import { degPerSec, pxPerSec, pxPerSec2 } from './Units'
 
 export const camera = () => [
     new Transform({
         position: [0, 0],
-        direction: Directions.NORTH
+        direction: Directions.NORTH,
+        lastUpdated: performance.now()
     }),
     new Camera({
         origin: [0, 0],
@@ -29,7 +31,8 @@ export const camera = () => [
 export const player = (position: Vector) => [
     new Transform({
         position,
-        direction: Directions.EAST
+        direction: Directions.EAST,
+        lastUpdated: performance.now()
     }),
     new Render({
         shape: { type: ShapeType.TRIANGLE, color: 'white', base: 30, height: 50 }
@@ -46,9 +49,10 @@ export const player = (position: Vector) => [
         currVelocity: [0, 0],
         currAcceleration: [0, 0],
         currRotationalSpeed: 0,
-        acceleration: 0.1,
-        maxSpeed: 5,
-        rotationalSpeed: 0.075,
+        acceleration: pxPerSec2(200),
+        maxSpeed: pxPerSec(300),
+        rotationalSpeed: degPerSec(180),
+        lastUpdated: performance.now(),
     }),
     new EntityHub({
         slots: [
@@ -74,18 +78,20 @@ export const player = (position: Vector) => [
 export const projectile = (position: Vector, direction: Vector) => [
     new Transform({
         position,
-        direction
+        direction,
+        lastUpdated: performance.now()
     }),
     new Render({
         shape: { type: ShapeType.DOT, color: 'white' }
     }),
     new Movement({
-        currVelocity: scale(direction, 5),
+        currVelocity: scale(direction, 300),
         currAcceleration: [0, 0],
         currRotationalSpeed: 0,
-        acceleration: 0,
-        maxSpeed: 5,
-        rotationalSpeed: 0,
+        acceleration: pxPerSec2(0),
+        maxSpeed: pxPerSec(300),
+        rotationalSpeed: degPerSec(0),
+        lastUpdated: performance.now(),
     }),
     new Collision({
         isColliding: false,
@@ -104,18 +110,20 @@ export const projectile = (position: Vector, direction: Vector) => [
 export const asteroid = (position: Vector, direction: Vector) => [
     new Transform({
         position,
-        direction
+        direction,
+        lastUpdated: performance.now()
     }),
     new Render({
         shape: { type: ShapeType.CIRCLE, color: 'white', radius: 20 }
     }),
     new Movement({
-        currVelocity: scale(direction, 1.5),
+        currVelocity: scale(direction, 150),
         currAcceleration: [0, 0],
         currRotationalSpeed: 0,
-        acceleration: 0,
-        maxSpeed: 1.5,
-        rotationalSpeed: 0,
+        acceleration: pxPerSec2(0),
+        maxSpeed: pxPerSec(150),
+        rotationalSpeed: degPerSec(0),
+        lastUpdated: performance.now(),
     }),
     new Collision({
         isColliding: false,
@@ -134,7 +142,8 @@ export const asteroid = (position: Vector, direction: Vector) => [
 export const blaster = () => [
     new Transform({
         position: [0, 0],
-        direction: Directions.NORTH
+        direction: Directions.NORTH,
+        lastUpdated: performance.now()
     }),
     new Render({
         shape: { type: ShapeType.DOT, color: 'white' }
@@ -153,15 +162,17 @@ export const blaster = () => [
 export const exhaust = (position: Vector, direction: Vector) => [
     new Transform({
         position,
-        direction
+        direction,
+        lastUpdated: performance.now()
     }),
     new Movement({
         currVelocity: scale(direction, 1.5),
         currAcceleration: [0, 0],
         currRotationalSpeed: 0,
-        acceleration: 0,
-        maxSpeed: 0,
-        rotationalSpeed: 0,
+        acceleration: pxPerSec2(0),
+        maxSpeed: pxPerSec(0),
+        rotationalSpeed: degPerSec(0),
+        lastUpdated: performance.now(),
     }),
     new Render({
         shape: { type: ShapeType.TRIANGLE, color: 'white', base: 6, height: 10 },

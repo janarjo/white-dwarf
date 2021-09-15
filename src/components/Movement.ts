@@ -1,13 +1,15 @@
 import { Vector } from '../Math'
+import { Acceleration, RateOfRotation, Speed } from '../Units'
 import { Component, ComponentCode, ComponentState } from './Component'
 
 export interface MovementState extends ComponentState {
     currVelocity: Vector
     currAcceleration: Vector
     currRotationalSpeed: number
-    acceleration: number
-    rotationalSpeed: number
-    maxSpeed: number
+    acceleration: Acceleration
+    rotationalSpeed: RateOfRotation
+    maxSpeed: Speed
+    lastUpdated: number
 }
 
 export class Movement extends Component {

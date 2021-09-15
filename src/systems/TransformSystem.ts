@@ -2,7 +2,7 @@ import { EntityHub } from '../components/EntityHub'
 import { Movement } from '../components/Movement'
 import { Transform } from '../components/Transform'
 import { EntityManager } from '../EntityManager'
-import { add, hvec, isWithin, rotate, Vector } from '../Math'
+import { add, hvec, isWithin, rotate, scale, Vector, rad } from '../Math'
 import { System } from './System'
 
 export class TransformSystem extends System {
@@ -24,13 +24,17 @@ export class TransformSystem extends System {
             const transform = this.entities.getComponent(id, Transform)
             const movement = this.entities.getComponent(id, Movement)
 
-            const { position, direction } = transform.state
+            const { position, direction, lastUpdated } = transform.state
             const { currVelocity, currRotationalSpeed } = movement.state
+            
+            const now = performance.now()
+            const elapsedSec = (now - lastUpdated) * 0.001
 
             transform.state = {
                 ...transform.state,
-                position: add(position, currVelocity),
-                direction: rotate(direction, hvec(currRotationalSpeed))
+                position: add(position, scale(currVelocity, elapsedSec)),
+                direction: rotate(direction, hvec(currRotationalSpeed * elapsedSec)),
+                lastUpdated: now
             }
         })
 
