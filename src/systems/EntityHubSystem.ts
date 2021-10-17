@@ -17,7 +17,7 @@ export class EntityHubSystem extends System {
 
             slots
                 .filter(slot => slot.attachmentId && !this.entities.exists(slot.attachmentId))
-                .forEach(slot => slot.attachmentId === undefined)
+                .forEach(slot => slot.attachmentId = undefined)
 
             if (!this.entities.exists(parentId)) {
                 const filledSlots = slots
