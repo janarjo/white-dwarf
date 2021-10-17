@@ -15,6 +15,7 @@ import { Field } from './fields/Field'
 import { EmitterSystem } from './systems/EmitterSystem'
 import { EffectHubSystem } from './systems/EffectHubSystem'
 import { Drawer } from './ui/Drawer'
+import { AISystem } from './systems/AISystem'
 
 export class Game {
     readonly isDebug = true
@@ -36,14 +37,15 @@ export class Game {
         const level = this.levelManager.getLevel(levelNo)
         const { mapSize, entities, fields, stars } = level
         const systems = [
+            new EntityHubSystem(entities),
             new ControlSystem(entities, this.canvas),
+            new AISystem(entities),
             new MovementSystem(entities),
             new TransformSystem(entities, mapSize),
             new CollisionSystem(entities),
             new WeaponSystem(entities),
             new HealthSystem(entities),
             new CameraSystem(entities, this.viewPort, mapSize),
-            new EntityHubSystem(entities),
             new EmitterSystem(entities),
             new EffectHubSystem(entities),
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

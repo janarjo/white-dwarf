@@ -1,3 +1,4 @@
+import { AI } from '../components/AI'
 import { Control, ControlState } from '../components/Control'
 import { Movement, MovementState } from '../components/Movement'
 import { Transform, TransformState } from '../components/Transform'
@@ -23,6 +24,14 @@ export class MovementSystem extends System {
             const control = this.entities.getComponent(id, Control)
 
             movement.state = this.updateControl(movement.state, control.state, transform.state)
+        })
+
+        this.entities.withComponents(Transform, Movement, AI).forEach(id => {
+            const transform = this.entities.getComponent(id, Transform)
+            const movement = this.entities.getComponent(id, Movement)
+            const ai = this.entities.getComponent(id, AI)
+
+            movement.state = this.updateControl(movement.state, ai.state, transform.state)
         })
     }
 

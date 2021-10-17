@@ -1,7 +1,8 @@
 import { projectile } from '../Assembly'
+import { AI } from '../components/AI'
 import { Control } from '../components/Control'
-import { Transform } from '../components/Transform'
-import { Weapon } from '../components/Weapon'
+import { Transform, TransformState } from '../components/Transform'
+import { Weapon, WeaponState } from '../components/Weapon'
 import { EntityManager } from '../EntityManager'
 import { add, rotate } from '../Math'
 import { System } from './System'
@@ -18,17 +19,32 @@ export class WeaponSystem extends System {
             if (!control.state.isFiring) return
 
             const weapon = this.entities.getComponent(id, Weapon)
-            const { lastFiredMs: lastFired, cooldownMs: cooldown, offset } = weapon.state
-            const now = performance.now()
-            const isCooledDown = now - lastFired >= cooldown
-            if (!isCooledDown) return
-
             const transform = this.entities.getComponent(id, Transform)
-            const { position, direction } = transform.state
-
-            const firePosition = rotate(add(position, offset), direction, position)
-            this.entities.create(projectile(firePosition, direction))
-            weapon.state = { ...weapon.state, lastFiredMs: now }
+            
+            weapon.state = this.updateFiring(weapon.state, transform.state, false)
         })
+
+        this.entities.withComponents(Transform, AI, Weapon).forEach(id => {
+            const control = this.entities.getComponent(id, AI)
+            if (!control.state.isFiring) return
+
+            const weapon = this.entities.getComponent(id, Weapon)
+            const transform = this.entities.getComponent(id, Transform)
+            
+            weapon.state = this.updateFiring(weapon.state, transform.state, true)
+        })
+    }
+
+    private updateFiring(weaponState: WeaponState, transformState: TransformState, isEnemy: boolean) {
+        const { lastFiredMs: lastFired, cooldownMs: cooldown, offset } = weaponState
+        const now = performance.now()
+        const isCooledDown = now - lastFired >= cooldown
+        if (!isCooledDown) return weaponState
+
+        const { position, direction } = transformState
+
+        const firePosition = rotate(add(position, offset), direction, position)
+        this.entities.create(projectile(firePosition, direction, isEnemy))
+        return { ...weaponState, lastFiredMs: now }
     }
 }

@@ -1,4 +1,4 @@
-import { blaster, camera, player } from './Assembly'
+import { blaster, camera, enemy, player } from './Assembly'
 import { EntityManager } from './EntityManager'
 import { Dimensions, Position } from './Math'
 import { AsteroidField } from './fields/AsteroidField'
@@ -57,6 +57,10 @@ export class LevelManager {
 
             const blasterId = entities.create(blaster())
             entities.attach(playerId, blasterId)
+
+            const enemyId = entities.create(enemy([420, 260]))
+            const enemyBlasterId = entities.create(blaster())
+            entities.attach(enemyId, enemyBlasterId)
         }
 
         return new Level(mapSize, stars, entities, fields, init)

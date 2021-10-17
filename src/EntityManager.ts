@@ -5,6 +5,7 @@ import { EntityHub, SlotType } from './components/EntityHub'
 import { isDefined, isUndefined } from './Util'
 import { Position } from './Math'
 import { Transform } from './components/Transform'
+import { AI } from './components/AI'
 
 export class EntityManager {
     private entities: Map<number, Entity>
@@ -19,6 +20,7 @@ export class EntityManager {
 
     clean() {
         this.markedForRemoval.forEach(id => this.entities.delete(id))
+        this.markedForRemoval.clear()
     }
 
     create(entity: Entity): number {
@@ -53,6 +55,9 @@ export class EntityManager {
         const control = this.getComponentOrNone(parentId, Control)
         if (control) this.addComponent(attachmentId, control)
 
+        const ai = this.getComponentOrNone(parentId, AI)
+        if (ai) this.addComponent(attachmentId, ai)
+
         availableSlot.attachmentId = attachmentId
     }
 
@@ -68,6 +73,7 @@ export class EntityManager {
         if (!attachmentSlot) return
 
         this.removeComponent(attachmentId, Control)
+        this.removeComponent(attachmentId, AI)
 
         attachmentSlot.attachmentId = undefined
     }
@@ -120,7 +126,7 @@ export class EntityManager {
     }
 
     exists(id: number): boolean {
-        return this.markedForRemoval.has(id) || this.entities.has(id)
+        return !this.markedForRemoval.has(id) && this.entities.has(id)
     }
 
     getDebugInfo(): DebugInfo {

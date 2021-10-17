@@ -11,7 +11,8 @@ import { Transform } from './components/Transform'
 import { Weapon } from './components/Weapon'
 import { Directions, scale, Vector } from './Math'
 import { TriggerType as EffectTriggerType, EffectHub, EffectType } from './components/EffectHub'
-import { degPerSec, pxPerSec, pxPerSec2 } from './Units'
+import { degPerSec, ms, pxPerSec, pxPerSec2 } from './Units'
+import { AI } from './components/AI'
 
 export const camera = () => [
     new Transform({
@@ -75,7 +76,53 @@ export const player = (position: Vector) => [
     })
 ]
 
-export const projectile = (position: Vector, direction: Vector) => [
+export const enemy = (position: Vector) => [
+    new Transform({
+        position,
+        direction: Directions.EAST,
+        lastUpdated: performance.now()
+    }),
+    new Render({
+        shape: { type: ShapeType.TRIANGLE, color: 'blue', base: 30, height: 50 }
+    }),
+    new AI({
+        isAccelerating: false,
+        isDecelerating: false,
+        isTurningLeft: false,
+        isTurningRight: false,
+        isFiring: false,
+        pollingRate: ms(500),
+        lastPolled: performance.now(),
+    }),
+    new Movement({
+        currDirection: [1, 0],
+        currVelocity: [0, 0],
+        currAcceleration: [0, 0],
+        currRotationalSpeed: 0,
+        acceleration: pxPerSec2(200),
+        maxSpeed: pxPerSec(300),
+        rotationalSpeed: degPerSec(180),
+        lastUpdated: performance.now(),
+    }),
+    new EntityHub({
+        slots: [{ attachmentId: undefined, offset: [23, 0], type: SlotType.WEAPON }],
+    }),
+    new Collision({
+        boundingBox: [[-30, -30], [60, 60]],
+        isColliding: false,
+        group: CollisionGroup.ENEMY,
+        mask: [CollisionGroup.PLAYER],
+    }),
+    new Emitter({
+        trigger: EmitterTriggerType.ACCELERATION,
+        rateMs: 125,
+        decayMs: 0,
+        lastEmittedMs: 0,
+        offset: [-30, 0],
+    })
+]
+
+export const projectile = (position: Vector, direction: Vector, isEnemy: boolean) => [
     new Transform({
         position,
         direction,
@@ -96,8 +143,8 @@ export const projectile = (position: Vector, direction: Vector) => [
     new Collision({
         isColliding: false,
         boundingBox: [[0, 0], [1, 1]],
-        group: CollisionGroup.PLAYER,
-        mask: [CollisionGroup.ENEMY],
+        group: isEnemy ? CollisionGroup.ENEMY : CollisionGroup.PLAYER,
+        mask: [isEnemy ? CollisionGroup.PLAYER : CollisionGroup.ENEMY],
     }),
     new Health({
         health: 1,

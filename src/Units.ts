@@ -7,6 +7,10 @@ export class Time extends Unit {
         super()
     }
 
+    toMs(): number {
+        return this.amount * this.millisPerAmount
+    }
+
     toSec(): number {
         return this.amount * this.millisPerAmount * 0.001
     }
@@ -62,6 +66,7 @@ export class Acceleration extends Unit {
     }
 }
 
+export const ms = (amount: number) => new Time(amount, 1)
 export const sec = (amount: number) => new Time(amount, 1000)
 export const px = (amount: number) => new Length(amount, 1)
 export const deg = (amount: number) => new Rotation(amount, Math.PI / 180)
