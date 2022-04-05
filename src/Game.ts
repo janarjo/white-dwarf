@@ -22,7 +22,6 @@ export class Game {
     readonly fps = 60
     readonly clock = new Clock(this.fps)
     readonly isDebug = true
-    isPaused = false
 
     readonly levelManager: LevelManager
     readonly canvas: HTMLCanvasElement
@@ -34,7 +33,7 @@ export class Game {
         this.levelManager = new LevelManager(this.viewPort)
         canvas.addEventListener('keydown', (event) => {
             if (event.key === 'Pause') {
-                this.isPaused = this.isPaused ? false : true
+                this.clock.isPaused() ? this.clock.setRate(1) : this.clock.setRate(0)
             }
         })
     }

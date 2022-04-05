@@ -9,7 +9,7 @@ export class Clock {
     readonly intervalMs
     prevTick = performance.now()
     rate = 1
-    readonly dtmax = 300
+    readonly dtmax = 100
 
     tick(callback: (dt: Time) => void) {
         const now = performance.now()
@@ -19,5 +19,17 @@ export class Clock {
             this.prevTick = now - (dt % (this.intervalMs))
             callback(ms(dt))
         }
+    }
+
+    getRate(): number {
+        return this.rate
+    }
+
+    setRate(rate: number) {
+        this.rate = rate
+    }
+
+    isPaused(): boolean {
+        return this.rate === 0
     }
 }
