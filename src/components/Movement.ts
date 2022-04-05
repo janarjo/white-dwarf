@@ -9,7 +9,6 @@ export interface MovementState extends ComponentState {
     acceleration: Acceleration
     rotationalSpeed: RateOfRotation
     maxSpeed: Speed
-    lastUpdated: number
 }
 
 export class Movement extends Component {

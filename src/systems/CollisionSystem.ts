@@ -4,10 +4,9 @@ import { EntityManager } from '../EntityManager'
 import { add, isIntersect, Rectangle } from '../Math'
 import { System } from './System'
 
-export class CollisionSystem extends System {
+export class CollisionSystem implements System {
     constructor(
         private readonly entities: EntityManager) {
-        super()
     }
 
     update() {

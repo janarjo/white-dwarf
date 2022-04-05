@@ -2,14 +2,16 @@ import { Control } from '../components/Control'
 import { EntityManager } from '../EntityManager'
 import { System } from './System'
 
-export class ControlSystem extends System {
+export class ControlSystem implements System {
     constructor(
         private readonly entities: EntityManager,
         canvas: HTMLCanvasElement) {
-        super()
         canvas.addEventListener('keydown', (event) => this.handleInput(event, true))
         canvas.addEventListener('keyup', (event) => this.handleInput(event, false))
     }
+
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    update(): void {}
 
     handleInput(event: KeyboardEvent, isKeyDown: boolean) {
         this.entities.withComponents(Control).forEach(id => {

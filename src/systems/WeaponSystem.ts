@@ -7,10 +7,9 @@ import { EntityManager } from '../EntityManager'
 import { add, rotate } from '../Math'
 import { System } from './System'
 
-export class WeaponSystem extends System {
+export class WeaponSystem implements System {
     constructor(
         private readonly entities: EntityManager) {
-        super()
     }
 
     update() {

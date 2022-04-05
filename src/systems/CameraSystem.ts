@@ -4,12 +4,11 @@ import { EntityManager } from '../EntityManager'
 import { Dimensions, divide, subtract } from '../Math'
 import { System } from './System'
 
-export class CameraSystem extends System {
+export class CameraSystem implements System {
     constructor(
         private readonly entities: EntityManager,
         private readonly viewport: Dimensions,
         private readonly mapSize: Dimensions) {
-        super()
     }
 
     update() {

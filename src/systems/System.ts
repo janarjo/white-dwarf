@@ -1,5 +1,5 @@
-export abstract class System {
-    update(): void {
-        return
-    }
+import { Time } from '../Units'
+
+export interface System {
+    update(dt: Time): void
 }

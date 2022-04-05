@@ -4,10 +4,9 @@ import { EntityManager } from '../EntityManager'
 import { isDefined } from '../Util'
 import { System } from './System'
 
-export class EntityHubSystem extends System {
+export class EntityHubSystem implements System {
     constructor(
         private readonly entities: EntityManager) {
-        super()
     }
 
     update() {

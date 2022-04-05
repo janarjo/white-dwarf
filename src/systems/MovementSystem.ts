@@ -4,18 +4,18 @@ import { Movement, MovementState } from '../components/Movement'
 import { Transform, TransformState } from '../components/Transform'
 import { EntityManager } from '../EntityManager'
 import { add, limit, scale, Vector } from '../Math'
+import { Time } from '../Units'
 import { System } from './System'
 
-export class MovementSystem extends System {
+export class MovementSystem implements System {
     constructor(
         private readonly entities: EntityManager) {
-        super()
     }
 
-    update() {
+    update(dt: Time) {
         this.entities.withComponents(Movement).forEach(id => {
             const movement = this.entities.getComponent(id, Movement)
-            movement.state = this.updateVelocity(movement.state)
+            movement.state = this.updateVelocity(dt, movement.state)
         })
 
         this.entities.withComponents(Transform, Movement, Control).forEach(id => {
@@ -35,16 +35,11 @@ export class MovementSystem extends System {
         })
     }
 
-    private updateVelocity(movementState: MovementState): MovementState {
-        const { currVelocity, currAcceleration, maxSpeed, lastUpdated } = movementState
-
-        const now = performance.now()
-        const elapsedSec = (now - lastUpdated) * 0.001
-        
+    private updateVelocity(dt: Time, movementState: MovementState): MovementState {
+        const { currVelocity, currAcceleration, maxSpeed } = movementState
         return {
             ...movementState, 
-            currVelocity: limit(add(currVelocity, scale(currAcceleration, elapsedSec)), maxSpeed.toPxPerSec()),
-            lastUpdated: now
+            currVelocity: limit(add(currVelocity, scale(currAcceleration, dt.toSec())), maxSpeed.toPxPerSec())
         }
     }
 

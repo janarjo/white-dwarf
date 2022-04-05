@@ -3,10 +3,9 @@ import { Health } from '../components/Health'
 import { EntityManager } from '../EntityManager'
 import { System } from './System'
 
-export class HealthSystem extends System {
+export class HealthSystem implements System {
     constructor(
         private readonly entities: EntityManager) {
-        super()
     }
 
     update() {

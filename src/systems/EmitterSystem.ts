@@ -6,10 +6,9 @@ import { EntityManager } from '../EntityManager'
 import { add, mag, rotate, scale } from '../Math'
 import { System } from './System'
 
-export class EmitterSystem extends System {
+export class EmitterSystem implements System {
     constructor(
         private readonly entities: EntityManager) {
-        super()
     }
 
     update() {

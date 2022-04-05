@@ -10,13 +10,12 @@ import { add, rotate, subtract } from '../Math'
 import { System } from './System'
 import { Drawer } from '../ui/Drawer'
 
-export class RenderSystem extends System {
+export class RenderSystem implements System {
     constructor(
         private readonly entities: EntityManager,
         private readonly drawer: Drawer,
         private readonly stars: ReadonlyArray<Star>,
         private readonly isDebug: boolean) {
-        super()
     }
 
     update() {

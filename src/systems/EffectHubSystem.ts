@@ -2,10 +2,9 @@ import { Effect, EffectHub, EffectType, TriggerType } from '../components/Effect
 import { EntityManager } from '../EntityManager'
 import { System } from './System'
 
-export class EffectHubSystem extends System {
+export class EffectHubSystem implements System {
     constructor(
         private readonly entities: EntityManager) {
-        super()
     }
 
     update() {

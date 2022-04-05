@@ -16,12 +16,13 @@ import { EmitterSystem } from './systems/EmitterSystem'
 import { EffectHubSystem } from './systems/EffectHubSystem'
 import { Drawer } from './ui/Drawer'
 import { AISystem } from './systems/AISystem'
+import { Clock } from './Clock'
 
 export class Game {
-    readonly isDebug = true
     readonly fps = 60
-    readonly intervalMs = 1000 / this.fps
-    then: number = performance.now()
+    readonly clock = new Clock(this.fps)
+    readonly isDebug = true
+    isPaused = false
 
     readonly levelManager: LevelManager
     readonly canvas: HTMLCanvasElement
@@ -31,6 +32,11 @@ export class Game {
         this.viewPort = [canvas.width, canvas.height] as const
         this.canvas = canvas
         this.levelManager = new LevelManager(this.viewPort)
+        canvas.addEventListener('keydown', (event) => {
+            if (event.key === 'Pause') {
+                this.isPaused = this.isPaused ? false : true
+            }
+        })
     }
 
     start(levelNo: number) {
@@ -62,15 +68,10 @@ export class Game {
             fields: ReadonlyArray<Field>) {
         requestAnimationFrame(() => this.gameLoop(entities, systems, fields))
 
-        const now = performance.now()
-        const delta = now - this.then
-
-        if (delta > this.intervalMs) {
-            this.then = now - (delta % (this.intervalMs))
-
+        this.clock.tick(dt => {
             fields.forEach(field => field.generate())
-            systems.forEach(system => system.update())
+            systems.forEach(system => system.update(dt))
             entities.clean()
-        }
+        })
     }
 }

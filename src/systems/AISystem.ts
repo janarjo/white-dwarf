@@ -2,10 +2,9 @@ import { AI } from '../components/AI'
 import { EntityManager } from '../EntityManager'
 import { System } from './System'
 
-export class AISystem extends System {
+export class AISystem implements System {
     constructor(
         private readonly entities: EntityManager) {
-        super()
     }
 
     update() {
