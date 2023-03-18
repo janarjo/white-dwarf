@@ -8,6 +8,7 @@ export enum CollisionGroup {
 
 export interface CollisionState extends ComponentState {
     isColliding: boolean
+    colliders: number[]
     boundingBox: Readonly<[Offset, Dimensions]>
     group: CollisionGroup
     mask: CollisionGroup[]

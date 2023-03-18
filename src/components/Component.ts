@@ -11,7 +11,9 @@ export enum ComponentCode {
     ENTITY_HUB,
     EFFECT_HUB,
     EMITTER,
-    AI
+    AI,
+    ITEM,
+    INVENTORY
 }
 
 export interface ComponentState {

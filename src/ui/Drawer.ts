@@ -2,6 +2,7 @@ import { ShapeType, Shape } from '../components/Render'
 import { Star } from '../LevelManager'
 import { DebugInfo } from '../EntityManager'
 import { CircleDrawer, DotDrawer, DrawParameters, RectangleDrawer, TriangleDrawer } from './ShapeDrawer'
+import { ItemCode } from '../Items'
 
 export class Drawer {
     constructor(readonly ctx: CanvasRenderingContext2D) {}
@@ -29,8 +30,9 @@ export class Drawer {
     }
 
     drawDebugInfo(debugInfo: DebugInfo) {
-        const { playerPosition, entityCount, componentCount } = debugInfo
+        const { playerPosition, entityCount, componentCount, playerInventory } = debugInfo
         const [ playerX, playerY ] = playerPosition
+        const playerInventoryInfo = playerInventory.map(item => `${ItemCode[item.code]} (x${item.amount})`).join(', ')
 
         this.ctx.save()
         this.ctx.font = '12px Arial'
@@ -38,6 +40,7 @@ export class Drawer {
         this.ctx.fillText(`Position: ${playerX.toFixed(0)}, ${playerY.toFixed(0)}`, 10, 20)
         this.ctx.fillText(`Entities: ${entityCount}`, 10, 34)
         this.ctx.fillText(`Components: ${componentCount}`, 10, 48)
+        this.ctx.fillText(`Inventory: [${playerInventoryInfo}]`, 10, 62)
         this.ctx.restore()
     }
 

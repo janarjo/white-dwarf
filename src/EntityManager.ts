@@ -6,6 +6,8 @@ import { isDefined, isUndefined } from './Util'
 import { Position } from './Math'
 import { Transform } from './components/Transform'
 import { AI } from './components/AI'
+import { Item } from './Items'
+import { Inventory } from './components/Inventory'
 
 export class EntityManager {
     private entities: Map<number, Entity>
@@ -52,11 +54,9 @@ export class EntityManager {
             .find(slot => isUndefined(slot.attachmentId))
         if (!availableSlot) return
 
-        const control = this.getComponentOrNone(parentId, Control)
-        if (control) this.addComponent(attachmentId, control)
-
-        const ai = this.getComponentOrNone(parentId, AI)
-        if (ai) this.addComponent(attachmentId, ai)
+        this.addComponent(attachmentId, this.getComponentOrNone(parentId, Control))
+        this.addComponent(attachmentId, this.getComponentOrNone(parentId, AI))
+        this.addComponent(attachmentId, this.getComponentOrNone(parentId, Inventory))
 
         availableSlot.attachmentId = attachmentId
     }
@@ -74,11 +74,13 @@ export class EntityManager {
 
         this.removeComponent(attachmentId, Control)
         this.removeComponent(attachmentId, AI)
+        this.removeComponent(attachmentId, Inventory)
 
         attachmentSlot.attachmentId = undefined
     }
 
-    addComponent(id: number, component: Component) {
+    addComponent(id: number, component?: Component) {
+        if (!component) return
         const found = this.get(id)
         found.push(component)
     }
@@ -115,14 +117,14 @@ export class EntityManager {
             .map(([id,]) => id)
     }
 
-    getAttachments(id: number, type?: SlotType): ReadonlySet<number> {
+    getAttachments(id: number, type?: SlotType): ReadonlyArray<number> {
         const hub = this.getComponentOrNone(id, EntityHub)
-        if (!hub) return new Set()
+        if (!hub) return []
 
-        return new Set(hub.state.slots
+        return hub.state.slots
             .filter(slot => isUndefined(type) || slot.type === type)
             .map(slot => slot.attachmentId)
-            .filter(isDefined))
+            .filter(isDefined)
     }
 
     exists(id: number): boolean {
@@ -132,6 +134,7 @@ export class EntityManager {
     getDebugInfo(): DebugInfo {
         const playerId = this.withComponents(Control, EntityHub)[0]
         const playerPosition = this.getComponent(playerId, Transform).state.position
+        const playerInventory = this.getComponent(playerId, Inventory).state.items
         const componentCount = Array.from(this.entities.values())
             .map(components => components.length)
             .reduce((sum, current) => sum + current)
@@ -139,19 +142,20 @@ export class EntityManager {
             playerPosition,
             entityCount: this.entities.size,
             componentCount,
+            playerInventory
         }
+    }
+
+    hasComponent<T extends Component, Y extends ComponentState>(
+            id: number,
+            type: new (state: Y) => T): boolean {
+        return this.hasComponents(this.get(id), [type])
     }
 
     private hasComponents<T extends Component, Y extends ComponentState>(
             entity: Entity,
             types: Array<new (state: Y) => T>): boolean {
-        return types.every(type => this.hasComponent(entity, type))
-    }
-
-    private hasComponent<T extends Component, Y extends ComponentState>(
-            entity: Entity,
-            type: new (state: Y) => T): boolean {
-        return entity.find(component => component instanceof type) !== undefined
+        return types.every(type => entity.find(component => component instanceof type) !== undefined)
     }
 }
 
@@ -159,4 +163,5 @@ export interface DebugInfo {
     playerPosition: Position
     entityCount: number
     componentCount: number
+    playerInventory: Item[]
 }

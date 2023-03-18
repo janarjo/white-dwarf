@@ -13,6 +13,8 @@ import { Directions, scale, Vector } from './Math'
 import { TriggerType as EffectTriggerType, EffectHub, EffectType } from './components/EffectHub'
 import { degPerSec, ms, pxPerSec, pxPerSec2 } from './Units'
 import { AI } from './components/AI'
+import { Inventory } from './components/Inventory'
+import { smallPlasmaPack } from './Items'
 
 export const camera = () => [
     new Transform({
@@ -64,6 +66,7 @@ export const player = (position: Vector) => [
     new Collision({
         boundingBox: [[-30, -30], [60, 60]],
         isColliding: false,
+        colliders: [],
         group: CollisionGroup.PLAYER,
         mask: [CollisionGroup.ENEMY],
     }),
@@ -73,6 +76,10 @@ export const player = (position: Vector) => [
         decayMs: 0,
         lastEmittedMs: 0,
         offset: [-30, 0],
+    }),
+    new Inventory({
+        items: [smallPlasmaPack()],
+        maxSize: 10
     })
 ]
 
@@ -110,6 +117,7 @@ export const enemy = (position: Vector) => [
     new Collision({
         boundingBox: [[-30, -30], [60, 60]],
         isColliding: false,
+        colliders: [],
         group: CollisionGroup.ENEMY,
         mask: [CollisionGroup.PLAYER],
     }),
@@ -141,8 +149,9 @@ export const projectile = (position: Vector, direction: Vector, isEnemy: boolean
         lastUpdated: performance.now(),
     }),
     new Collision({
-        isColliding: false,
         boundingBox: [[0, 0], [1, 1]],
+        isColliding: false,
+        colliders: [],
         group: isEnemy ? CollisionGroup.ENEMY : CollisionGroup.PLAYER,
         mask: [isEnemy ? CollisionGroup.PLAYER : CollisionGroup.ENEMY],
     }),
@@ -173,8 +182,9 @@ export const asteroid = (position: Vector, direction: Vector) => [
         lastUpdated: performance.now(),
     }),
     new Collision({
-        isColliding: false,
         boundingBox: [[-20, -20], [40, 40]],
+        isColliding: false,
+        colliders: [],
         group: CollisionGroup.ENEMY,
         mask: [CollisionGroup.PLAYER],
     }),
@@ -197,8 +207,9 @@ export const blaster = () => [
     }),
     new Weapon({
         lastFiredMs: 0,
+        hasFired: false,
         cooldownMs: 500,
-        offset: [0, 0],
+        offset: [0, 0]
     }),
     new Attachment({
         type: SlotType.WEAPON,

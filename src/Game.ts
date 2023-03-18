@@ -17,6 +17,7 @@ import { EffectHubSystem } from './systems/EffectHubSystem'
 import { Drawer } from './ui/Drawer'
 import { AISystem } from './systems/AISystem'
 import { Clock } from './Clock'
+import { InventorySystem } from './systems/InventorySystem'
 
 export class Game {
     readonly fps = 60
@@ -53,6 +54,7 @@ export class Game {
             new CameraSystem(entities, this.viewPort, mapSize),
             new EmitterSystem(entities),
             new EffectHubSystem(entities),
+            new InventorySystem(entities),
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             new RenderSystem(entities, new Drawer(this.canvas.getContext('2d')!), stars, this.isDebug),
         ] as const

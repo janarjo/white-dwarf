@@ -5,6 +5,7 @@ export interface WeaponState extends ComponentState {
     lastFiredMs: number
     cooldownMs: number
     offset: Offset
+    hasFired: boolean
 }
 
 export class Weapon extends Component {

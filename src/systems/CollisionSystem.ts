@@ -16,9 +16,9 @@ export class CollisionSystem implements System {
             const collision = this.entities.getComponent(id, Collision)
             const thisBoundingBox = this.getBoundingBox(transform.state, collision.state)
 
-            const hasAnyCollision = collideableEntities
+            const collidingEntities = collideableEntities
                 .filter(otherId => id !== otherId)
-                .some(otherId => {
+                .filter(otherId => {
                     const otherCollision = this.entities.getComponent(otherId, Collision)
                     if (!collision.state.mask.includes(otherCollision.state.group)) return false
                     
@@ -27,7 +27,8 @@ export class CollisionSystem implements System {
 
                     return isIntersect(thisBoundingBox, otherBoundingBox)
                 })
-            collision.state.isColliding = hasAnyCollision
+            collision.state.isColliding = collidingEntities.length > 0
+            collision.state.colliders = collidingEntities
         })
     }
 
