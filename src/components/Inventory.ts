@@ -1,4 +1,4 @@
-import { Item, ItemCode } from '../Items'
+import { Item } from '../Items'
 import { Component, ComponentCode, ComponentState } from './Component'
 
 export interface InventoryState extends ComponentState {
