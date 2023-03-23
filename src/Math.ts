@@ -26,7 +26,7 @@ export class Directions {
     static readonly NORTH = [0, -1] as const
 }
 
-export const rotatePoints = (points: ReadonlyArray<Position>, direction: Direction, origin: Position = [0, 0]) => {
+export const rotatePoints = (points: Position[], direction: Direction, origin: Position = [0, 0]) => {
     const angle = rad(direction)
     const cosMult = Math.cos(angle)
     const sinMult = Math.sin(angle)
@@ -59,8 +59,8 @@ export const isIntersect = (r1: Rectangle, r2: Rectangle) => {
     const [[r1X, r1Y], [r1W, r1H]] = r1
     const [[r2X, r2Y], [r2W, r2H]] = r2
 
-    return r1X + r1W > r2X
-        && r1Y + r1H > r2Y
-        && r2X + r2W > r1X
-        && r2Y + r2H > r1Y
+    return r1X + r1W >= r2X
+        && r1Y + r1H >= r2Y
+        && r2X + r2W >= r1X
+        && r2Y + r2H >= r1Y
 }
