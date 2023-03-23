@@ -6,6 +6,7 @@
     "start": "node esbuild.config.mjs -w",
     "build": "node esbuild.config.mjs",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "compile": "tsc --noEmit",
     "lint": "eslint -c .eslintrc.js --ext .ts ./src"
   },
   "repository": {
