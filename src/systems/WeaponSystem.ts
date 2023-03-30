@@ -7,12 +7,14 @@ import { Weapon, WeaponState } from '../components/Weapon'
 import { EntityManager } from '../EntityManager'
 import { ItemCode } from '../Items'
 import { add, rotate } from '../Math'
+import { SoundCode, SoundManager } from '../SoundManager'
 import { hasItem } from './InventorySystem'
 import { System } from './System'
 
 export class WeaponSystem implements System {
     constructor(
-        private readonly entities: EntityManager) {
+        private readonly entities: EntityManager,
+        private readonly sounds: SoundManager) {
     }
 
     update() {
@@ -55,6 +57,7 @@ export class WeaponSystem implements System {
 
         const firePosition = rotate(add(position, offset), direction, position)
         this.entities.create(projectile(firePosition, direction, isEnemy))
+        this.sounds.play(SoundCode.LASER)
         return { ...weaponState, lastFiredMs: performance.now(), hasFired: true }
     }
 }

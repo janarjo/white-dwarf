@@ -18,6 +18,7 @@ import { Drawer } from './ui/Drawer'
 import { AISystem } from './systems/AISystem'
 import { Clock } from './Clock'
 import { InventorySystem } from './systems/InventorySystem'
+import { SoundManager } from './SoundManager'
 
 export enum UIMode {
     GAME,
@@ -29,7 +30,8 @@ export class Game {
     readonly clock = new Clock(this.fps)
     readonly isDebug = true
 
-    readonly levelManager: LevelManager
+    readonly levels: LevelManager
+    readonly sounds: SoundManager
     readonly canvas: HTMLCanvasElement
     readonly viewPort: Dimensions
     static mode = UIMode.GAME
@@ -37,11 +39,12 @@ export class Game {
     constructor(canvas: HTMLCanvasElement) {
         this.viewPort = [canvas.width, canvas.height] as const
         this.canvas = canvas
-        this.levelManager = new LevelManager(this.viewPort)
+        this.levels = new LevelManager(this.viewPort)
+        this.sounds = new SoundManager()
     }
 
     start(levelNo: number) {
-        const level = this.levelManager.getLevel(levelNo)
+        const level = this.levels.getLevel(levelNo)
         const { mapSize, entities, fields, stars } = level
         const systems = [
             new EntityHubSystem(entities),
@@ -50,7 +53,7 @@ export class Game {
             new MovementSystem(entities),
             new TransformSystem(entities, mapSize),
             new CollisionSystem(entities),
-            new WeaponSystem(entities),
+            new WeaponSystem(entities, this.sounds),
             new HealthSystem(entities),
             new CameraSystem(entities, this.viewPort, mapSize),
             new EmitterSystem(entities),

@@ -11,7 +11,7 @@ export enum ItemCode {
 
 export const smallPlasmaPack = () => ({
     code: ItemCode.AMMO_PLASMA_SMALL,
-    name: 'Plasma (x5)',
-    description: 'Small plasma pack (x5)',
-    amount: 5
+    name: 'Plasma (x50)',
+    description: 'Small plasma pack (x50)',
+    amount: 50
 })
