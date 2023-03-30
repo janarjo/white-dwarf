@@ -2,7 +2,7 @@ import { ShapeType, Shape } from '../components/Render'
 import { Star } from '../LevelManager'
 import { DebugInfo } from '../EntityManager'
 import { CircleDrawer, DotDrawer, DrawParameters, RectangleDrawer, TriangleDrawer } from './ShapeDrawer'
-import { ItemCode } from '../Items'
+import { Item, ItemCode } from '../Items'
 
 export class Drawer {
     constructor(readonly ctx: CanvasRenderingContext2D) {}
@@ -25,6 +25,22 @@ export class Drawer {
             const rgb = `rgb(${intensity},${intensity},${intensity})`
             this.ctx.fillStyle = rgb
             this.ctx.fillRect(position[0], position[1], 1, 1)
+        })
+        this.ctx.restore()
+    }
+
+    drawInventory(items: Item[]) {
+        const { width, height } = this.ctx.canvas
+        
+        this.ctx.save()
+        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)'
+        this.ctx.fillRect(0, 0, width, height)
+        this.ctx.fillStyle = 'white'
+        this.ctx.font = '20px Arial'
+        this.ctx.fillText('Inventory', 10, 30)
+        items.forEach((item, index) => {
+            const itemInfo = `${ItemCode[item.code]} (x${item.amount})`
+            this.ctx.fillText(itemInfo, 10, 60 + 30 * index)
         })
         this.ctx.restore()
     }

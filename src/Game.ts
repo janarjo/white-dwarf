@@ -19,6 +19,11 @@ import { AISystem } from './systems/AISystem'
 import { Clock } from './Clock'
 import { InventorySystem } from './systems/InventorySystem'
 
+export enum UIMode {
+    GAME,
+    INVENTORY,
+}
+
 export class Game {
     readonly fps = 60
     readonly clock = new Clock(this.fps)
@@ -27,16 +32,12 @@ export class Game {
     readonly levelManager: LevelManager
     readonly canvas: HTMLCanvasElement
     readonly viewPort: Dimensions
+    static mode = UIMode.GAME
 
     constructor(canvas: HTMLCanvasElement) {
         this.viewPort = [canvas.width, canvas.height] as const
         this.canvas = canvas
         this.levelManager = new LevelManager(this.viewPort)
-        canvas.addEventListener('keydown', (event) => {
-            if (event.key === 'Pause') {
-                this.clock.isPaused() ? this.clock.setRate(1) : this.clock.setRate(0)
-            }
-        })
     }
 
     start(levelNo: number) {
@@ -59,6 +60,11 @@ export class Game {
             new RenderSystem(entities, new Drawer(this.canvas.getContext('2d')!), stars, this.isDebug),
         ] as const
 
+        this.canvas.addEventListener('keydown', (event) => {
+            if (event.key === 'Pause') this.pause()
+            if (event.key === 'i') Game.mode = Game.mode === UIMode.GAME ? UIMode.INVENTORY : UIMode.GAME
+        })
+
         level.init()
         this.gameLoop(entities, systems, fields)
     }
@@ -74,5 +80,9 @@ export class Game {
             systems.forEach(system => system.update(dt))
             entities.clean()
         })
+    }
+
+    private pause() {
+        this.clock.isPaused() ? this.clock.setRate(1) : this.clock.setRate(0)
     }
 }

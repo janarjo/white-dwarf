@@ -9,6 +9,8 @@ import { Star } from '../LevelManager'
 import { add, rotate, subtract } from '../Math'
 import { System } from './System'
 import { Drawer } from '../ui/Drawer'
+import { Inventory } from '../components/Inventory'
+import { Game, UIMode } from '../Game'
 
 export class RenderSystem implements System {
     constructor(
@@ -19,6 +21,14 @@ export class RenderSystem implements System {
     }
 
     update() {
+        if (Game.mode === UIMode.INVENTORY) {
+            const inventory = this.entities
+                .withComponents(Inventory)
+                .map(id => this.entities.getComponent(id, Inventory))[0]
+            this.drawer.drawInventory(inventory.state.items)
+            return
+        }
+
         const camera = this.entities
             .withComponents(Camera)
             .map(id => this.entities.getComponent(id, Camera))[0]
