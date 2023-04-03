@@ -1,4 +1,4 @@
-import { generateRandomPolygon, isPolygon, isIntersect, isWithin, Rectangle, Vector, Offset, Line, isIntersectingLineSegments } from '../src/Math'
+import { generateRandomPolygon, isPolygon, isIntersect, isWithin, Rectangle, Offset, Line, isIntersectingLineSegments } from '../src/Math'
 
 describe('isIntersect function', () => {
     it('should return true if the rectangles intersect', () => {
@@ -158,7 +158,6 @@ describe('generateRandomPolygon function', () => {
 
     it('should return a polygon when many points and max > min', () => {
         const points: Offset[] = generateRandomPolygon(10, 10, 20)
-        console.log(points)
         expect(isPolygon(points)).toBe(true)
     })
 })
