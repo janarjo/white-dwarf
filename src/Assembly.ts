@@ -9,7 +9,7 @@ import { Movement } from './components/Movement'
 import { Render, ShapeType } from './components/Render'
 import { Transform } from './components/Transform'
 import { Weapon } from './components/Weapon'
-import { Directions, scale, Vector } from './Math'
+import { Directions, Offset, scale, Vector } from './Math'
 import { TriggerType as EffectTriggerType, EffectHub, EffectType } from './components/EffectHub'
 import { degPerSec, ms, pxPerSec, pxPerSec2 } from './Units'
 import { AI } from './components/AI'
@@ -163,14 +163,14 @@ export const projectile = (position: Vector, direction: Vector, isEnemy: boolean
     }),
 ]
 
-export const asteroid = (position: Vector, direction: Vector) => [
+export const asteroid = (position: Vector, direction: Vector, points: Offset[]) => [
     new Transform({
         position,
         direction,
         lastUpdated: performance.now()
     }),
     new Render({
-        shape: { type: ShapeType.CIRCLE, color: 'white', radius: 20 }
+        shape: { type: ShapeType.POLYGON, color: 'white', points }
     }),
     new Movement({
         currVelocity: scale(direction, 150),

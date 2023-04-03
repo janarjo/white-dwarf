@@ -1,7 +1,7 @@
 import { ShapeType, Shape } from '../components/Render'
 import { Star } from '../LevelManager'
 import { DebugInfo } from '../EntityManager'
-import { CircleDrawer, DotDrawer, DrawParameters, RectangleDrawer, TriangleDrawer } from './ShapeDrawer'
+import { CircleDrawer, DotDrawer, DrawParameters, PolygonDrawer, RectangleDrawer, TriangleDrawer } from './ShapeDrawer'
 import { Item, ItemCode } from '../Items'
 
 export class Drawer {
@@ -11,6 +11,7 @@ export class Drawer {
     private readonly circleDrawer: CircleDrawer = new CircleDrawer(this.ctx)
     private readonly triangleDrawer: TriangleDrawer = new TriangleDrawer(this.ctx)
     private readonly rectangleDrawer: RectangleDrawer = new RectangleDrawer(this.ctx)
+    private readonly polygonDrawer: PolygonDrawer = new PolygonDrawer(this.ctx)
 
     clear() {
         this.ctx.fillStyle = 'black'
@@ -73,6 +74,9 @@ export class Drawer {
                 break
             case ShapeType.RECTANGLE:
                 this.rectangleDrawer.draw(shape, params)
+                break
+            case ShapeType.POLYGON:
+                this.polygonDrawer.draw(shape, params)
                 break
         }
     }

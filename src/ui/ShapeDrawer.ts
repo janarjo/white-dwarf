@@ -1,4 +1,4 @@
-import { Circle, Triangle, Rectangle, Effect, BaseShape } from '../components/Render'
+import { Circle, Triangle, Rectangle, Effect, BaseShape, Polygon } from '../components/Render'
 import { Position, rotatePoints, Direction } from '../Math'
 import { Dot } from '../components/Render'
 
@@ -111,5 +111,23 @@ export class RectangleDrawer extends ShapeDrawer<Rectangle> {
             this.ctx.strokeRect(x, y, w, h)
         }
         this.ctx.stroke()
+    }
+}
+
+export class PolygonDrawer extends ShapeDrawer<Polygon> {
+    protected drawInternal(shape: Polygon, instructions: DrawParameters): void {
+        const { position, effect } = instructions
+
+        this.ctx.beginPath()
+        this.ctx.fillStyle = shape.color
+        this.addEffect(effect)
+
+        const [ x, y ] = position
+        const points = shape.points.map(([oX, oY]) => [oX + x, oY + y] as const)
+        const [ firstPoint, ...restPoints ] = points
+
+        this.ctx.moveTo(firstPoint[0], firstPoint[1])
+        restPoints.forEach(([x, y]) => this.ctx.lineTo(x, y))
+        this.ctx.fill()
     }
 }

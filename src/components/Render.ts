@@ -1,8 +1,8 @@
-import { Dimensions } from '../Math'
+import { Dimensions, Offset, Vector } from '../Math'
 import { Component, ComponentCode, ComponentState } from './Component'
 
 export enum ShapeType {
-    DOT, CIRCLE, TRIANGLE, RECTANGLE
+    DOT, CIRCLE, TRIANGLE, RECTANGLE, POLYGON
 }
 
 export interface BaseShape {
@@ -30,7 +30,12 @@ export interface Rectangle extends BaseShape {
     fill: boolean
 }
 
-export type Shape = Dot | Circle | Triangle | Rectangle
+export interface Polygon extends BaseShape {
+    type: ShapeType.POLYGON
+    points: Offset[]
+}
+
+export type Shape = Dot | Circle | Triangle | Rectangle | Polygon
 
 export interface FadeEffect {
     durationMs: number

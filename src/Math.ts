@@ -3,11 +3,14 @@ export type Position = Vector
 export type Offset = Vector
 export type Dimensions = Vector
 export type Range = Vector
+export type Line = Readonly<[Position, Position]>
 
 export const add = (v1: Vector, v2: Vector) => [v1[0] + v2[0], v1[1] + v2[1]] as const
 export const subtract = (v1: Vector, v2: Vector) => [v1[0] - v2[0], v1[1] - v2[1]] as const
 export const scale = (v: Vector, n: number) => [v[0] * n, v[1] * n] as const
 export const divide = (v: Vector, n: number) => [v[0] / n, v[1] / n] as const
+export const cross = (v1: Vector, v2: Vector) => v1[0] * v2[1] - v1[1] * v2[0]
+export const dot = (v1: Vector, v2: Vector) => v1[0] * v2[0] + v1[1] * v2[1]
 export const neg = (v: Vector) => scale(v, -1)
 export const mag = (v: Vector) => Math.sqrt(v[0] * v[0] + v[1] * v[1])
 export const norm = (v: Vector) => divide(v, mag(v))
@@ -63,4 +66,45 @@ export const isIntersect = (r1: Rectangle, r2: Rectangle) => {
         && r1Y + r1H >= r2Y
         && r2X + r2W >= r1X
         && r2Y + r2H >= r1Y
+}
+
+export const isIntersectingLineSegments = (l1: Line, l2: Line) => {
+    if (l1 === l2) return true
+    const [p1, p2] = l1
+    const [p3, p4] = l2
+
+    const d1 = cross(subtract(p2, p1), subtract(p3, p1))
+    const d2 = cross(subtract(p2, p1), subtract(p4, p1))
+    const d3 = cross(subtract(p4, p3), subtract(p1, p3))
+    const d4 = cross(subtract(p4, p3), subtract(p2, p3))
+
+    return (d1 > 0 && d2 < 0 || d1 < 0 && d2 > 0) && (d3 > 0 && d4 < 0 || d3 < 0 && d4 > 0)
+}
+
+export const isPolygon = (points: Offset[]) => {
+    const numPoints = points.length
+    if (numPoints < 3) return false
+
+    for (let i = 0; i < numPoints; i++) {
+        const l1 = [points[i], points[(i + 1) % numPoints]] as const
+        for (let j = i + 2; j < numPoints; j++) {
+            const l2 = [points[j], points[(j + 1) % numPoints]]  as const
+            if (isIntersectingLineSegments(l1, l2)) return false
+        }
+    }
+
+    return true
+}
+
+export const generateRandomPolygon = (numPoints: number, minRadius: number, maxRadius: number) => {
+    const points = new Array<Offset>(numPoints)
+    const angle = 2 * Math.PI / numPoints
+
+    for (let i = 0; i < numPoints; i++) {
+        const radius = rand(minRadius, maxRadius)
+        const point = scale(hvec(angle * i), radius)
+        points[i] = point
+    }
+
+    return points
 }
