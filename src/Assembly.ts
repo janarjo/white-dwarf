@@ -182,7 +182,7 @@ export const asteroid = (position: Vector, direction: Vector, points: Offset[]) 
         lastUpdated: performance.now(),
     }),
     new Collision({
-        boundingBox: [[-20, -20], [40, 40]],
+        boundingBox: [[-30, -30], [60, 60]],
         isColliding: false,
         colliders: [],
         group: CollisionGroup.ENEMY,

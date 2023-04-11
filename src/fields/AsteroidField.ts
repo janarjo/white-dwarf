@@ -32,6 +32,6 @@ export class AsteroidField implements Field {
     }
 
     private generateAsteroid(position: Position, direction: Direction): Component[] {  
-        return asteroid(position, direction, generateRandomPolygon(randInt([5, 10]), 10, 20))
+        return asteroid(position, direction, generateRandomPolygon(randInt([5, 10]), 20, 30))
     }
 }
