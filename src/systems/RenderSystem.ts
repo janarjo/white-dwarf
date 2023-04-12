@@ -29,11 +29,9 @@ export class RenderSystem implements System {
             return
         }
 
-        const camera = this.entities
-            .withComponents(Camera)
-            .map(id => this.entities.getComponent(id, Camera))[0]
-        if (!camera) throw Error('No camera found!')
+        const camera = this.entities.getCamera()
         const origin = camera.state.origin
+
         this.drawer.clear()
         this.drawer.drawStars(this.stars)
 

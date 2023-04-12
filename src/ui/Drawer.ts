@@ -47,7 +47,7 @@ export class Drawer {
     }
 
     drawDebugInfo(debugInfo: DebugInfo) {
-        const { playerPosition, entityCount, componentCount, playerInventory } = debugInfo
+        const { playerPosition, playerVelocity, playerAcceleration, entityCount, componentCount, playerInventory } = debugInfo
         const [ playerX, playerY ] = playerPosition
         const playerInventoryInfo = playerInventory.map(item => `${ItemCode[item.code]} (x${item.amount})`).join(', ')
 
@@ -55,9 +55,11 @@ export class Drawer {
         this.ctx.font = '12px Arial'
         this.ctx.fillStyle = 'white'
         this.ctx.fillText(`Position: ${playerX.toFixed(0)}, ${playerY.toFixed(0)}`, 10, 20)
-        this.ctx.fillText(`Entities: ${entityCount}`, 10, 34)
-        this.ctx.fillText(`Components: ${componentCount}`, 10, 48)
-        this.ctx.fillText(`Inventory: [${playerInventoryInfo}]`, 10, 62)
+        this.ctx.fillText(`Velocity (px/s): ${playerVelocity.toFixed(0)}`, 10, 34)
+        this.ctx.fillText(`Acceleration (px/s²): ${playerAcceleration.toFixed(0)}`, 10, 48)
+        this.ctx.fillText(`Entities: ${entityCount}`, 10, 62)
+        this.ctx.fillText(`Components: ${componentCount}`, 10, 76)
+        this.ctx.fillText(`Inventory: [${playerInventoryInfo}]`, 10, 90)
         this.ctx.restore()
     }
 

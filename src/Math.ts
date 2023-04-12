@@ -11,10 +11,12 @@ export const scale = (v: Vector, n: number) => [v[0] * n, v[1] * n] as const
 export const divide = (v: Vector, n: number) => [v[0] / n, v[1] / n] as const
 export const cross = (v1: Vector, v2: Vector) => v1[0] * v2[1] - v1[1] * v2[0]
 export const dot = (v1: Vector, v2: Vector) => v1[0] * v2[0] + v1[1] * v2[1]
+export const det = (v1: Vector, v2: Vector) => v1[0] * v2[1] - v1[1] * v2[0]
 export const neg = (v: Vector) => scale(v, -1)
 export const mag = (v: Vector) => Math.sqrt(v[0] * v[0] + v[1] * v[1])
 export const norm = (v: Vector) => divide(v, mag(v))
 export const rad = (v: Vector) => Math.atan2(v[1], v[0])
+export const angleBetween = (v1: Vector, v2: Vector) => rad([dot(v1, v2), det(v1, v2)])
 export const hvec = (rad: number) => [Math.cos(rad), Math.sin(rad)] as const
 export const limit = (v: Vector, max: number) => {
     const magnitude = mag(v)

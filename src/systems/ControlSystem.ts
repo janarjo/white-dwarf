@@ -1,43 +1,95 @@
 import { Control } from '../components/Control'
+import { Transform } from '../components/Transform'
 import { EntityManager } from '../EntityManager'
+import { add, angleBetween, rad, subtract } from '../Math'
 import { System } from './System'
 
 export class ControlSystem implements System {
     constructor(
         private readonly entities: EntityManager,
         canvas: HTMLCanvasElement) {
-        canvas.addEventListener('keydown', (event) => this.handleInput(event, true))
-        canvas.addEventListener('keyup', (event) => this.handleInput(event, false))
+        canvas.addEventListener('keydown', (event) => this.handleKeyInput(event, true))
+        canvas.addEventListener('keyup', (event) => this.handleKeyInput(event, false))
+        canvas.addEventListener('mousedown', (event) => this.handleMouseInput(event, true))
+        canvas.addEventListener('mouseup', (event) => this.handleMouseInput(event, false))
+        canvas.addEventListener('contextmenu', (event) => event.preventDefault())
+        canvas.addEventListener('mousemove', (event) => { this.handleMouseMovement(event) })
     }
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    update(): void {}
+    update(): void {
+        this.entities.withComponents(Control, Transform).forEach(id => {
+            const control = this.entities.getComponent(id, Control)
+            const transform = this.entities.getComponent(id, Transform)
 
-    handleInput(event: KeyboardEvent, isKeyDown: boolean) {
+            const { direction, position } = transform.state
+            const { mousePos } = control.state
+
+            if (mousePos) {
+                const targetDirection = subtract(mousePos, position)
+                // Calculate the angle between the current heading direction and the direction towards the mouse cursor
+                const diff = angleBetween(direction, targetDirection)
+                if (Math.abs(diff) < 0.05) {
+                    control.state.isTurningLeft = false
+                    control.state.isTurningRight = false
+                } else if (diff > 0) {
+                    control.state.isTurningLeft = false
+                    control.state.isTurningRight = true
+                } else {
+                    control.state.isTurningLeft = true
+                    control.state.isTurningRight = false
+                }
+            }
+        })
+    }
+
+    handleKeyInput(event: KeyboardEvent, isKeyDown: boolean) {
         this.entities.withComponents(Control).forEach(id => {
             const control = this.entities.getComponent(id, Control)
             switch (event.key) {
-                case ' ': {
-                    control.state.isFiring = isKeyDown ? true : false
-                    break
-                }
-                case 'ArrowLeft': {
+                case 'a': {
                     control.state.isTurningLeft = isKeyDown ? true : false
                     break
                 }
-                case 'ArrowUp': {
+                case 'w': {
                     control.state.isAccelerating = isKeyDown ? true : false
                     break
                 }
-                case 'ArrowRight': {
+                case 'd': {
                     control.state.isTurningRight = isKeyDown ? true : false
                     break
                 }
-                case 'ArrowDown': {
+                case 's': {
                     control.state.isDecelerating = isKeyDown ? true : false
                     break
                 }
+                case ' ': {
+                    control.state.isBraking = isKeyDown ? true : false
+                }
             }
+        })
+    }
+
+    handleMouseInput(event: MouseEvent, isMouseDown: boolean) {
+        this.entities.withComponents(Control).forEach(id => {
+            const control = this.entities.getComponent(id, Control)
+            switch (event.button) {
+                case 0: {
+                    control.state.isFiring = isMouseDown ? true : false
+                    break
+                }
+            }
+        })
+    }
+
+    handleMouseMovement(event: MouseEvent) {
+        this.entities.withComponents(Control).forEach(id => {
+            const control = this.entities.getComponent(id, Control)
+            const mousePos = [event.clientX, event.clientY] as const
+            const camera = this.entities.getCamera()
+            const origin = camera.state.origin
+           
+            control.state.mousePos = add(mousePos, origin)
         })
     }
 }

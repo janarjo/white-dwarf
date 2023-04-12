@@ -3,11 +3,13 @@ import { Component, Entity, ComponentState } from './components/Component'
 import { Control } from './components/Control'
 import { EntityHub, SlotType } from './components/EntityHub'
 import { isDefined, isUndefined } from './Util'
-import { Position } from './Math'
+import { mag, Position, Vector } from './Math'
 import { Transform } from './components/Transform'
 import { AI } from './components/AI'
 import { Item } from './Items'
 import { Inventory } from './components/Inventory'
+import { Camera } from './components/Camera'
+import { Movement } from './components/Movement'
 
 export class EntityManager {
     private entities: Map<number, Entity>
@@ -127,6 +129,14 @@ export class EntityManager {
             .filter(isDefined)
     }
 
+    getCamera(): Camera {
+        const cameras = this.withComponents(Camera)
+            .map(id => this.getComponent(id, Camera))
+        if (cameras.length > 1) throw Error('More than one camera found!')
+        if (cameras.length === 0) throw Error('No camera found!')
+        return cameras[0]
+    }
+
     exists(id: number): boolean {
         return !this.markedForRemoval.has(id) && this.entities.has(id)
     }
@@ -134,12 +144,15 @@ export class EntityManager {
     getDebugInfo(): DebugInfo {
         const playerId = this.withComponents(Control, EntityHub)[0]
         const playerPosition = this.getComponent(playerId, Transform).state.position
+        const { currVelocity, currAcceleration } = this.getComponent(playerId, Movement).state
         const playerInventory = this.getComponent(playerId, Inventory).state.items
         const componentCount = Array.from(this.entities.values())
             .map(components => components.length)
             .reduce((sum, current) => sum + current)
         return {
             playerPosition,
+            playerVelocity: mag(currVelocity),
+            playerAcceleration: mag(currAcceleration),
             entityCount: this.entities.size,
             componentCount,
             playerInventory
@@ -161,6 +174,8 @@ export class EntityManager {
 
 export interface DebugInfo {
     playerPosition: Position
+    playerVelocity: number
+    playerAcceleration: number
     entityCount: number
     componentCount: number
     playerInventory: Item[]

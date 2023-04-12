@@ -1,3 +1,4 @@
+import { Position } from '../Math'
 import { Component, ComponentCode, ComponentState } from './Component'
 
 export interface ControlState extends ComponentState {
@@ -6,6 +7,8 @@ export interface ControlState extends ComponentState {
     isDecelerating: boolean
     isTurningLeft: boolean
     isTurningRight: boolean
+    isBraking: boolean
+    mousePos?: Position
 }
 
 export class Control extends Component {

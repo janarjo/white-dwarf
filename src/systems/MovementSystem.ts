@@ -3,9 +3,11 @@ import { Control, ControlState } from '../components/Control'
 import { Movement, MovementState } from '../components/Movement'
 import { Transform, TransformState } from '../components/Transform'
 import { EntityManager } from '../EntityManager'
-import { add, limit, scale, Vector } from '../Math'
+import { add, limit, mag, neg, norm, scale, Vector } from '../Math'
 import { Time } from '../Units'
 import { System } from './System'
+
+const BRAKING_TRESHOLD = 5
 
 export class MovementSystem implements System {
     constructor(
@@ -37,9 +39,15 @@ export class MovementSystem implements System {
 
     private updateVelocity(dt: Time, movementState: MovementState): MovementState {
         const { currVelocity, currAcceleration, maxSpeed } = movementState
+        
+        let newVelocity = limit(add(currVelocity, scale(currAcceleration, dt.toSec())), maxSpeed.toPxPerSec())
+        if (mag(newVelocity) < BRAKING_TRESHOLD && mag(currVelocity) > BRAKING_TRESHOLD) {
+            newVelocity = [0, 0]
+        }
+
         return {
             ...movementState, 
-            currVelocity: limit(add(currVelocity, scale(currAcceleration, dt.toSec())), maxSpeed.toPxPerSec())
+            currVelocity: newVelocity
         }
     }
 
@@ -48,15 +56,8 @@ export class MovementSystem implements System {
             controlState: ControlState, 
             transformState: TransformState): MovementState {
         const { direction } = transformState
-        const { acceleration, rotationalSpeed } = movementState
-        const { isAccelerating, isDecelerating, isTurningLeft, isTurningRight } = controlState
-
-        let newAcceleration: Vector
-        if (isAccelerating) {
-            newAcceleration = scale(direction, acceleration.toPxPerSec())
-        } else if (isDecelerating) {
-            newAcceleration = scale(direction, -acceleration.toPxPerSec())
-        } else newAcceleration = [0, 0]
+        const { acceleration, rotationalSpeed, currVelocity } = movementState
+        const { isAccelerating, isDecelerating, isTurningLeft, isTurningRight, isBraking } = controlState
 
         let newRotationalSpeed: number
         if (isTurningLeft) {
@@ -64,6 +65,15 @@ export class MovementSystem implements System {
         } else if (isTurningRight) {
             newRotationalSpeed = rotationalSpeed.toRadPerSec()
         } else newRotationalSpeed = 0
+
+        let newAcceleration: Vector
+        if (isBraking && mag(currVelocity) > 0) {
+            newAcceleration = scale(neg(norm(currVelocity)), acceleration.toPxPerSec())
+        } else if (isAccelerating) {
+            newAcceleration = scale(direction, acceleration.toPxPerSec())
+        } else if (isDecelerating) {
+            newAcceleration = scale(direction, -acceleration.toPxPerSec())
+        } else newAcceleration = [0, 0]
 
         return { 
             ...movementState, 

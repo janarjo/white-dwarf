@@ -46,6 +46,7 @@ export const player = (position: Vector) => [
         isTurningLeft: false,
         isTurningRight: false,
         isFiring: false,
+        isBraking: false,
     }),
     new Movement({
         currDirection: [1, 0],
@@ -98,6 +99,7 @@ export const enemy = (position: Vector) => [
         isTurningLeft: false,
         isTurningRight: false,
         isFiring: false,
+        isBraking: false,
         pollingRate: ms(500),
         lastPolled: performance.now(),
     }),
