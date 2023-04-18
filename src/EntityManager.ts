@@ -3,13 +3,13 @@ import { Component, Entity, ComponentState } from './components/Component'
 import { Control } from './components/Control'
 import { EntityHub, SlotType } from './components/EntityHub'
 import { isDefined, isUndefined } from './Util'
-import { mag, Position, Vector } from './Math'
+import { mag, Position } from './Math'
 import { Transform } from './components/Transform'
 import { AI } from './components/AI'
 import { Item } from './Items'
 import { Inventory } from './components/Inventory'
 import { Camera } from './components/Camera'
-import { Movement } from './components/Movement'
+import { Physics } from './components/Physics'
 
 export class EntityManager {
     private entities: Map<number, Entity>
@@ -144,7 +144,7 @@ export class EntityManager {
     getDebugInfo(): DebugInfo {
         const playerId = this.withComponents(Control, EntityHub)[0]
         const playerPosition = this.getComponent(playerId, Transform).state.position
-        const { currVelocity, currAcceleration } = this.getComponent(playerId, Movement).state
+        const { currVelocity, currAcceleration } = this.getComponent(playerId, Physics).state
         const playerInventory = this.getComponent(playerId, Inventory).state.items
         const componentCount = Array.from(this.entities.values())
             .map(components => components.length)

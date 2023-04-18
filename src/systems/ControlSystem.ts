@@ -1,7 +1,7 @@
 import { Control } from '../components/Control'
 import { Transform } from '../components/Transform'
 import { EntityManager } from '../EntityManager'
-import { add, angleBetween, rad, subtract } from '../Math'
+import { add, angleBetween, subtract } from '../Math'
 import { System } from './System'
 
 export class ControlSystem implements System {

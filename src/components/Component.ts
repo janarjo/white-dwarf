@@ -1,7 +1,7 @@
 export enum ComponentCode {
     TRANSFORM,
     CONTROL,
-    MOVEMENT,
+    PHYSICS,
     WEAPON,
     RENDER,
     COLLISION,
@@ -13,7 +13,7 @@ export enum ComponentCode {
     EMITTER,
     AI,
     ITEM,
-    INVENTORY
+    INVENTORY,
 }
 
 export interface ComponentState {

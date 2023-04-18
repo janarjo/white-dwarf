@@ -1,5 +1,5 @@
 import { EntityHub } from '../components/EntityHub'
-import { Movement } from '../components/Movement'
+import { Physics } from '../components/Physics'
 import { Transform } from '../components/Transform'
 import { EntityManager } from '../EntityManager'
 import { add, hvec, isWithin, rotate, scale, Vector } from '../Math'
@@ -20,12 +20,12 @@ export class TransformSystem implements System {
             if (!isWithin(transform.state.position, this.paddedMapSize)) this.entities.remove(id)
         })
 
-        this.entities.withComponents(Transform, Movement).forEach(id => {
+        this.entities.withComponents(Transform, Physics).forEach(id => {
             const transform = this.entities.getComponent(id, Transform)
-            const movement = this.entities.getComponent(id, Movement)
+            const physics = this.entities.getComponent(id, Physics)
 
             const { position, direction } = transform.state
-            const { currVelocity, currRotationalSpeed } = movement.state
+            const { currVelocity, currRotationalSpeed } = physics.state
             
             transform.state = {
                 ...transform.state,

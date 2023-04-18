@@ -5,7 +5,7 @@ import { Control } from './components/Control'
 import { TriggerType as EmitterTriggerType, Emitter } from './components/Emitter'
 import { Health } from './components/Health'
 import { EntityHub, SlotType } from './components/EntityHub'
-import { Movement } from './components/Movement'
+import { Physics as Physics } from './components/Physics'
 import { Render, ShapeType } from './components/Render'
 import { Transform } from './components/Transform'
 import { Weapon } from './components/Weapon'
@@ -48,7 +48,7 @@ export const player = (position: Vector) => [
         isFiring: false,
         isBraking: false,
     }),
-    new Movement({
+    new Physics({
         currDirection: [1, 0],
         currVelocity: [0, 0],
         currAcceleration: [0, 0],
@@ -57,6 +57,7 @@ export const player = (position: Vector) => [
         maxSpeed: pxPerSec(300),
         rotationalSpeed: degPerSec(180),
         lastUpdated: performance.now(),
+        mass: 0.1,
     }),
     new EntityHub({
         slots: [
@@ -103,7 +104,7 @@ export const enemy = (position: Vector) => [
         pollingRate: ms(500),
         lastPolled: performance.now(),
     }),
-    new Movement({
+    new Physics({
         currDirection: [1, 0],
         currVelocity: [0, 0],
         currAcceleration: [0, 0],
@@ -112,6 +113,7 @@ export const enemy = (position: Vector) => [
         maxSpeed: pxPerSec(300),
         rotationalSpeed: degPerSec(180),
         lastUpdated: performance.now(),
+        mass: 0.1,
     }),
     new EntityHub({
         slots: [{ attachmentId: undefined, offset: [23, 0], type: SlotType.WEAPON }],
@@ -141,7 +143,7 @@ export const projectile = (position: Vector, direction: Vector, isEnemy: boolean
     new Render({
         shape: { type: ShapeType.DOT, color: 'white' }
     }),
-    new Movement({
+    new Physics({
         currVelocity: scale(direction, 300),
         currAcceleration: [0, 0],
         currRotationalSpeed: 0,
@@ -149,6 +151,7 @@ export const projectile = (position: Vector, direction: Vector, isEnemy: boolean
         maxSpeed: pxPerSec(300),
         rotationalSpeed: degPerSec(0),
         lastUpdated: performance.now(),
+        mass: 0.01,
     }),
     new Collision({
         boundingBox: [[0, 0], [1, 1]],
@@ -174,7 +177,7 @@ export const asteroid = (position: Vector, direction: Vector, points: Offset[]) 
     new Render({
         shape: { type: ShapeType.POLYGON, color: 'white', points }
     }),
-    new Movement({
+    new Physics({
         currVelocity: scale(direction, 150),
         currAcceleration: [0, 0],
         currRotationalSpeed: 0,
@@ -182,6 +185,7 @@ export const asteroid = (position: Vector, direction: Vector, points: Offset[]) 
         maxSpeed: pxPerSec(150),
         rotationalSpeed: degPerSec(0),
         lastUpdated: performance.now(),
+        mass: 1.5,
     }),
     new Collision({
         boundingBox: [[-30, -30], [60, 60]],
@@ -225,7 +229,7 @@ export const exhaust = (position: Vector, direction: Vector) => [
         direction,
         lastUpdated: performance.now()
     }),
-    new Movement({
+    new Physics({
         currVelocity: scale(direction, 1.5),
         currAcceleration: [0, 0],
         currRotationalSpeed: 0,
@@ -233,6 +237,7 @@ export const exhaust = (position: Vector, direction: Vector) => [
         maxSpeed: pxPerSec(0),
         rotationalSpeed: degPerSec(0),
         lastUpdated: performance.now(),
+        mass: 0.1,
     }),
     new Render({
         shape: { type: ShapeType.TRIANGLE, color: 'white', base: 6, height: 10 },

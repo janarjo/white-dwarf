@@ -1,4 +1,3 @@
-import { Camera } from '../components/Camera'
 import { Collision } from '../components/Collision'
 import { Health } from '../components/Health'
 import { Render, ShapeType, Rectangle } from '../components/Render'

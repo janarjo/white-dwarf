@@ -1,6 +1,6 @@
 import { exhaust } from '../Assembly'
 import { Emitter, TriggerType } from '../components/Emitter'
-import { Movement } from '../components/Movement'
+import { Physics } from '../components/Physics'
 import { Transform } from '../components/Transform'
 import { EntityManager } from '../EntityManager'
 import { add, mag, rotate, scale } from '../Math'
@@ -12,7 +12,7 @@ export class EmitterSystem implements System {
     }
 
     update() {
-        this.entities.withComponents(Transform, Movement, Emitter).forEach(id => {
+        this.entities.withComponents(Transform, Physics, Emitter).forEach(id => {
             const emitter = this.entities.getComponent(id, Emitter)
             const { trigger, rateMs, lastEmittedMs, offset } = emitter.state
 
@@ -21,8 +21,8 @@ export class EmitterSystem implements System {
             const now = performance.now()
             if (now - lastEmittedMs < rateMs) return
 
-            const movement = this.entities.getComponent(id, Movement)
-            const { currAcceleration } = movement.state
+            const physics = this.entities.getComponent(id, Physics)
+            const { currAcceleration } = physics.state
             if (mag(currAcceleration) === 0) return
 
             const transform = this.entities.getComponent(id, Transform)

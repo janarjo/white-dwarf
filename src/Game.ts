@@ -5,7 +5,7 @@ import { CollisionSystem } from './systems/CollisionSystem'
 import { ControlSystem } from './systems/ControlSystem'
 import { HealthSystem } from './systems/HealthSystem'
 import { EntityHubSystem } from './systems/EntityHubSystem'
-import { MovementSystem } from './systems/MovementSystem'
+import { PhysicsSystem } from './systems/PhysicsSystem'
 import { RenderSystem } from './systems/RenderSystem'
 import { System } from './systems/System'
 import { TransformSystem } from './systems/TransformSystem'
@@ -50,9 +50,9 @@ export class Game {
             new EntityHubSystem(entities),
             new ControlSystem(entities, this.canvas),
             new AISystem(entities),
-            new MovementSystem(entities),
-            new TransformSystem(entities, mapSize),
             new CollisionSystem(entities),
+            new PhysicsSystem(entities),
+            new TransformSystem(entities, mapSize),
             new WeaponSystem(entities, this.sounds),
             new HealthSystem(entities),
             new CameraSystem(entities, this.viewPort, mapSize),
