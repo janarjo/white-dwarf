@@ -38,7 +38,7 @@ export const player = (position: Vector) => [
         lastUpdated: performance.now()
     }),
     new Render({
-        shape: { type: ShapeType.TRIANGLE, color: 'white', base: 30, height: 50 }
+        shape: { type: ShapeType.POLYGON, color: 'white', points: [[-24, -15], [24, 0], [-24, 15]] },
     }),
     new Control({
         isAccelerating: false,
@@ -92,7 +92,7 @@ export const enemy = (position: Vector) => [
         lastUpdated: performance.now()
     }),
     new Render({
-        shape: { type: ShapeType.TRIANGLE, color: 'blue', base: 30, height: 50 }
+        shape: { type: ShapeType.POLYGON, color: 'white', points: [[-24, -15], [24, 0], [-24, 15]] },
     }),
     new AI({
         isAccelerating: false,

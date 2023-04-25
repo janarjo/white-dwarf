@@ -116,15 +116,18 @@ export class RectangleDrawer extends ShapeDrawer<Rectangle> {
 
 export class PolygonDrawer extends ShapeDrawer<Polygon> {
     protected drawInternal(shape: Polygon, instructions: DrawParameters): void {
-        const { position, effect } = instructions
+        const { position, direction, effect } = instructions
 
         this.ctx.beginPath()
         this.ctx.fillStyle = shape.color
         this.addEffect(effect)
 
-        const [ x, y ] = position
-        const points = shape.points.map(([oX, oY]) => [oX + x, oY + y] as const)
-        const [ firstPoint, ...restPoints ] = points
+        const rotatedPoints = rotatePoints(shape.points, direction ?? [0, 0])
+       
+        const [ oX, oY ] = position
+        const translatedPoints = rotatedPoints.map(([x, y]) => [x + oX, y + oY] as const)
+        
+        const [ firstPoint, ...restPoints ] = translatedPoints
 
         this.ctx.moveTo(firstPoint[0], firstPoint[1])
         restPoints.forEach(([x, y]) => this.ctx.lineTo(x, y))
