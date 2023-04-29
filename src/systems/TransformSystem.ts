@@ -2,7 +2,7 @@ import { EntityHub } from '../components/EntityHub'
 import { Physics } from '../components/Physics'
 import { Transform } from '../components/Transform'
 import { EntityManager } from '../EntityManager'
-import { add, hvec, isWithin, rotate, scale, Vector } from '../Math'
+import { add, hvec, isWithinRectangle, rotate, scale, Vector } from '../Math'
 import { Time } from '../Units'
 import { System } from './System'
 
@@ -17,7 +17,7 @@ export class TransformSystem implements System {
     update(dt: Time) {
         this.entities.withComponents(Transform).forEach(id => {
             const transform = this.entities.getComponent(id, Transform)
-            if (!isWithin(transform.state.position, this.paddedMapSize)) this.entities.remove(id)
+            if (!isWithinRectangle(transform.state.position, this.paddedMapSize)) this.entities.remove(id)
         })
 
         this.entities.withComponents(Transform, Physics).forEach(id => {

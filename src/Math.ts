@@ -3,8 +3,17 @@ export type Position = Vector
 export type Offset = Vector
 export type Dimensions = Vector
 export type Range = Vector
+export type Projection = Vector
 export type Line = Readonly<[Position, Position]>
+export type Rectangle = Readonly<[Position, Dimensions]>
 
+// Counter-clockwise order is assumed
+export type Polygon = ReadonlyArray<Position>
+export type Triangle = Readonly<[Position, Position, Position]>
+
+export const equals = (v1: Vector, v2: Vector) => v1[0] === v2[0] && v1[1] === v2[1]
+export const equalsLines = (l1: Line, l2: Line) => equals(l1[0], l2[0]) && equals(l1[1], l2[1])
+export const equalsPolygons = (p1: Polygon, p2: Polygon) => p1.length === p2.length && p1.every((p, i) => equals(p, p2[i]))
 export const add = (v1: Vector, v2: Vector) => [v1[0] + v2[0], v1[1] + v2[1]] as const
 export const subtract = (v1: Vector, v2: Vector) => [v1[0] - v2[0], v1[1] - v2[1]] as const
 export const scale = (v: Vector, n: number) => [v[0] * n, v[1] * n] as const
@@ -22,6 +31,7 @@ export const limit = (v: Vector, max: number) => {
     const magnitude = mag(v)
     return magnitude > max ? scale(divide(v, magnitude), max) : v
 }
+export const overlap = (r1: Range, r2: Range) => Math.min(r1[1], r2[1]) - Math.max(r1[0], r2[0]) > 0
 
 export type Direction = Vector
 export class Directions {
@@ -51,8 +61,7 @@ export const randInt = (r: Range) => {
     return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
-export type Rectangle = Readonly<[Position, Dimensions]>
-export const isWithin = (v: Position, r: Rectangle) => {
+export const isWithinRectangle = (v: Position, r: Rectangle) => {
     const [rPos, rDim] = r
     
     return v[0] >= rPos[0] 
@@ -60,6 +69,16 @@ export const isWithin = (v: Position, r: Rectangle) => {
         && v[0] <= rDim[0] 
         && v[1] <= rDim[1] 
 }
+
+export const isWithinTriangle = (v: Position, r: Triangle) => {
+    const [v1, v2, v3] = r
+    const b1 = cross(subtract(v, v1), subtract(v2, v1)) <= 0
+    const b2 = cross(subtract(v, v2), subtract(v3, v2)) <= 0
+    const b3 = cross(subtract(v, v3), subtract(v1, v3)) <= 0
+
+    return (b1 === b2 && b2 === b3)
+}
+
 export const isIntersect = (r1: Rectangle, r2: Rectangle) => {
     const [[r1X, r1Y], [r1W, r1H]] = r1
     const [[r2X, r2Y], [r2W, r2H]] = r2
@@ -71,7 +90,7 @@ export const isIntersect = (r1: Rectangle, r2: Rectangle) => {
 }
 
 export const isIntersectingLineSegments = (l1: Line, l2: Line) => {
-    if (l1 === l2) return true
+    if (equalsLines(l1, l2)) return true
     const [p1, p2] = l1
     const [p3, p4] = l2
 
@@ -109,4 +128,71 @@ export const generateRandomPolygon = (numPoints: number, minRadius: number, maxR
     }
 
     return points
+}
+
+export const earclip = (polygon: Polygon) => {
+    const points = [...polygon]
+    if (points.length< 3) throw new Error('Polygon must have at least 3 points!')
+
+    const triangles = new Array<Triangle>()
+    let i = 0
+    while (points.length > 3) {
+        const triangle = [points[i], points[(i + 1) % points.length], points[(i + 2) % points.length]] as const
+        if (isEar(triangle, points)) {
+            triangles.push(triangle)
+            points.splice((i + 1) % points.length, 1)
+            i = 0
+        } else i++
+    }
+
+    triangles.push([points[0], points[1], points[2]] as const)
+    return triangles
+}
+
+export const isEar = (triangle: Triangle, polygon: Polygon) => {
+    const [p1, p2, p3] = triangle
+    
+    // Check if the triangle is convex
+    if (cross(subtract(p2, p1), subtract(p3, p2)) <= 0) return false
+    
+    // Check if any point of the polygon lies inside the triangle
+    for (const point of polygon) {
+        if (equals(point, p1) || equals(point, p2) || equals(point, p3)) continue
+        if (isWithinTriangle(point, triangle)) return false
+    }
+
+    return true
+}
+
+export const getAxes = (polygon: Polygon) => {
+    const axes = new Array<Vector>()
+    const numPoints = polygon.length
+
+    for (let i = 0; i < numPoints; i++) {
+        const p1 = polygon[i]
+        const p2 = polygon[(i + 1) % numPoints]
+        const edge = subtract(p2, p1)
+        const normal = norm([-edge[1], edge[0]])
+        
+        // Check if the normal is parallel to any of the previously added ones
+        if (axes.every(axis => Math.abs(dot(normal, axis)) < 1 - 1e-6)) {
+            axes.push(normal)
+        }
+    }
+
+    return axes
+}
+
+export const project = (polygon: Polygon, axis: Vector) => {
+    const numPoints = polygon.length
+    let min = dot(polygon[0], axis)
+    let max = min
+
+    for (let i = 1; i < numPoints; i++) {
+        const p = dot(polygon[i], axis)
+        if (p < min) min = p
+        else if (p > max) max = p
+    }
+
+    return [min, max] as Range
 }
