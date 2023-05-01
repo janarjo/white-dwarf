@@ -1,5 +1,4 @@
 import { Attachment } from './components/Attachment'
-import { Component, Entity, ComponentState } from './components/Component'
 import { Control } from './components/Control'
 import { EntityHub, SlotType } from './components/EntityHub'
 import { isDefined, isUndefined } from './Util'
@@ -10,37 +9,23 @@ import { Item } from './Items'
 import { Inventory } from './components/Inventory'
 import { Camera } from './components/Camera'
 import { Physics } from './components/Physics'
+import { EntityBag } from './EntityBag'
 
-export class EntityManager {
-    private entities: Map<number, Entity>
+export class EntityManager extends EntityBag {
     private markedForRemoval: Set<number>
-    private enumerator: number
 
     constructor() {
-        this.entities = new Map()
+        super()
         this.markedForRemoval = new Set()
-        this.enumerator = 0
     }
 
     clean() {
-        this.markedForRemoval.forEach(id => this.entities.delete(id))
+        this.markedForRemoval.forEach(id => super.remove(id))
         this.markedForRemoval.clear()
     }
 
-    create(entity: Entity): number {
-        const id = this.enumerator
-        this.entities.set(id, entity)
-        this.enumerator++
-        return id
-    }
-
-    get(id: number): Entity {
-        const found = this.entities.get(id)
-        if (!found) throw new Error(`No such entity id: ${id}`)
-        return found
-    }
-
-    remove(id: number) {
+    override remove(id: number) {
+        console.log(`Marking for removal entity ${id}`)
         this.markedForRemoval.add(id)
     }
 
@@ -81,44 +66,6 @@ export class EntityManager {
         attachmentSlot.attachmentId = undefined
     }
 
-    addComponent(id: number, component?: Component) {
-        if (!component) return
-        const found = this.get(id)
-        found.push(component)
-    }
-
-    removeComponent<T extends Component, Y extends ComponentState>(
-            id: number,
-            type: new (state: Y) => T): void {
-        let found = this.get(id)
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        found = found.filter(component => !(component instanceof type))
-    }
-
-    getComponent<T extends Component, Y extends ComponentState>(
-            id: number,
-            type: new (state: Y) => T): T {
-        const found = this.getComponentOrNone(id, type)
-        if (!found) throw new Error(`No such component: ${type.name} for entity id: ${id}`)
-        return found
-    }
-
-    getComponentOrNone<T extends Component, Y extends ComponentState>(
-            id: number,
-            type: new (state: Y) => T): T | undefined {
-        const found = this.get(id).find(component => component instanceof type)
-        if (!found) return undefined
-        return found as T
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    withComponents(...types: Array<new (state: any) => Component>): ReadonlyArray<number> {
-        return Array.from(this.entities.entries())
-            .filter(([id]) => !this.markedForRemoval.has(id))
-            .filter(([, components]) => this.hasComponents(components, types))
-            .map(([id,]) => id)
-    }
-
     getAttachments(id: number, type?: SlotType): ReadonlyArray<number> {
         const hub = this.getComponentOrNone(id, EntityHub)
         if (!hub) return []
@@ -138,7 +85,7 @@ export class EntityManager {
     }
 
     exists(id: number): boolean {
-        return !this.markedForRemoval.has(id) && this.entities.has(id)
+        return !this.markedForRemoval.has(id) && this.has(id)
     }
 
     getDebugInfo(): DebugInfo {
@@ -146,29 +93,14 @@ export class EntityManager {
         const playerPosition = this.getComponent(playerId, Transform).state.position
         const { currVelocity, currAcceleration } = this.getComponent(playerId, Physics).state
         const playerInventory = this.getComponent(playerId, Inventory).state.items
-        const componentCount = Array.from(this.entities.values())
-            .map(components => components.length)
-            .reduce((sum, current) => sum + current)
         return {
             playerPosition,
             playerVelocity: mag(currVelocity),
             playerAcceleration: mag(currAcceleration),
-            entityCount: this.entities.size,
-            componentCount,
+            entityCount: this.getEntityCount(),
+            componentCount: this.getComponentCount(),
             playerInventory
         }
-    }
-
-    hasComponent<T extends Component, Y extends ComponentState>(
-            id: number,
-            type: new (state: Y) => T): boolean {
-        return this.hasComponents(this.get(id), [type])
-    }
-
-    private hasComponents<T extends Component, Y extends ComponentState>(
-            entity: Entity,
-            types: Array<new (state: Y) => T>): boolean {
-        return types.every(type => entity.find(component => component instanceof type) !== undefined)
     }
 }
 

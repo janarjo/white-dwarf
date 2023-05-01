@@ -28,7 +28,7 @@ export class AsteroidField implements Field {
             this.generateAsteroid([-mapPad, randInt([0, mapH])], hvec(rand(-Math.PI / 2, Math.PI / 2))),
             this.generateAsteroid([mapW + mapPad, randInt([0, mapH])], hvec(rand(Math.PI / 2, 3 * Math.PI / 2))),
         ]
-        asteroids.forEach(asteroid => this.entities.create(asteroid))
+        asteroids.forEach(asteroid => this.entities.add(asteroid))
     }
 
     private generateAsteroid(position: Position, direction: Direction): Component[] {  

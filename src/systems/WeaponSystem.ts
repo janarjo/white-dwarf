@@ -56,7 +56,7 @@ export class WeaponSystem implements System {
         const { position, direction } = transformState
 
         const firePosition = rotate(add(position, offset), direction, position)
-        this.entities.create(projectile(firePosition, direction, isEnemy))
+        this.entities.add(projectile(firePosition, direction, isEnemy))
         this.sounds.play(SoundCode.LASER)
         return { ...weaponState, lastFiredMs: performance.now(), hasFired: true }
     }

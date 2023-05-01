@@ -50,16 +50,16 @@ export class LevelManager {
         const mapSize = [2000, 2000] as const
         const fields = [new AsteroidField(entities, mapSize, 2000)]
         const init = () => {
-            const playerId = entities.create(player([640, 360]))
+            const playerId = entities.add(player([640, 360]))
 
-            const cameraId = entities.create(camera())
+            const cameraId = entities.add(camera())
             entities.attach(playerId, cameraId)
 
-            const blasterId = entities.create(blaster())
+            const blasterId = entities.add(blaster())
             entities.attach(playerId, blasterId)
 
-            const enemyId = entities.create(enemy([420, 260]))
-            const enemyBlasterId = entities.create(blaster())
+            const enemyId = entities.add(enemy([420, 260]))
+            const enemyBlasterId = entities.add(blaster())
             entities.attach(enemyId, enemyBlasterId)
         }
 

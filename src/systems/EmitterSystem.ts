@@ -29,7 +29,7 @@ export class EmitterSystem implements System {
             const { position, direction } = transform.state
             
             const emitPosition = rotate(add(position, offset), direction, position)
-            this.entities.create(exhaust(emitPosition, scale(direction, -1)))
+            this.entities.add(exhaust(emitPosition, scale(direction, -1)))
             emitter.state = { ...emitter.state, lastEmittedMs: now }
         })
     }

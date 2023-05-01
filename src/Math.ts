@@ -32,6 +32,9 @@ export const limit = (v: Vector, max: number) => {
     return magnitude > max ? scale(divide(v, magnitude), max) : v
 }
 export const overlap = (r1: Range, r2: Range) => Math.min(r1[1], r2[1]) - Math.max(r1[0], r2[0]) > 0
+export const union = (set1: Set<number>, set2: Set<number>) => new Set([...set1, ...set2])
+export const intersect = (set1: Set<number>, set2: Set<number>) => new Set([...set1].filter(x => set2.has(x)))
+export const difference = (set1: Set<number>, set2: Set<number>) => new Set([...set1].filter(x => !set2.has(x)))
 
 export type Direction = Vector
 export class Directions {
