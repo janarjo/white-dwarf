@@ -2,7 +2,7 @@ import { Collision, CollisionState } from '../components/Collision'
 import { Render, ShapeType } from '../components/Render'
 import { Transform, TransformState } from '../components/Transform'
 import { EntityManager } from '../EntityManager'
-import { add, getAxes, isIntersect, overlap, project, Rectangle, translate, Triangle } from '../Math'
+import { add, getAxes, isIntersect, isWithinTriangle, overlap, project, Rectangle, translate, Triangle } from '../Math'
 import { System } from './System'
 
 export class CollisionSystem implements System {
@@ -35,15 +35,27 @@ export class CollisionSystem implements System {
                     const { shape: thisShape } = render.state
                     const { shape: otherShape } = otherRender.state
                     
-                    if (thisShape.type === ShapeType.DOT || otherShape.type === ShapeType.DOT) return false
-                    if (thisShape.type !== ShapeType.POLYGON || otherShape.type !== ShapeType.POLYGON) return false
+                    if (thisShape.type === ShapeType.POLYGON && otherShape.type === ShapeType.DOT) {
+                        const thisTriangles = thisShape.triangles
+                            .map(triangle => translate(triangle, transform.state.position) as Triangle)
+                        return thisTriangles.some(triangle => isWithinTriangle(otherTransform.state.position, triangle))
+                    }
 
-                    const thisTriangles = thisShape.triangles
-                        .map(triangle => translate(triangle, transform.state.position) as Triangle)
-                    const otherTriangles = otherShape.triangles
-                        .map(triangle => translate(triangle, otherTransform.state.position) as Triangle)
+                    if (thisShape.type === ShapeType.DOT && otherShape.type === ShapeType.POLYGON) {
+                        const otherTriangles = otherShape.triangles
+                            .map(triangle => translate(triangle, otherTransform.state.position) as Triangle)
+                        return otherTriangles.some(triangle => isWithinTriangle(transform.state.position, triangle))
+                    }
 
-                    return this.isColliding(thisTriangles, otherTriangles)
+                    if (thisShape.type === ShapeType.POLYGON && otherShape.type === ShapeType.POLYGON) {
+                        const thisTriangles = thisShape.triangles
+                            .map(triangle => translate(triangle, transform.state.position) as Triangle)
+                        const otherTriangles = otherShape.triangles
+                            .map(triangle => translate(triangle, otherTransform.state.position) as Triangle)
+                        return this.isColliding(thisTriangles, otherTriangles)
+                    }
+
+                    return false
                 })
             collision.state.isColliding = collidingEntities.length > 0
             collision.state.colliders = collidingEntities
