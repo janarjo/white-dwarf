@@ -1,4 +1,4 @@
-import { Dimensions, Offset, Vector } from '../Math'
+import { Dimensions, Offset, Triangle as MathTriangle } from '../Math'
 import { Component, ComponentCode, ComponentState } from './Component'
 
 export enum ShapeType {
@@ -33,6 +33,7 @@ export interface Rectangle extends BaseShape {
 export interface Polygon extends BaseShape {
     type: ShapeType.POLYGON
     points: Offset[]
+    triangles: MathTriangle[]
 }
 
 export type Shape = Dot | Circle | Triangle | Rectangle | Polygon

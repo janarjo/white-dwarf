@@ -2,7 +2,7 @@ import { Collision, CollisionState } from '../components/Collision'
 import { Render, ShapeType } from '../components/Render'
 import { Transform, TransformState } from '../components/Transform'
 import { EntityManager } from '../EntityManager'
-import { add, earclip, getAxes, isIntersect, overlap, Polygon, project, Rectangle, Triangle } from '../Math'
+import { add, getAxes, isIntersect, overlap, project, Rectangle, translate, Triangle } from '../Math'
 import { System } from './System'
 
 export class CollisionSystem implements System {
@@ -35,13 +35,15 @@ export class CollisionSystem implements System {
                     const { shape: thisShape } = render.state
                     const { shape: otherShape } = otherRender.state
                     
-                    if (thisShape.type === ShapeType.DOT || otherShape.type === ShapeType.DOT) return true
+                    if (thisShape.type === ShapeType.DOT || otherShape.type === ShapeType.DOT) return false
                     if (thisShape.type !== ShapeType.POLYGON || otherShape.type !== ShapeType.POLYGON) return false
 
-                    const thisPoly = thisShape.points.map(point => add(point, transform.state.position))
-                    const otherPoly = otherShape.points.map(point => add(point, otherTransform.state.position))
+                    const thisTriangles = thisShape.triangles
+                        .map(triangle => translate(triangle, transform.state.position) as Triangle)
+                    const otherTriangles = otherShape.triangles
+                        .map(triangle => translate(triangle, otherTransform.state.position) as Triangle)
 
-                    return this.isColliding(thisPoly, otherPoly)
+                    return this.isColliding(thisTriangles, otherTriangles)
                 })
             collision.state.isColliding = collidingEntities.length > 0
             collision.state.colliders = collidingEntities
@@ -54,9 +56,7 @@ export class CollisionSystem implements System {
         return [add(pos, offset), dimensions]
     }
 
-    private isColliding(poly1: Polygon, poly2: Polygon) {
-        const triangles1 = earclip(poly1)
-        const triangles2 = earclip(poly2)
+    private isColliding(triangles1: Triangle[], triangles2: Triangle[]) {
         for (const triangle1 of triangles1) {
             for (const triangle2 of triangles2) {
                 if (this.isTrianglesColliding(triangle1, triangle2)) {

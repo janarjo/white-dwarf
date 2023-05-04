@@ -9,7 +9,7 @@ import { Physics as Physics } from './components/Physics'
 import { Render, ShapeType } from './components/Render'
 import { Transform } from './components/Transform'
 import { Weapon } from './components/Weapon'
-import { Directions, Offset, scale, Vector } from './Math'
+import { Directions, earclip, Offset, scale, Vector } from './Math'
 import { TriggerType as EffectTriggerType, EffectHub, EffectType } from './components/EffectHub'
 import { degPerSec, ms, pxPerSec, pxPerSec2 } from './Units'
 import { AI } from './components/AI'
@@ -31,108 +31,114 @@ export const camera = () => [
     }),
 ]
 
-export const player = (position: Vector) => [
-    new Transform({
-        position,
-        direction: Directions.EAST,
-        lastUpdated: performance.now()
-    }),
-    new Render({
-        shape: { type: ShapeType.POLYGON, color: 'white', points: [[-24, -15], [24, 0], [-24, 15]] },
-    }),
-    new Control({
-        isAccelerating: false,
-        isDecelerating: false,
-        isTurningLeft: false,
-        isTurningRight: false,
-        isFiring: false,
-        isBraking: false,
-    }),
-    new Physics({
-        currDirection: [1, 0],
-        currVelocity: [0, 0],
-        currAcceleration: [0, 0],
-        currRotationalSpeed: 0,
-        acceleration: pxPerSec2(200),
-        maxSpeed: pxPerSec(300),
-        rotationalSpeed: degPerSec(180),
-        lastUpdated: performance.now(),
-        mass: 0.1,
-    }),
-    new EntityHub({
-        slots: [
-            { attachmentId: undefined, offset: [0, 0], type: SlotType.CAMERA },
-            { attachmentId: undefined, offset: [23, 0], type: SlotType.WEAPON },
-        ],
-    }),
-    new Collision({
-        boundingBox: [[-30, -30], [60, 60]],
-        isColliding: false,
-        colliders: [],
-        group: CollisionGroup.PLAYER,
-        mask: [CollisionGroup.ENEMY],
-    }),
-    new Emitter({
-        trigger: EmitterTriggerType.ACCELERATION,
-        rateMs: 125,
-        decayMs: 0,
-        lastEmittedMs: 0,
-        offset: [-30, 0],
-    }),
-    new Inventory({
-        items: [smallPlasmaPack()],
-        maxSize: 10
-    })
-]
+export const player = (position: Vector) => {
+    const shapePoints: Offset[] = [[-24, -15], [24, 0], [-24, 15]]
+    return [
+        new Transform({
+            position,
+            direction: Directions.EAST,
+            lastUpdated: performance.now()
+        }),
+        new Render({
+            shape: { type: ShapeType.POLYGON, color: 'white', points: shapePoints, triangles: earclip(shapePoints) },
+        }),
+        new Control({
+            isAccelerating: false,
+            isDecelerating: false,
+            isTurningLeft: false,
+            isTurningRight: false,
+            isFiring: false,
+            isBraking: false,
+        }),
+        new Physics({
+            currDirection: [1, 0],
+            currVelocity: [0, 0],
+            currAcceleration: [0, 0],
+            currRotationalSpeed: 0,
+            acceleration: pxPerSec2(200),
+            maxSpeed: pxPerSec(300),
+            rotationalSpeed: degPerSec(180),
+            lastUpdated: performance.now(),
+            mass: 0.1,
+        }),
+        new EntityHub({
+            slots: [
+                { attachmentId: undefined, offset: [0, 0], type: SlotType.CAMERA },
+                { attachmentId: undefined, offset: [23, 0], type: SlotType.WEAPON },
+            ],
+        }),
+        new Collision({
+            boundingBox: [[-30, -30], [60, 60]],
+            isColliding: false,
+            colliders: [],
+            group: CollisionGroup.PLAYER,
+            mask: [CollisionGroup.ENEMY],
+        }),
+        new Emitter({
+            trigger: EmitterTriggerType.ACCELERATION,
+            rateMs: 125,
+            decayMs: 0,
+            lastEmittedMs: 0,
+            offset: [-30, 0],
+        }),
+        new Inventory({
+            items: [smallPlasmaPack()],
+            maxSize: 10
+        })
+    ]
+}
 
-export const enemy = (position: Vector) => [
-    new Transform({
-        position,
-        direction: Directions.EAST,
-        lastUpdated: performance.now()
-    }),
-    new Render({
-        shape: { type: ShapeType.POLYGON, color: 'white', points: [[-24, -15], [24, 0], [-24, 15]] },
-    }),
-    new AI({
-        isAccelerating: false,
-        isDecelerating: false,
-        isTurningLeft: false,
-        isTurningRight: false,
-        isFiring: false,
-        isBraking: false,
-        pollingRate: ms(500),
-        lastPolled: performance.now(),
-    }),
-    new Physics({
-        currDirection: [1, 0],
-        currVelocity: [0, 0],
-        currAcceleration: [0, 0],
-        currRotationalSpeed: 0,
-        acceleration: pxPerSec2(200),
-        maxSpeed: pxPerSec(300),
-        rotationalSpeed: degPerSec(180),
-        lastUpdated: performance.now(),
-        mass: 0.1,
-    }),
-    new EntityHub({
-        slots: [{ attachmentId: undefined, offset: [23, 0], type: SlotType.WEAPON }],
-    }),
-    new Collision({
-        boundingBox: [[-30, -30], [60, 60]],
-        isColliding: false,
-        colliders: [],
-        group: CollisionGroup.ENEMY,
-        mask: [CollisionGroup.PLAYER],
-    }),
-    new Emitter({
-        trigger: EmitterTriggerType.ACCELERATION,
-        rateMs: 125,
-        decayMs: 0,
-        lastEmittedMs: 0,
-        offset: [-30, 0],
-    })
-]
+export const enemy = (position: Vector) => {
+    const shapePoints: Offset[] = [[-24, -15], [24, 0], [-24, 15]]
+    return [
+        new Transform({
+            position,
+            direction: Directions.EAST,
+            lastUpdated: performance.now()
+        }),
+        new Render({
+            shape: { type: ShapeType.POLYGON, color: 'white', points: shapePoints, triangles: earclip(shapePoints) },
+        }),
+        new AI({
+            isAccelerating: false,
+            isDecelerating: false,
+            isTurningLeft: false,
+            isTurningRight: false,
+            isFiring: false,
+            isBraking: false,
+            pollingRate: ms(500),
+            lastPolled: performance.now(),
+        }),
+        new Physics({
+            currDirection: [1, 0],
+            currVelocity: [0, 0],
+            currAcceleration: [0, 0],
+            currRotationalSpeed: 0,
+            acceleration: pxPerSec2(200),
+            maxSpeed: pxPerSec(300),
+            rotationalSpeed: degPerSec(180),
+            lastUpdated: performance.now(),
+            mass: 0.1,
+        }),
+        new EntityHub({
+            slots: [{ attachmentId: undefined, offset: [23, 0], type: SlotType.WEAPON }],
+        }),
+        new Collision({
+            boundingBox: [[-30, -30], [60, 60]],
+            isColliding: false,
+            colliders: [],
+            group: CollisionGroup.ENEMY,
+            mask: [CollisionGroup.PLAYER],
+        }),
+        new Emitter({
+            trigger: EmitterTriggerType.ACCELERATION,
+            rateMs: 125,
+            decayMs: 0,
+            lastEmittedMs: 0,
+            offset: [-30, 0],
+        })
+    ]
+}
 
 export const projectile = (position: Vector, direction: Vector, isEnemy: boolean) => [
     new Transform({
@@ -175,7 +181,7 @@ export const asteroid = (position: Vector, direction: Vector, points: Offset[]) 
         lastUpdated: performance.now()
     }),
     new Render({
-        shape: { type: ShapeType.POLYGON, color: 'white', points }
+        shape: { type: ShapeType.POLYGON, color: 'white', points, triangles: earclip(points) }
     }),
     new Physics({
         currVelocity: scale(direction, 150),

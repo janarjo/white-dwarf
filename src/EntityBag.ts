@@ -1,6 +1,6 @@
 import { Component, ComponentCode, ComponentState, Entity } from './components/Component'
 import { intersect } from './Math'
-import { isDefined, isEmpty, isNotEmptySet } from './Util'
+import { isDefined } from './Util'
 
 export class EntityBag {
     private entities: Map<number, Entity>
