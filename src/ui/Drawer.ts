@@ -1,8 +1,8 @@
-import { ShapeType, Shape } from '../components/Render'
 import { Star } from '../LevelManager'
 import { DebugInfo } from '../EntityManager'
 import { CircleDrawer, DotDrawer, DrawParameters, PolygonDrawer, RectangleDrawer, TriangleDrawer } from './ShapeDrawer'
 import { Item, ItemCode } from '../Items'
+import { Shape, ShapeType } from '../components/Transform'
 
 export class Drawer {
     constructor(readonly ctx: CanvasRenderingContext2D) {}

@@ -6,13 +6,12 @@ import { TriggerType as EmitterTriggerType, Emitter } from './components/Emitter
 import { Health } from './components/Health'
 import { EntityHub, SlotType } from './components/EntityHub'
 import { Physics as Physics } from './components/Physics'
-import { Render, ShapeType } from './components/Render'
-import { Transform } from './components/Transform'
+import { Render } from './components/Render'
+import { ShapeType, Transform } from './components/Transform'
 import { Weapon } from './components/Weapon'
 import { Directions, earclip, Offset, scale, Vector } from './Math'
 import { TriggerType as EffectTriggerType, EffectHub, EffectType } from './components/EffectHub'
-import { degPerSec, ms, pxPerSec, pxPerSec2 } from './Units'
-import { AI } from './components/AI'
+import { degPerSec, pxPerSec, pxPerSec2 } from './Units'
 import { Inventory } from './components/Inventory'
 import { smallPlasmaPack } from './Items'
 
@@ -20,7 +19,6 @@ export const camera = () => [
     new Transform({
         position: [0, 0],
         direction: Directions.NORTH,
-        lastUpdated: performance.now()
     }),
     new Camera({
         origin: [0, 0],
@@ -37,11 +35,9 @@ export const player = (position: Vector) => {
         new Transform({
             position,
             direction: Directions.EAST,
-            lastUpdated: performance.now()
+            shape: { type: ShapeType.POLYGON, points: shapePoints, triangles: earclip(shapePoints) },
         }),
-        new Render({
-            shape: { type: ShapeType.POLYGON, color: 'white', points: shapePoints, triangles: earclip(shapePoints) },
-        }),
+        new Render({ color: 'white' }),
         new Control({
             isAccelerating: false,
             isDecelerating: false,
@@ -94,12 +90,10 @@ export const enemy = (position: Vector) => {
         new Transform({
             position,
             direction: Directions.EAST,
-            lastUpdated: performance.now()
+            shape: { type: ShapeType.POLYGON, points: shapePoints, triangles: earclip(shapePoints) },
         }),
-        new Render({
-            shape: { type: ShapeType.POLYGON, color: 'white', points: shapePoints, triangles: earclip(shapePoints) },
-        }),
-        new AI({
+        new Render({color: 'white' }),
+        /* new AI({
             isAccelerating: false,
             isDecelerating: false,
             isTurningLeft: false,
@@ -108,7 +102,7 @@ export const enemy = (position: Vector) => {
             isBraking: false,
             pollingRate: ms(500),
             lastPolled: performance.now(),
-        }),
+        }), */
         new Physics({
             currDirection: [1, 0],
             currVelocity: [0, 0],
@@ -144,11 +138,9 @@ export const projectile = (position: Vector, direction: Vector, isEnemy: boolean
     new Transform({
         position,
         direction,
-        lastUpdated: performance.now()
+        shape: { type: ShapeType.DOT }
     }),
-    new Render({
-        shape: { type: ShapeType.DOT, color: 'white' }
-    }),
+    new Render({ color: 'white' }),
     new Physics({
         currVelocity: scale(direction, 300),
         currAcceleration: [0, 0],
@@ -178,11 +170,9 @@ export const asteroid = (position: Vector, direction: Vector, points: Offset[]) 
     new Transform({
         position,
         direction,
-        lastUpdated: performance.now()
+        shape: { type: ShapeType.POLYGON, points, triangles: earclip(points) }
     }),
-    new Render({
-        shape: { type: ShapeType.POLYGON, color: 'white', points, triangles: earclip(points) }
-    }),
+    new Render({ color: 'white' }),
     new Physics({
         currVelocity: scale(direction, 150),
         currAcceleration: [0, 0],
@@ -212,11 +202,9 @@ export const blaster = () => [
     new Transform({
         position: [0, 0],
         direction: Directions.NORTH,
-        lastUpdated: performance.now()
+        shape: { type: ShapeType.DOT }
     }),
-    new Render({
-        shape: { type: ShapeType.DOT, color: 'white' }
-    }),
+    new Render({ color: 'white' }),
     new Weapon({
         lastFiredMs: 0,
         hasFired: false,
@@ -229,27 +217,30 @@ export const blaster = () => [
     }),
 ]
 
-export const exhaust = (position: Vector, direction: Vector) => [
-    new Transform({
-        position,
-        direction,
-        lastUpdated: performance.now()
-    }),
-    new Physics({
-        currVelocity: scale(direction, 1.5),
-        currAcceleration: [0, 0],
-        currRotationalSpeed: 0,
-        acceleration: pxPerSec2(0),
-        maxSpeed: pxPerSec(0),
-        rotationalSpeed: degPerSec(0),
-        lastUpdated: performance.now(),
-        mass: 0.1,
-    }),
-    new Render({
-        shape: { type: ShapeType.TRIANGLE, color: 'white', base: 6, height: 10 },
-        effect: { durationMs: 275, startedMs: performance.now() }
-    }),
-    new EffectHub({
-        effects: [{ type: EffectType.DEATH, durationMs: 250, startedMs: performance.now(), trigger: EffectTriggerType.END }]
-    })
-]
+export const exhaust = (position: Vector, direction: Vector) => {
+    const shapePoints: Offset[] = [[-8, -5], [8, 0], [-8, 5]]
+    return [
+        new Transform({
+            position,
+            direction,
+            shape: { type: ShapeType.POLYGON, points: shapePoints, triangles: earclip(shapePoints) },
+        }),
+        new Physics({
+            currVelocity: scale(direction, 1.5),
+            currAcceleration: [0, 0],
+            currRotationalSpeed: 0,
+            acceleration: pxPerSec2(0),
+            maxSpeed: pxPerSec(0),
+            rotationalSpeed: degPerSec(0),
+            lastUpdated: performance.now(),
+            mass: 0.1,
+        }),
+        new Render({
+            color: 'white',
+            effect: { durationMs: 275, startedMs: performance.now() }
+        }),
+        new EffectHub({
+            effects: [{ type: EffectType.DEATH, durationMs: 250, startedMs: performance.now(), trigger: EffectTriggerType.END }]
+        })
+    ]
+}

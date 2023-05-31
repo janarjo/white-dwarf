@@ -1,8 +1,8 @@
 import { EntityHub } from '../components/EntityHub'
 import { Physics } from '../components/Physics'
-import { Transform } from '../components/Transform'
+import { ShapeType, Transform } from '../components/Transform'
 import { EntityManager } from '../EntityManager'
-import { add, hvec, isWithinRectangle, rotate, scale, Vector } from '../Math'
+import { add, hvec, isPolygon, isWithinRectangle, rotate, rotatePolygon, scale, translate, Triangle, Vector } from '../Math'
 import { Time } from '../Units'
 import { System } from './System'
 
@@ -18,6 +18,24 @@ export class TransformSystem implements System {
         this.entities.withComponents(Transform).forEach(id => {
             const transform = this.entities.getComponent(id, Transform)
             if (!isWithinRectangle(transform.state.position, this.paddedMapSize)) this.entities.remove(id)
+        })
+
+        this.entities.withComponents(Transform).forEach(id => {
+            const transform = this.entities.getComponent(id, Transform)
+            const { position, direction, shape } = transform.state
+
+            switch (shape?.type) {
+                case ShapeType.DOT:
+                    transform.state.currShape = shape
+                    break
+                case ShapeType.POLYGON:
+                    const currPoints = translate(rotatePolygon(shape.points, direction), position) as Vector[]
+                    const currTriangles = shape.triangles
+                        .map(triangle => rotatePolygon(triangle, transform.state.direction) as Triangle)
+                        .map(triangle => translate(triangle, transform.state.position) as Triangle)
+                    transform.state.currShape = { ...shape, points: currPoints, triangles: currTriangles }
+                    break
+            }
         })
 
         this.entities.withComponents(Transform, Physics).forEach(id => {

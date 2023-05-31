@@ -47,12 +47,12 @@ export class Game {
         const level = this.levels.getLevel(levelNo)
         const { mapSize, entities, fields, stars } = level
         const systems = [
+            new TransformSystem(entities, mapSize),
             new EntityHubSystem(entities),
             new ControlSystem(entities, this.canvas),
             new AISystem(entities),
             new CollisionSystem(entities),
             new PhysicsSystem(entities),
-            new TransformSystem(entities, mapSize),
             new WeaponSystem(entities, this.sounds),
             new HealthSystem(entities),
             new CameraSystem(entities, this.viewPort, mapSize),

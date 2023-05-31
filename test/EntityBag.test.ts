@@ -1,7 +1,7 @@
 import { Camera } from '../src/components/Camera'
 import { Entity } from '../src/components/Component'
 import { Inventory } from '../src/components/Inventory'
-import { Render, ShapeType } from '../src/components/Render'
+import { Render } from '../src/components/Render'
 import { Weapon } from '../src/components/Weapon'
 import { EntityBag } from '../src/EntityBag'
 
@@ -98,7 +98,7 @@ describe('EntityBag withComponents', () => {
         ]
         entity3 = [
             new Camera({ origin: [20, 20] }),
-            new Render({ shape: { type: ShapeType.DOT, color: 'white'} }),
+            new Render({ color: 'white'}),
             new Inventory({ items: [], maxSize: 15}),
         ]
         bag = new EntityBag()

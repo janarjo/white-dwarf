@@ -1,8 +1,7 @@
 import { Collision, CollisionState } from '../components/Collision'
-import { Render, ShapeType } from '../components/Render'
-import { Transform, TransformState } from '../components/Transform'
+import { ShapeType, Transform, TransformState } from '../components/Transform'
 import { EntityManager } from '../EntityManager'
-import { add, getAxes, isIntersect, isWithinTriangle, overlap, project, Rectangle, translate, Triangle } from '../Math'
+import { add, getAxes, isIntersect, isWithinTriangle, overlap, project, Rectangle, Triangle } from '../Math'
 import { System } from './System'
 
 export class CollisionSystem implements System {
@@ -11,11 +10,10 @@ export class CollisionSystem implements System {
     }
 
     update() {
-        const collideableEntities = this.entities.withComponents(Transform, Collision, Render)
+        const collideableEntities = this.entities.withComponents(Transform, Collision)
         collideableEntities.forEach(id => {
             const transform = this.entities.getComponent(id, Transform)
             const collision = this.entities.getComponent(id, Collision)
-            const render = this.entities.getComponent(id, Render)
             const thisBoundingBox = this.getBoundingBox(transform.state, collision.state)
 
             const collidingEntities = collideableEntities
@@ -30,29 +28,19 @@ export class CollisionSystem implements System {
                     return isIntersect(thisBoundingBox, otherBoundingBox)
                 })
                 .filter(otherId => {
-                    const otherRender = this.entities.getComponent(otherId, Render)
                     const otherTransform = this.entities.getComponent(otherId, Transform)
-                    const { shape: thisShape } = render.state
-                    const { shape: otherShape } = otherRender.state
+                    const { currShape: thisCurrShape } = transform.state
+                    const { currShape: otherCurrShape } = otherTransform.state
                     
-                    if (thisShape.type === ShapeType.POLYGON && otherShape.type === ShapeType.DOT) {
-                        const thisTriangles = thisShape.triangles
-                            .map(triangle => translate(triangle, transform.state.position) as Triangle)
-                        return thisTriangles.some(triangle => isWithinTriangle(otherTransform.state.position, triangle))
+                    if (!thisCurrShape || !otherCurrShape) return false
+                    if (thisCurrShape.type === ShapeType.POLYGON && otherCurrShape.type === ShapeType.DOT) {
+                        return thisCurrShape.triangles.some(triangle => isWithinTriangle(otherTransform.state.position, triangle))
                     }
-
-                    if (thisShape.type === ShapeType.DOT && otherShape.type === ShapeType.POLYGON) {
-                        const otherTriangles = otherShape.triangles
-                            .map(triangle => translate(triangle, otherTransform.state.position) as Triangle)
-                        return otherTriangles.some(triangle => isWithinTriangle(transform.state.position, triangle))
+                    if (thisCurrShape.type === ShapeType.DOT && otherCurrShape.type === ShapeType.POLYGON) {
+                        return otherCurrShape.triangles.some(triangle => isWithinTriangle(transform.state.position, triangle))
                     }
-
-                    if (thisShape.type === ShapeType.POLYGON && otherShape.type === ShapeType.POLYGON) {
-                        const thisTriangles = thisShape.triangles
-                            .map(triangle => translate(triangle, transform.state.position) as Triangle)
-                        const otherTriangles = otherShape.triangles
-                            .map(triangle => translate(triangle, otherTransform.state.position) as Triangle)
-                        return this.isColliding(thisTriangles, otherTriangles)
+                    if (thisCurrShape.type === ShapeType.POLYGON && otherCurrShape.type === ShapeType.POLYGON) {
+                        return this.isColliding(thisCurrShape.triangles, otherCurrShape.triangles)
                     }
 
                     return false

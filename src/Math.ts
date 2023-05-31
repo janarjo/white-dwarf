@@ -45,7 +45,7 @@ export class Directions {
     static readonly NORTH = [0, -1] as const
 }
 
-export const rotatePoints = (points: Position[], direction: Direction, origin: Position = [0, 0]) => {
+export const rotatePolygon = (points: Polygon, direction: Direction, origin: Position = [0, 0]) => {
     const angle = rad(direction)
     const cosMult = Math.cos(angle)
     const sinMult = Math.sin(angle)
@@ -53,9 +53,9 @@ export const rotatePoints = (points: Position[], direction: Direction, origin: P
     return points
         .map(v => subtract(v, origin))
         .map(v => [v[0] * cosMult - v[1] * sinMult, v[0] * sinMult + v[1] * cosMult] as const)
-        .map(v => add(v, origin))
+        .map(v => add(v, origin)) as Polygon
 }
-export const rotate = (point: Position, direction: Direction, origin: Position = [0, 0]) => rotatePoints([point], direction, origin)[0]
+export const rotate = (point: Position, direction: Direction, origin: Position = [0, 0]) => rotatePolygon([point], direction, origin)[0]
 
 export const rand = (min = 0, max = 1) => Math.random() * (max - min) + min
 export const randInt = (r: Range) => {

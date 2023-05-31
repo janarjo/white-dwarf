@@ -1,14 +1,15 @@
-import { Circle, Triangle, Rectangle, Effect, BaseShape, Polygon } from '../components/Render'
-import { Position, rotatePoints, Direction } from '../Math'
-import { Dot } from '../components/Render'
+import { Effect } from '../components/Render'
+import { Circle, Dot, Polygon, Rectangle, Shape, Triangle } from '../components/Transform'
+import { Position, rotatePolygon, Direction } from '../Math'
 
 export interface DrawParameters {
     position: Position
+    color: string
     direction?: Direction
     effect?: Effect
 }
 
-export abstract class ShapeDrawer<T extends BaseShape> {
+export abstract class ShapeDrawer<T extends Shape> {
     constructor(readonly ctx: CanvasRenderingContext2D) {}
 
     draw(shape: T, params: DrawParameters) {
@@ -36,10 +37,10 @@ export abstract class ShapeDrawer<T extends BaseShape> {
 
 export class DotDrawer extends ShapeDrawer<Dot> {
     protected drawInternal(shape: Dot, instructions: DrawParameters): void {
-        const { position, effect } = instructions
+        const { position, effect, color } = instructions
 
         this.ctx.beginPath()
-        this.ctx.fillStyle = shape.color
+        this.ctx.fillStyle = color
         this.addEffect(effect)
 
         const [x, y] = position
@@ -50,10 +51,10 @@ export class DotDrawer extends ShapeDrawer<Dot> {
 
 export class CircleDrawer extends ShapeDrawer<Circle> {
     protected drawInternal(shape: Circle, instructions: DrawParameters): void {
-        const { position, effect } = instructions
+        const { position, effect, color } = instructions
 
         this.ctx.beginPath()
-        this.ctx.fillStyle = shape.color
+        this.ctx.fillStyle = color
         this.ctx.lineWidth = 2
         this.addEffect(effect)
 
@@ -66,10 +67,10 @@ export class CircleDrawer extends ShapeDrawer<Circle> {
 
 export class TriangleDrawer extends ShapeDrawer<Triangle> {
     protected drawInternal(shape: Triangle, instructions: DrawParameters): void {
-        const { position, direction, effect } = instructions
+        const { position, direction, effect, color } = instructions
 
         this.ctx.beginPath()
-        this.ctx.fillStyle = shape.color
+        this.ctx.fillStyle = color
         this.addEffect(effect)
     
         const [ centerX, centerY ] = position
@@ -80,7 +81,7 @@ export class TriangleDrawer extends ShapeDrawer<Triangle> {
         const pointB = [centerX - halfHeight, centerY - halfBase] as const
         const pointC = [centerX - halfHeight, centerY + halfBase] as const
     
-        const rotatedPoints = rotatePoints([pointA, pointB, pointC], direction ?? [0, 0], position)
+        const rotatedPoints = rotatePolygon([pointA, pointB, pointC], direction ?? [0, 0], position)
     
         const rotatedPointA = rotatedPoints[0]
         const rotatedPointB = rotatedPoints[1]
@@ -96,7 +97,7 @@ export class TriangleDrawer extends ShapeDrawer<Triangle> {
 
 export class RectangleDrawer extends ShapeDrawer<Rectangle> {
     protected drawInternal(shape: Rectangle, instructions: DrawParameters): void {
-        const { position, effect } = instructions
+        const { position, effect, color } = instructions
 
         this.ctx.beginPath()
         this.addEffect(effect)
@@ -104,10 +105,10 @@ export class RectangleDrawer extends ShapeDrawer<Rectangle> {
         const [ x, y ] = position
         const [ w, h ] = shape.dimensions
         if (shape.fill) {
-            this.ctx.fillStyle = shape.color
+            this.ctx.fillStyle = color
             this.ctx.fillRect(x, y, w, h)
         } else {
-            this.ctx.strokeStyle = shape.color
+            this.ctx.strokeStyle = color
             this.ctx.strokeRect(x, y, w, h)
         }
         this.ctx.stroke()
@@ -116,13 +117,13 @@ export class RectangleDrawer extends ShapeDrawer<Rectangle> {
 
 export class PolygonDrawer extends ShapeDrawer<Polygon> {
     protected drawInternal(shape: Polygon, instructions: DrawParameters): void {
-        const { position, direction, effect } = instructions
+        const { position, direction, effect, color } = instructions
 
         this.ctx.beginPath()
-        this.ctx.fillStyle = shape.color
+        this.ctx.fillStyle = color
         this.addEffect(effect)
 
-        const rotatedPoints = rotatePoints(shape.points, direction ?? [0, 0])
+        const rotatedPoints = rotatePolygon(shape.points, direction ?? [0, 0])
        
         const [ oX, oY ] = position
         const translatedPoints = rotatedPoints.map(([x, y]) => [x + oX, y + oY] as const)
