@@ -14,12 +14,6 @@ export interface Circle {
     radius: number
 }
 
-export interface Triangle {
-    type: ShapeType.TRIANGLE
-    base: number
-    height: number
-}
-
 export interface Rectangle {
     type: ShapeType.RECTANGLE
     dimensions: Dimensions
@@ -32,7 +26,7 @@ export interface Polygon {
     triangles: MathTriangle[]
 }
 
-export type Shape = Dot | Circle | Triangle | Rectangle | Polygon
+export type Shape = Dot | Circle | Rectangle | Polygon
 
 export interface TransformState extends ComponentState {
     position: Position

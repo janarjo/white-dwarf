@@ -1,6 +1,6 @@
 import { Star } from '../LevelManager'
 import { DebugInfo } from '../EntityManager'
-import { CircleDrawer, DotDrawer, DrawParameters, PolygonDrawer, RectangleDrawer, TriangleDrawer } from './ShapeDrawer'
+import { CircleDrawer, DotDrawer, DrawParameters, PolygonDrawer, RectangleDrawer } from './ShapeDrawer'
 import { Item, ItemCode } from '../Items'
 import { Shape, ShapeType } from '../components/Transform'
 
@@ -9,7 +9,6 @@ export class Drawer {
 
     private readonly dotDrawer: DotDrawer = new DotDrawer(this.ctx)
     private readonly circleDrawer: CircleDrawer = new CircleDrawer(this.ctx)
-    private readonly triangleDrawer: TriangleDrawer = new TriangleDrawer(this.ctx)
     private readonly rectangleDrawer: RectangleDrawer = new RectangleDrawer(this.ctx)
     private readonly polygonDrawer: PolygonDrawer = new PolygonDrawer(this.ctx)
 
@@ -32,7 +31,7 @@ export class Drawer {
 
     drawInventory(items: Item[]) {
         const { width, height } = this.ctx.canvas
-        
+
         this.ctx.save()
         this.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)'
         this.ctx.fillRect(0, 0, width, height)
@@ -70,9 +69,6 @@ export class Drawer {
                 break
             case ShapeType.CIRCLE:
                 this.circleDrawer.draw(shape, params)
-                break
-            case ShapeType.TRIANGLE:
-                this.triangleDrawer.draw(shape, params)
                 break
             case ShapeType.RECTANGLE:
                 this.rectangleDrawer.draw(shape, params)

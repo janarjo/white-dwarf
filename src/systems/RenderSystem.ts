@@ -36,12 +36,12 @@ export class RenderSystem implements System {
 
         this.entities.withComponents(Transform, Render).forEach(id => {
             const transform = this.entities.getComponent(id, Transform)
-            
+
             const { shape, direction } = transform.state
             if (!shape) return
 
             const oPosition = subtract(transform.state.position, origin)
-            
+
             const render = this.entities.getComponent(id, Render)
             const { color, effect } = render.state
 
