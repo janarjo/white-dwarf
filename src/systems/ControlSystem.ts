@@ -23,10 +23,13 @@ export class ControlSystem implements System {
             const transform = this.entities.getComponent(id, Transform)
 
             const { direction, position } = transform.state
-            const { mousePos } = control.state
+            const { canvasPointer } = control.state
 
-            if (mousePos) {
-                const targetDirection = subtract(mousePos, position)
+            if (canvasPointer) {
+                const camera = this.entities.getCamera()
+                const origin = camera.state.origin
+                const pointerPosition = add(canvasPointer, origin)
+                const targetDirection = subtract(pointerPosition, position)
                 // Calculate the angle between the current heading direction and the direction towards the mouse cursor
                 const diff = angleBetween(direction, targetDirection)
                 if (Math.abs(diff) < 0.05) {
@@ -85,11 +88,7 @@ export class ControlSystem implements System {
     handleMouseMovement(event: MouseEvent) {
         this.entities.withComponents(Control).forEach(id => {
             const control = this.entities.getComponent(id, Control)
-            const mousePos = [event.clientX, event.clientY] as const
-            const camera = this.entities.getCamera()
-            const origin = camera.state.origin
-
-            control.state.mousePos = add(mousePos, origin)
+            control.state.canvasPointer = [event.clientX, event.clientY] as const
         })
     }
 }

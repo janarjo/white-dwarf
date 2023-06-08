@@ -8,7 +8,7 @@ export interface ControlState extends ComponentState {
     isTurningLeft: boolean
     isTurningRight: boolean
     isBraking: boolean
-    mousePos?: Position
+    canvasPointer?: Position
 }
 
 export class Control extends Component {
