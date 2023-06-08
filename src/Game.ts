@@ -48,8 +48,8 @@ export class Game {
         const { mapSize, entities, fields, stars } = level
         const systems = [
             new TransformSystem(entities, mapSize),
-            new EntityHubSystem(entities),
             new ControlSystem(entities, this.canvas),
+            new EntityHubSystem(entities),
             new AISystem(entities),
             new CollisionSystem(entities),
             new PhysicsSystem(entities),
@@ -73,8 +73,8 @@ export class Game {
     }
 
     gameLoop(
-            entities: EntityManager, 
-            systems: ReadonlyArray<System>, 
+            entities: EntityManager,
+            systems: ReadonlyArray<System>,
             fields: ReadonlyArray<Field>) {
         requestAnimationFrame(() => this.gameLoop(entities, systems, fields))
 

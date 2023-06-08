@@ -88,7 +88,7 @@ export class ControlSystem implements System {
             const mousePos = [event.clientX, event.clientY] as const
             const camera = this.entities.getCamera()
             const origin = camera.state.origin
-           
+
             control.state.mousePos = add(mousePos, origin)
         })
     }

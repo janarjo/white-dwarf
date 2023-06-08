@@ -1,6 +1,6 @@
 import { Effect } from '../components/Render'
-import { Circle, Dot, Polygon, Rectangle, Shape, Triangle } from '../components/Transform'
-import { Position, rotatePolygon, Direction } from '../Math'
+import { Circle, Dot, Polygon, Rectangle, Shape } from '../components/Transform'
+import { Position, Direction } from '../Math'
 
 export interface DrawParameters {
     position: Position
@@ -22,7 +22,7 @@ export abstract class ShapeDrawer<T extends Shape> {
 
     protected addEffect(effect?: Effect) {
         if (!effect) return
-        
+
         const now = performance.now()
         const { durationMs, startedMs } = effect
 
@@ -65,36 +65,6 @@ export class CircleDrawer extends ShapeDrawer<Circle> {
     }
 }
 
-export class TriangleDrawer extends ShapeDrawer<Triangle> {
-    protected drawInternal(shape: Triangle, instructions: DrawParameters): void {
-        const { position, direction, effect, color } = instructions
-
-        this.ctx.beginPath()
-        this.ctx.fillStyle = color
-        this.addEffect(effect)
-    
-        const [ centerX, centerY ] = position
-        const halfHeight = (shape.height / 2)
-        const halfBase = (shape.base / 2)
-
-        const pointA = [centerX + halfHeight, centerY] as const
-        const pointB = [centerX - halfHeight, centerY - halfBase] as const
-        const pointC = [centerX - halfHeight, centerY + halfBase] as const
-    
-        const rotatedPoints = rotatePolygon([pointA, pointB, pointC], direction ?? [0, 0], position)
-    
-        const rotatedPointA = rotatedPoints[0]
-        const rotatedPointB = rotatedPoints[1]
-        const rotatedPointC = rotatedPoints[2]
-    
-        this.ctx.moveTo(rotatedPointA[0], rotatedPointA[1])
-        this.ctx.lineTo(rotatedPointB[0], rotatedPointB[1])
-        this.ctx.lineTo(rotatedPointC[0], rotatedPointC[1])
-        this.ctx.lineTo(rotatedPointA[0], rotatedPointA[1])
-        this.ctx.fill()
-    }
-}
-
 export class RectangleDrawer extends ShapeDrawer<Rectangle> {
     protected drawInternal(shape: Rectangle, instructions: DrawParameters): void {
         const { position, effect, color } = instructions
@@ -117,18 +87,13 @@ export class RectangleDrawer extends ShapeDrawer<Rectangle> {
 
 export class PolygonDrawer extends ShapeDrawer<Polygon> {
     protected drawInternal(shape: Polygon, instructions: DrawParameters): void {
-        const { position, direction, effect, color } = instructions
+        const { effect, color } = instructions
 
         this.ctx.beginPath()
         this.ctx.fillStyle = color
         this.addEffect(effect)
 
-        const rotatedPoints = rotatePolygon(shape.points, direction ?? [0, 0])
-       
-        const [ oX, oY ] = position
-        const translatedPoints = rotatedPoints.map(([x, y]) => [x + oX, y + oY] as const)
-        
-        const [ firstPoint, ...restPoints ] = translatedPoints
+        const [ firstPoint, ...restPoints ] = shape.points
 
         this.ctx.moveTo(firstPoint[0], firstPoint[1])
         restPoints.forEach(([x, y]) => this.ctx.lineTo(x, y))

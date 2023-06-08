@@ -42,7 +42,7 @@ export class WeaponSystem implements System {
 
     private canFire(weaponState: WeaponState, invState?: InventoryState) {
         const { lastFiredMs: lastFired, cooldownMs: cooldown } = weaponState
-        
+
         const now = performance.now()
         const isCooledDown = now - lastFired >= cooldown
         if (!isCooledDown) return false

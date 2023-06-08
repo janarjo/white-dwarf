@@ -25,7 +25,6 @@ export class EntityManager extends EntityBag {
     }
 
     override remove(id: number) {
-        console.log(`Marking for removal entity ${id}`)
         this.markedForRemoval.add(id)
     }
 

@@ -36,16 +36,22 @@ export class RenderSystem implements System {
 
         this.entities.withComponents(Transform, Render).forEach(id => {
             const transform = this.entities.getComponent(id, Transform)
-
-            const { shape, direction } = transform.state
+            const { direction, shape, currShape, position } = transform.state
             if (!shape) return
-
-            const oPosition = subtract(transform.state.position, origin)
 
             const render = this.entities.getComponent(id, Render)
             const { color, effect } = render.state
 
-            this.drawer.drawShape(shape, { position: oPosition, color, direction, effect })
+            const oPosition = subtract(position, origin)
+            const drawParams = { position: oPosition, color, direction, effect }
+
+            if (currShape?.type === ShapeType.POLYGON) {
+                const oPoints = currShape.points.map(p => subtract(p, origin))
+                this.drawer.drawShape({ ...currShape, points: oPoints }, drawParams)
+                return
+            }
+
+            this.drawer.drawShape(shape, drawParams)
         })
 
         this.entities.withComponents(Transform, Render, Health).forEach(id => {
