@@ -19,6 +19,7 @@ import { AISystem } from './systems/AISystem'
 import { Clock } from './Clock'
 import { InventorySystem } from './systems/InventorySystem'
 import { SoundManager } from './SoundManager'
+import { FrameTimeAnalyzer } from './FrameTimeAnalyzer'
 
 export enum UIMode {
     GAME,
@@ -26,8 +27,7 @@ export enum UIMode {
 }
 
 export class Game {
-    readonly targetFps = 60
-    readonly clock = new Clock(this.targetFps)
+    readonly clock = new Clock(60)
     readonly isDebug = true
 
     readonly levels: LevelManager
@@ -36,15 +36,14 @@ export class Game {
     readonly viewPort: Dimensions
     static mode = UIMode.GAME
 
-    lastSecondFrameCount = 0
-    lastSecond = performance.now()
-    realFps = 0
+    readonly fta: FrameTimeAnalyzer
 
     constructor(canvas: HTMLCanvasElement) {
         this.viewPort = [canvas.width, canvas.height] as const
         this.canvas = canvas
         this.levels = new LevelManager(this.viewPort)
         this.sounds = new SoundManager()
+        this.fta = new FrameTimeAnalyzer()
     }
 
     start(levelNo: number) {
@@ -73,40 +72,26 @@ export class Game {
         })
 
         level.init()
-        this.gameLoop(entities, systems, fields)
+        this.gameLoop(performance.now(), entities, systems, fields)
     }
 
     gameLoop(
+            frameTime: number,
             entities: EntityManager,
             systems: ReadonlyArray<System>,
             fields: ReadonlyArray<Field>) {
-        requestAnimationFrame(() => this.gameLoop(entities, systems, fields))
+        requestAnimationFrame((time) => this.gameLoop(time, entities, systems, fields))
 
-        this.clock.tick(dt => {
+        this.clock.tick(frameTime, (timings) => {
             fields.forEach(field => field.generate())
-            systems.forEach(system => system.update(dt, this.isDebug && { fps: this.realFps }))
+            systems.forEach(system => system.update(timings, this.isDebug && this.fta.getDebugInfo()))
             entities.clean()
         })
 
-        this.calcRealFps()
+        this.isDebug && this.fta.updateFrameRateInfo(frameTime)
     }
 
     private pause() {
         this.clock.isPaused() ? this.clock.setRate(1) : this.clock.setRate(0)
     }
-
-    private calcRealFps() {
-        const now = performance.now()
-        this.lastSecondFrameCount++
-        
-        if (now - this.lastSecond >= 1000) {
-            this.realFps = this.lastSecondFrameCount++ / ((now - this.lastSecond) / 1000)
-            this.lastSecondFrameCount = 0
-            this.lastSecond = now
-        }
-    }
-}
-
-export interface GameDebugInfo {
-    fps: number
 }

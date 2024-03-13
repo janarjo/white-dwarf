@@ -1,6 +1,6 @@
-import { GameDebugInfo } from '../Game'
-import { Time } from '../Units'
+import { Timings } from '../Clock'
+import { FrameRateDebugInfo } from '../FrameTimeAnalyzer'
 
 export interface System {
-    update(dt: Time, debug?: GameDebugInfo): void
+    update(timings: Timings, debug?: FrameRateDebugInfo): void
 }

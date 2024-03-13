@@ -1,9 +1,9 @@
+import { Timings } from '../Clock'
 import { EntityHub } from '../components/EntityHub'
 import { Physics } from '../components/Physics'
 import { ShapeType, Transform } from '../components/Transform'
 import { EntityManager } from '../EntityManager'
 import { add, hvec, isWithinRectangle, rotate, rotatePolygon, scale, translate, Triangle, Vector } from '../Math'
-import { Time } from '../Units'
 import { System } from './System'
 
 export class TransformSystem implements System {
@@ -14,7 +14,9 @@ export class TransformSystem implements System {
 
     private readonly paddedMapSize = [[-100, -100], add(this.mapSize, [100, 100])] as const
 
-    update(dt: Time) {
+    update(timings: Timings) {
+        const { dft } = timings
+
         this.entities.withComponents(Transform, Physics).forEach(id => {
             const transform = this.entities.getComponent(id, Transform)
             const physics = this.entities.getComponent(id, Physics)
@@ -24,8 +26,8 @@ export class TransformSystem implements System {
 
             transform.state = {
                 ...transform.state,
-                position: add(position, scale(currVelocity, dt.toSec())),
-                direction: rotate(direction, hvec(currRotationalSpeed * dt.toSec()))
+                position: add(position, scale(currVelocity, dft.toSec())),
+                direction: rotate(direction, hvec(currRotationalSpeed * dft.toSec()))
             }
         })
 

@@ -8,9 +8,10 @@ import { add, rotate, subtract } from '../Math'
 import { System } from './System'
 import { Drawer } from '../ui/Drawer'
 import { Inventory } from '../components/Inventory'
-import { GameDebugInfo, Game, UIMode } from '../Game'
+import { Game, UIMode } from '../Game'
 import { Render } from '../components/Render'
-import { Time } from '../Units'
+import { FrameRateDebugInfo } from '../FrameTimeAnalyzer'
+import { Timings } from '../Clock'
 
 export class RenderSystem implements System {
     constructor(
@@ -19,7 +20,7 @@ export class RenderSystem implements System {
         private readonly stars: ReadonlyArray<Star>) {
     }
 
-    update(dt: Time, debug?: GameDebugInfo) {
+    update(_timings: Timings , debug?: FrameRateDebugInfo) {
         if (Game.mode === UIMode.INVENTORY) {
             const inventory = this.entities
                 .withComponents(Inventory)
