@@ -87,7 +87,7 @@ export class EntityManager extends EntityBag {
         return !this.markedForRemoval.has(id) && this.has(id)
     }
 
-    getDebugInfo(): DebugInfo {
+    getDebugInfo(): EntityDebugInfo {
         const playerId = this.withComponents(Control, EntityHub)[0]
         const playerPosition = this.getComponent(playerId, Transform).state.position
         const { currVelocity, currAcceleration } = this.getComponent(playerId, Physics).state
@@ -103,7 +103,7 @@ export class EntityManager extends EntityBag {
     }
 }
 
-export interface DebugInfo {
+export interface EntityDebugInfo {
     playerPosition: Position
     playerVelocity: number
     playerAcceleration: number

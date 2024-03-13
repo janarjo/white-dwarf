@@ -26,8 +26,8 @@ export enum UIMode {
 }
 
 export class Game {
-    readonly fps = 60
-    readonly clock = new Clock(this.fps)
+    readonly targetFps = 60
+    readonly clock = new Clock(this.targetFps)
     readonly isDebug = true
 
     readonly levels: LevelManager
@@ -35,6 +35,10 @@ export class Game {
     readonly canvas: HTMLCanvasElement
     readonly viewPort: Dimensions
     static mode = UIMode.GAME
+
+    lastSecondFrameCount = 0
+    lastSecond = performance.now()
+    realFps = 0
 
     constructor(canvas: HTMLCanvasElement) {
         this.viewPort = [canvas.width, canvas.height] as const
@@ -60,7 +64,7 @@ export class Game {
             new EffectHubSystem(entities),
             new InventorySystem(entities),
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            new RenderSystem(entities, new Drawer(this.canvas.getContext('2d')!), stars, this.isDebug),
+            new RenderSystem(entities, new Drawer(this.canvas.getContext('2d')!), stars),
         ] as const
 
         this.canvas.addEventListener('keydown', (event) => {
@@ -80,12 +84,29 @@ export class Game {
 
         this.clock.tick(dt => {
             fields.forEach(field => field.generate())
-            systems.forEach(system => system.update(dt))
+            systems.forEach(system => system.update(dt, this.isDebug && { fps: this.realFps }))
             entities.clean()
         })
+
+        this.calcRealFps()
     }
 
     private pause() {
         this.clock.isPaused() ? this.clock.setRate(1) : this.clock.setRate(0)
     }
+
+    private calcRealFps() {
+        const now = performance.now()
+        this.lastSecondFrameCount++
+        
+        if (now - this.lastSecond >= 1000) {
+            this.realFps = this.lastSecondFrameCount++ / ((now - this.lastSecond) / 1000)
+            this.lastSecondFrameCount = 0
+            this.lastSecond = now
+        }
+    }
+}
+
+export interface GameDebugInfo {
+    fps: number
 }

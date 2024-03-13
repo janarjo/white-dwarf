@@ -8,18 +8,18 @@ import { add, rotate, subtract } from '../Math'
 import { System } from './System'
 import { Drawer } from '../ui/Drawer'
 import { Inventory } from '../components/Inventory'
-import { Game, UIMode } from '../Game'
+import { GameDebugInfo, Game, UIMode } from '../Game'
 import { Render } from '../components/Render'
+import { Time } from '../Units'
 
 export class RenderSystem implements System {
     constructor(
         private readonly entities: EntityManager,
         private readonly drawer: Drawer,
-        private readonly stars: ReadonlyArray<Star>,
-        private readonly isDebug: boolean) {
+        private readonly stars: ReadonlyArray<Star>) {
     }
 
-    update() {
+    update(dt: Time, debug?: GameDebugInfo) {
         if (Game.mode === UIMode.INVENTORY) {
             const inventory = this.entities
                 .withComponents(Inventory)
@@ -69,8 +69,8 @@ export class RenderSystem implements System {
         })
 
         /* Debug elements */
-        if (!this.isDebug) return
-        this.drawer.drawDebugInfo(this.entities.getDebugInfo())
+        if (!debug) return
+        this.drawer.drawDebugInfo(debug, this.entities.getDebugInfo())
 
         this.entities.withComponents(Transform, Render, Collision).forEach(id => {
             const transform = this.entities.getComponent(id, Transform)

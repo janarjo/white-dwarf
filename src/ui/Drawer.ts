@@ -1,8 +1,9 @@
 import { Star } from '../LevelManager'
-import { DebugInfo } from '../EntityManager'
+import { EntityDebugInfo } from '../EntityManager'
 import { CircleDrawer, DotDrawer, DrawParameters, PolygonDrawer, RectangleDrawer } from './ShapeDrawer'
 import { Item, ItemCode } from '../Items'
 import { Shape, ShapeType } from '../components/Transform'
+import { GameDebugInfo } from '../Game'
 
 export class Drawer {
     constructor(readonly ctx: CanvasRenderingContext2D) {}
@@ -45,8 +46,8 @@ export class Drawer {
         this.ctx.restore()
     }
 
-    drawDebugInfo(debugInfo: DebugInfo) {
-        const { playerPosition, playerVelocity, playerAcceleration, entityCount, componentCount, playerInventory } = debugInfo
+    drawDebugInfo(gameInfo: GameDebugInfo, entityInfo: EntityDebugInfo) {
+        const { playerPosition, playerVelocity, playerAcceleration, entityCount, componentCount, playerInventory } = entityInfo
         const [ playerX, playerY ] = playerPosition
         const playerInventoryInfo = playerInventory.map(item => `${ItemCode[item.code]} (x${item.amount})`).join(', ')
 
@@ -59,6 +60,7 @@ export class Drawer {
         this.ctx.fillText(`Entities: ${entityCount}`, 10, 62)
         this.ctx.fillText(`Components: ${componentCount}`, 10, 76)
         this.ctx.fillText(`Inventory: [${playerInventoryInfo}]`, 10, 90)
+        this.ctx.fillText(`FPS: ${gameInfo.fps.toFixed(2)}`, 10, 104)
         this.ctx.restore()
     }
 

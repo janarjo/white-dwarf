@@ -15,7 +15,7 @@ export class Clock {
         const now = performance.now()
         const dt = Math.min(now - this.prevTick, this.dtmax) * this.rate
 
-        if (dt > this.intervalMs) {
+        if (dt >= this.intervalMs) {
             this.prevTick = now - (dt % (this.intervalMs))
             callback(ms(dt))
         }
