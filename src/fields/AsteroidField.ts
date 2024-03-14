@@ -31,7 +31,7 @@ export class AsteroidField implements Field {
         asteroids.forEach(asteroid => this.entities.add(asteroid))
     }
 
-    private generateAsteroid(position: Position, direction: Direction): Component[] {  
+    private generateAsteroid(position: Position, direction: Direction): Component[] {
         return asteroid(position, direction, generateRandomPolygon(randInt([5, 10]), 20, 30))
     }
 }

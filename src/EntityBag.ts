@@ -41,7 +41,7 @@ export class EntityBag {
             id: number,
             type: new (state: Y) => T): void {
         const found = this.get(id)
-        
+
         const toDelete = found.find(component => component instanceof type)
         if (!toDelete) return
 

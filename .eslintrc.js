@@ -12,6 +12,7 @@ module.exports = {
         'semi': 'off',
         '@typescript-eslint/explicit-function-return-type': 'off',
         'indent': [2, 4, { 'FunctionExpression': { 'body': 1, 'parameters': 2 }, 'SwitchCase': 1}],
+        'no-trailing-spaces': 'error',
         '@typescript-eslint/semi': ['error', 'never'],
         '@typescript-eslint/quotes': ['error', 'single', { 'avoidEscape': true }],
         '@typescript-eslint/explicit-module-boundary-types':  'off',

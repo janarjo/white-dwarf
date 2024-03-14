@@ -14,7 +14,7 @@ export class InventorySystem implements System {
     update() {
         this.entities.withComponents(Inventory, EntityHub).forEach(id => {
             const inventory = this.entities.getComponent(id, Inventory)
-            
+
             this.entities.getAttachments(id, SlotType.WEAPON)
                 .map(attachmentId => this.entities.getComponent(attachmentId, Weapon))
                 .filter(weapon => weapon.state.hasFired)
@@ -30,7 +30,7 @@ export class InventorySystem implements System {
         const item = this.getItem(invState, code)
         if (!item) throw new Error(`No such item in inventory: ${ItemCode}`)
         if (item.amount < amount) throw new Error(`Amount too high: ${ItemCode} (x${amount})`)
-       
+
         const newAmount = item.amount - amount
         if (newAmount === 0) {
             invState.items.splice(invState.items.indexOf(item), 1)
@@ -38,5 +38,5 @@ export class InventorySystem implements System {
     }
 }
 
-export const hasItem = (invState: InventoryState, code: ItemCode, amount = 1) => 
+export const hasItem = (invState: InventoryState, code: ItemCode, amount = 1) =>
     isDefined(invState.items.find(item => item.code === code && item.amount >= amount))

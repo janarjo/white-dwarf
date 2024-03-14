@@ -49,7 +49,7 @@ export const rotatePolygon = (points: Polygon, direction: Direction, origin: Pos
     const angle = rad(direction)
     const cosMult = Math.cos(angle)
     const sinMult = Math.sin(angle)
-    
+
     return points
         .map(v => subtract(v, origin))
         .map(v => [v[0] * cosMult - v[1] * sinMult, v[0] * sinMult + v[1] * cosMult] as const)
@@ -67,11 +67,11 @@ export const randInt = (r: Range) => {
 
 export const isWithinRectangle = (v: Position, r: Rectangle) => {
     const [rPos, rDim] = r
-    
-    return v[0] >= rPos[0] 
+
+    return v[0] >= rPos[0]
         && v[1] >= rPos[1]
-        && v[0] <= rDim[0] 
-        && v[1] <= rDim[1] 
+        && v[0] <= rDim[0]
+        && v[1] <= rDim[1]
 }
 
 export const isWithinTriangle = (v: Position, r: Triangle) => {
@@ -155,10 +155,10 @@ export const earclip = (polygon: Polygon) => {
 
 export const isEar = (triangle: Triangle, polygon: Polygon) => {
     const [p1, p2, p3] = triangle
-    
+
     // Check if the triangle is convex
     if (cross(subtract(p2, p1), subtract(p3, p2)) <= 0) return false
-    
+
     // Check if any point of the polygon lies inside the triangle
     for (const point of polygon) {
         if (equals(point, p1) || equals(point, p2) || equals(point, p3)) continue
@@ -177,7 +177,7 @@ export const getAxes = (polygon: Polygon) => {
         const p2 = polygon[(i + 1) % numPoints]
         const edge = subtract(p2, p1)
         const normal = norm([-edge[1], edge[0]])
-        
+
         // Check if the normal is parallel to any of the previously added ones
         if (axes.every(axis => Math.abs(dot(normal, axis)) < 1 - 1e-6)) {
             axes.push(normal)

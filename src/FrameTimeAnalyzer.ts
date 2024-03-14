@@ -5,7 +5,7 @@ export class FrameTimeAnalyzer {
     private lastUpdateFrameCount = 0
     private lastUpdate = performance.now()
     private realFps = 0
-    
+
     private prevFrameTime = 0
     private frameTimes: number[] = []
     private maxFrameTimes = 100
@@ -14,7 +14,7 @@ export class FrameTimeAnalyzer {
     public updateFrameRateInfo(newFrameTime: number): FrameRateDebugInfo {
         this.addFrameTime(newFrameTime - this.prevFrameTime)
         this.prevFrameTime = newFrameTime
-        
+
         this.lastUpdateFrameCount++
         const now = performance.now()
         if (now - this.lastUpdate >= this.updateInterval) {

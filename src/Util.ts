@@ -7,7 +7,7 @@ export function isUndefined<T>(value: T | undefined): value is undefined {
 }
 
 export function isEmpty<T>(value: T[] | Set<T> | undefined): value is T[] | Set<T> | undefined {
-    return value === undefined 
+    return value === undefined
     || value instanceof Array && value.length === 0
     || value instanceof Set && value.size === 0
 }

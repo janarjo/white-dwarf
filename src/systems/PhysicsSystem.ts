@@ -45,36 +45,36 @@ export class PhysicsSystem implements System {
             const collision = this.entities.getComponent(id, Collision)
 
             const { isColliding, colliders } = collision.state
-    
+
             if (!isColliding) return
-           
+
             const otherId = colliders.find(otherId => otherId !== id)
             if (!otherId) return
-    
+
             const otherPhysics = this.entities.getComponentOrNone(otherId, Physics)
             if (!otherPhysics) return
-            
+
             physics.state = this.updateCollision(dt, physics.state, otherPhysics.state)
         })
     }
 
     private updateVelocity(dt: Time, movementState: PhysicsState): PhysicsState {
         const { currVelocity, currAcceleration, maxSpeed } = movementState
-        
+
         let newVelocity = limit(add(currVelocity, scale(currAcceleration, dt.toSec())), maxSpeed.toPxPerSec())
         if (mag(newVelocity) < BRAKING_TRESHOLD && mag(currVelocity) > BRAKING_TRESHOLD) {
             newVelocity = [0, 0]
         }
 
         return {
-            ...movementState, 
+            ...movementState,
             currVelocity: newVelocity
         }
     }
 
     private updateControl(
-            physicsState: PhysicsState, 
-            controlState: ControlState, 
+            physicsState: PhysicsState,
+            controlState: ControlState,
             transformState: TransformState): PhysicsState {
         const { direction } = transformState
         const { acceleration, rotationalSpeed, currVelocity } = physicsState
@@ -96,9 +96,9 @@ export class PhysicsSystem implements System {
             newAcceleration = scale(direction, -acceleration.toPxPerSec())
         } else newAcceleration = [0, 0]
 
-        return { 
-            ...physicsState, 
-            currRotationalSpeed: newRotationalSpeed, 
+        return {
+            ...physicsState,
+            currRotationalSpeed: newRotationalSpeed,
             currAcceleration: newAcceleration
         }
     }

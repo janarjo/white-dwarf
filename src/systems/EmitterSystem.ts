@@ -17,7 +17,7 @@ export class EmitterSystem implements System {
             const { trigger, rateMs, lastEmittedMs, offset } = emitter.state
 
             if (trigger !== TriggerType.ACCELERATION) return
-            
+
             const now = performance.now()
             if (now - lastEmittedMs < rateMs) return
 
@@ -27,7 +27,7 @@ export class EmitterSystem implements System {
 
             const transform = this.entities.getComponent(id, Transform)
             const { position, direction } = transform.state
-            
+
             const emitPosition = rotate(add(position, offset), direction, position)
             this.entities.add(exhaust(emitPosition, scale(direction, -1)))
             emitter.state = { ...emitter.state, lastEmittedMs: now }

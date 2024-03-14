@@ -21,7 +21,7 @@ export class CollisionSystem implements System {
                 .filter(otherId => {
                     const otherCollision = this.entities.getComponent(otherId, Collision)
                     if (!collision.state.mask.includes(otherCollision.state.group)) return false
-                    
+
                     const otherTransform = this.entities.getComponent(otherId, Transform)
                     const otherBoundingBox: Rectangle = this.getBoundingBox(otherTransform.state, otherCollision.state)
 
@@ -31,7 +31,7 @@ export class CollisionSystem implements System {
                     const otherTransform = this.entities.getComponent(otherId, Transform)
                     const { currShape: thisCurrShape } = transform.state
                     const { currShape: otherCurrShape } = otherTransform.state
-                    
+
                     if (!thisCurrShape || !otherCurrShape) return false
                     if (thisCurrShape.type === ShapeType.POLYGON && otherCurrShape.type === ShapeType.DOT) {
                         return thisCurrShape.triangles.some(triangle => isWithinTriangle(otherTransform.state.position, triangle))
