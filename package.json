@@ -5,6 +5,7 @@
   "scripts": {
     "start": "node esbuild.config.mjs -w",
     "build": "node esbuild.config.mjs",
+    "build:prod": "node esbuild.config.mjs -prod",
     "test": "jest",
     "compile": "tsc --noEmit",
     "lint": "eslint -c .eslintrc.js --ext .ts ./src",
