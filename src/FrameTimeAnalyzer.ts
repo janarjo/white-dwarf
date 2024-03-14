@@ -11,7 +11,7 @@ export class FrameTimeAnalyzer {
     private maxFrameTimes = 100
     private averageFrameTime = 0
 
-    public updateFrameRateInfo(newFrameTime: number): void {
+    public updateFrameRateInfo(newFrameTime: number): FrameRateDebugInfo {
         this.addFrameTime(newFrameTime - this.prevFrameTime)
         this.prevFrameTime = newFrameTime
         
@@ -23,9 +23,7 @@ export class FrameTimeAnalyzer {
             this.lastUpdateFrameCount = 0
             this.lastUpdate = now
         }
-    }
 
-    public getDebugInfo(): FrameRateDebugInfo {
         return {
             fps: this.realFps,
             averageFrameTime: this.averageFrameTime

@@ -6,7 +6,7 @@ import { ControlSystem } from './systems/ControlSystem'
 import { HealthSystem } from './systems/HealthSystem'
 import { EntityHubSystem } from './systems/EntityHubSystem'
 import { PhysicsSystem } from './systems/PhysicsSystem'
-import { RenderSystem } from './systems/RenderSystem'
+import { CanvasRenderer } from './ui/CanvasRenderer'
 import { System } from './systems/System'
 import { TransformSystem } from './systems/TransformSystem'
 import { WeaponSystem } from './systems/WeaponSystem'
@@ -49,6 +49,8 @@ export class Game {
     start(levelNo: number) {
         const level = this.levels.getLevel(levelNo)
         const { mapSize, entities, fields, stars } = level
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const renderer = new CanvasRenderer(entities, new Drawer(this.canvas.getContext('2d')!), stars)
         const systems = [
             new TransformSystem(entities, mapSize),
             new ControlSystem(entities, this.canvas),
@@ -62,36 +64,51 @@ export class Game {
             new EmitterSystem(entities),
             new EffectHubSystem(entities),
             new InventorySystem(entities),
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            new RenderSystem(entities, new Drawer(this.canvas.getContext('2d')!), stars),
         ] as const
 
         this.canvas.addEventListener('keydown', (event) => {
-            if (event.key === 'Pause') this.pause()
-            if (event.key === 'i') Game.mode = Game.mode === UIMode.GAME ? UIMode.INVENTORY : UIMode.GAME
+            if (event.key === 'Pause') this.isPaused() ? this.unpause() : this.pause()
+            if (event.key === 'i') {
+                if (Game.mode === UIMode.INVENTORY) {
+                    Game.mode = UIMode.GAME
+                    this.unpause()
+                } else {
+                    Game.mode = UIMode.INVENTORY
+                    this.pause()
+                }
+            }
         })
 
         level.init()
-        this.gameLoop(performance.now(), entities, systems, fields)
+        this.gameLoop(performance.now(), entities, systems, renderer, fields)
     }
 
     gameLoop(
             frameTime: number,
             entities: EntityManager,
             systems: ReadonlyArray<System>,
+            renderer: CanvasRenderer,
             fields: ReadonlyArray<Field>) {
-        requestAnimationFrame((time) => this.gameLoop(time, entities, systems, fields))
+        requestAnimationFrame((time) => this.gameLoop(time, entities, systems, renderer, fields))
 
         this.clock.tick(frameTime, (timings) => {
             fields.forEach(field => field.generate())
-            systems.forEach(system => system.update(timings, this.isDebug && this.fta.getDebugInfo()))
+            systems.forEach(system => system.update(timings))
             entities.clean()
         })
 
-        this.isDebug && this.fta.updateFrameRateInfo(frameTime)
+        renderer.render(this.isDebug ? this.fta.updateFrameRateInfo(frameTime) : undefined)
+    }
+
+    private isPaused() {
+        return this.clock.getRate() === 0
     }
 
     private pause() {
-        this.clock.isPaused() ? this.clock.setRate(1) : this.clock.setRate(0)
+        this.clock.setRate(0)
+    }
+
+    private unpause() {
+        this.clock.setRate(1)
     }
 }

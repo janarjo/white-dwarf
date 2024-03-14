@@ -5,22 +5,20 @@ import { Weapon } from '../components/Weapon'
 import { EntityManager } from '../EntityManager'
 import { Star } from '../LevelManager'
 import { add, rotate, subtract } from '../Math'
-import { System } from './System'
-import { Drawer } from '../ui/Drawer'
+import { Drawer } from './Drawer'
 import { Inventory } from '../components/Inventory'
 import { Game, UIMode } from '../Game'
 import { Render } from '../components/Render'
 import { FrameRateDebugInfo } from '../FrameTimeAnalyzer'
-import { Timings } from '../Clock'
 
-export class RenderSystem implements System {
+export class CanvasRenderer {
     constructor(
         private readonly entities: EntityManager,
         private readonly drawer: Drawer,
         private readonly stars: ReadonlyArray<Star>) {
     }
 
-    update(_timings: Timings , debug?: FrameRateDebugInfo) {
+    render(debug?: FrameRateDebugInfo) {
         if (Game.mode === UIMode.INVENTORY) {
             const inventory = this.entities
                 .withComponents(Inventory)
