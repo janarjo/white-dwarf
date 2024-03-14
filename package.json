@@ -8,8 +8,8 @@
     "build:prod": "node esbuild.config.mjs -prod",
     "test": "jest",
     "compile": "tsc --noEmit",
-    "lint": "eslint -c .eslintrc.js --ext .ts ./src",
-    "lint:fix": "eslint --fix -c .eslintrc.js --ext .ts ./src"
+    "lint": "eslint -c .eslintrc.js --ignore-path .gitignore --ext .ts .",
+    "lint:fix": "eslint --fix -c .eslintrc.js --ignore-path .gitignore --ext .ts ."
   },
   "repository": {
     "type": "git",

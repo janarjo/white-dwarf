@@ -15,70 +15,70 @@ describe('EntityBag', () => {
 
     it('should add components', () => {
         const bag = new EntityBag()
-        
+
         const entity = [new Inventory({ items: [], maxSize: 10})]
         bag.add(entity)
-        
+
         const component = new Camera({ origin: [0, 0] })
         bag.addComponent(0, component)
-        
+
         expect(bag.get(0)).toContain(component)
     })
 
     it('should remove components', () => {
         const bag = new EntityBag()
-        
+
         const entity = [new Inventory({ items: [], maxSize: 10})]
         bag.add(entity)
-        
+
         const component = new Camera({ origin: [0, 0] })
         bag.addComponent(0, component)
-    
+
         bag.removeComponent(0, Camera)
-        
+
         expect(bag.get(0)).not.toContain(component)
     })
 
     it('should remove entities', () => {
         const bag = new EntityBag()
-        
+
         const entity = [new Inventory({ items: [], maxSize: 10})]
         bag.add(entity)
-        
+
         bag.remove(0)
-        
+
         expect(() => bag.get(0)).toThrow()
     })
 
     it('should get components', () => {
         const bag = new EntityBag()
-        
+
         const entity = [new Inventory({ items: [], maxSize: 10})]
         bag.add(entity)
-        
+
         const component = new Camera({ origin: [0, 0] })
         bag.addComponent(0, component)
-        
+
         expect(bag.getComponent(0, Camera)).toBe(component)
     })
 
     it('should get components or none', () => {
         const bag = new EntityBag()
-        
+
         const entity = [new Inventory({ items: [], maxSize: 10})]
         bag.add(entity)
-        
+
         expect(bag.getComponentOrNone(0, Camera)).toBeUndefined()
     })
 
     it('should check if entity has component', () => {
         const bag = new EntityBag()
-        
+
         const entity = [new Inventory({ items: [], maxSize: 10})]
         bag.add(entity)
-        
+
         bag.addComponent(0, new Camera({ origin: [0, 0] }))
-        
+
         expect(bag.hasComponent(0, Camera)).toBe(true)
     })
 })

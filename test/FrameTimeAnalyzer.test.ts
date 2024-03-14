@@ -6,9 +6,9 @@ describe('FrameTimeAnalyzer', () => {
     it('should update frame rate info and initially return 0', () => {
         const fta = new FrameTimeAnalyzer()
         const frameTime = 1000 / 60
-        
+
         const frameRateInfo = fta.updateFrameRateInfo(frameTime)
-        
+
         expect(frameRateInfo.fps).toBe(0)
         expect(frameRateInfo.averageFrameTime).toBe(0)
     })

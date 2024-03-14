@@ -1,15 +1,15 @@
-import { 
+import {
     generateRandomPolygon,
-    isPolygon, 
-    isIntersect, 
-    isWithinRectangle, 
-    Rectangle, 
-    Offset, 
-    Line, 
-    isIntersectingLineSegments, 
-    Triangle, 
-    isWithinTriangle, 
-    isEar, 
+    isPolygon,
+    isIntersect,
+    isWithinRectangle,
+    Rectangle,
+    Offset,
+    Line,
+    isIntersectingLineSegments,
+    Triangle,
+    isWithinTriangle,
+    isEar,
     earclip,
     getAxes,
     project,
@@ -44,7 +44,7 @@ describe('isIntersect function', () => {
         expect(isIntersect(r1, r2)).toBe(false)
     })
 
-    it('should return true if the rectangles are adjacent and touching', () => {     
+    it('should return true if the rectangles are adjacent and touching', () => {
         const r1: Rectangle = [[0, 0], [10, 10]]
         const r2: Rectangle = [[10, 0], [10, 10]]
 
