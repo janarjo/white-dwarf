@@ -1,31 +1,16 @@
 import { ms, Time } from './Units'
 
 export class Clock {
-    constructor(readonly updatesPerSec: number) {
-        this.updatesPerSec = updatesPerSec
-        this.tickInteralMs = 1000 / updatesPerSec
-    }
-
-    readonly tickInteralMs
     readonly dtmax = 100
     rate = 1
-    prevTick = performance.now()
-    elapsedSinceLastTick = 0
 
-    tick(callback: (dt: Time) => void) {
-        const now = performance.now()
-        const dt = Math.min(now - this.prevTick, this.dtmax) * this.rate
-        this.prevTick = now
-        this.elapsedSinceLastTick += dt
+    prevFrameTime = 0
 
-        while (this.elapsedSinceLastTick >= this.tickInteralMs) {
-            this.elapsedSinceLastTick -= this.tickInteralMs
-            callback(ms(dt))
-        }
-    }
+    tick(frameTime: number, callback: (dt: Time) => void) {
+        const dft = Math.min(frameTime - this.prevFrameTime, this.dtmax) * this.rate
+        this.prevFrameTime = frameTime
 
-    getTickIntervalMs(): number {
-        return this.tickInteralMs
+        callback(ms(dft))
     }
 
     getRate(): number {
@@ -40,4 +25,3 @@ export class Clock {
         return this.rate === 0
     }
 }
-

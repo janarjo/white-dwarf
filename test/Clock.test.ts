@@ -4,94 +4,54 @@ import { ms } from '../src/Units'
 describe('Clock', () => {
     jest.useFakeTimers()
 
-    it('should tick at the correct rate', () => {
-        const clock = new Clock(60)
+    it('should tick with 0 dt initially', () => {
+        const clock = new Clock()
         const callback = jest.fn()
+        const frameTimestamp = performance.now()
 
-        clock.tick(callback)
-        expect(callback).not.toHaveBeenCalled()
-
-        jest.advanceTimersByTime((1000 / 60) + 1)
-
-        clock.tick(callback)
-        expect(callback).toHaveBeenCalled()
-
-        jest.advanceTimersByTime((1000 / 60) + 1)
-
-        clock.tick(callback)
-        expect(callback).toHaveBeenCalledTimes(2)
+        clock.tick(frameTimestamp, callback)
+        expect(callback).toHaveBeenCalledWith(ms(0))
     })
 
-    it('should tick at the correct rate when paused', () => {
-        const clock = new Clock(60)
+    it('should tick with non-zero dt', () => {
+        const clock = new Clock()
         const callback = jest.fn()
+        const frameTimestamp = performance.now()
 
-        clock.tick( callback)
-        expect(callback).not.toHaveBeenCalled()
+        clock.tick(frameTimestamp, callback)
+        clock.tick(frameTimestamp + 50, callback)
+        expect(callback).toHaveBeenCalledWith(ms(50))
+    })
 
+    it('should tick with zero dt after pause', () => {
+        const clock = new Clock()
+        const callback = jest.fn()
+        const frameTimestamp = performance.now()
+
+        clock.tick(frameTimestamp, callback)
         clock.setRate(0)
-
-        jest.advanceTimersByTime((1000 / 60) + 1)
-
-        clock.tick(callback)
-        expect(callback).not.toHaveBeenCalled()
+        clock.tick(frameTimestamp + 50, callback)
+        expect(callback).toHaveBeenCalledWith(ms(0))
     })
 
-    it('should provide the correct timings when paused', () => {
-        const clock = new Clock(60)
+    it('should tick with halved dt after rate change', () => {
+        const clock = new Clock()
         const callback = jest.fn()
+        const frameTimestamp = performance.now()
 
-        clock.tick(callback)
-        expect(callback).not.toHaveBeenCalled()
-
-        clock.setRate(0)
-
-        jest.advanceTimersByTime(100)
-
-        clock.tick(callback)
-        expect(callback).not.toHaveBeenCalled()
+        clock.tick(frameTimestamp, callback)
+        clock.setRate(0.5)
+        clock.tick(frameTimestamp + 50, callback)
+        expect(callback).toHaveBeenCalledWith(ms(25))
     })
 
-    it ('should provide correct timings when the frame rate is 120fps', () => {
-        const clock = new Clock(60)
-        const tickIntervalMs = clock.getTickIntervalMs()
+    it('should tick with max dt when real dt is too large', () => {
+        const clock = new Clock()
         const callback = jest.fn()
+        const frameTimestamp = performance.now()
 
-        const frameTimeMs = 1000 / 120
-
-        clock.tick(callback)
-        for (let frameTime = 0; frameTime < (tickIntervalMs + 1); frameTime += frameTimeMs) {
-            jest.advanceTimersByTime(frameTime)
-            clock.tick(callback)
-        }
-
-        expect(callback).toHaveBeenCalledTimes(1)
-        expect(callback.mock.calls[0][0].toMs()).toBeCloseTo(16.6666, 1)
-    })
-
-    it('should provide correct timings when the frame rate is 30', () => {
-        const clock = new Clock(60)
-        const callback = jest.fn()
-
-        clock.tick(callback)
-
-        jest.advanceTimersByTime(1000 / 30)
-
-        clock.tick(callback)
-
-        expect(callback).toHaveBeenCalledTimes(1)
-        expect(callback.mock.calls[0][0].toMs()).toBeCloseTo(33.3333, 1)
-    })
-
-    it('should provide the dtMax when the frame rate is extremely low', () => {
-        const clock = new Clock(60)
-        const callback = jest.fn()
-
-        clock.tick(callback)
-
-        jest.advanceTimersByTime(1000)
-
-        clock.tick(callback)
+        clock.tick(frameTimestamp, callback)
+        clock.tick(frameTimestamp + 1000, callback)
         expect(callback).toHaveBeenCalledWith(ms(100))
     })
 })
