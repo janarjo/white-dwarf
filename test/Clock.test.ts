@@ -8,17 +8,17 @@ describe('Clock', () => {
         const clock = new Clock(60)
         const callback = jest.fn()
 
-        clock.tick(performance.now(), callback)
+        clock.tick(callback)
         expect(callback).not.toHaveBeenCalled()
 
         jest.advanceTimersByTime((1000 / 60) + 1)
 
-        clock.tick(performance.now(), callback)
+        clock.tick(callback)
         expect(callback).toHaveBeenCalled()
 
         jest.advanceTimersByTime((1000 / 60) + 1)
 
-        clock.tick(performance.now(), callback)
+        clock.tick(callback)
         expect(callback).toHaveBeenCalledTimes(2)
     })
 
@@ -26,28 +26,72 @@ describe('Clock', () => {
         const clock = new Clock(60)
         const callback = jest.fn()
 
-        clock.tick(performance.now(), callback)
+        clock.tick( callback)
         expect(callback).not.toHaveBeenCalled()
 
         clock.setRate(0)
 
         jest.advanceTimersByTime((1000 / 60) + 1)
 
-        clock.tick(performance.now(), callback)
+        clock.tick(callback)
         expect(callback).not.toHaveBeenCalled()
     })
 
-    it('should provide the correct timings', () => {
+    it('should provide the correct timings when paused', () => {
         const clock = new Clock(60)
         const callback = jest.fn()
 
-        const frameTime = performance.now()
-        clock.tick(frameTime, callback)
+        clock.tick(callback)
         expect(callback).not.toHaveBeenCalled()
 
-        jest.advanceTimersByTime(50)
+        clock.setRate(0)
 
-        clock.tick(frameTime + 75, callback)
-        expect(callback).toHaveBeenCalledWith({ dt: ms(50.00000000000001), dft: ms(75) })
+        jest.advanceTimersByTime(100)
+
+        clock.tick(callback)
+        expect(callback).not.toHaveBeenCalled()
+    })
+
+    it ('should provide correct timings when the frame rate is 120fps', () => {
+        const clock = new Clock(60)
+        const tickIntervalMs = clock.getTickIntervalMs()
+        const callback = jest.fn()
+
+        const frameTimeMs = 1000 / 120
+
+        clock.tick(callback)
+        for (let frameTime = 0; frameTime < (tickIntervalMs + 1); frameTime += frameTimeMs) {
+            jest.advanceTimersByTime(frameTime)
+            clock.tick(callback)
+        }
+
+        expect(callback).toHaveBeenCalledTimes(1)
+        expect(callback.mock.calls[0][0].toMs()).toBeCloseTo(16.6666, 1)
+    })
+
+    it('should provide correct timings when the frame rate is 30', () => {
+        const clock = new Clock(60)
+        const callback = jest.fn()
+
+        clock.tick(callback)
+
+        jest.advanceTimersByTime(1000 / 30)
+
+        clock.tick(callback)
+
+        expect(callback).toHaveBeenCalledTimes(1)
+        expect(callback.mock.calls[0][0].toMs()).toBeCloseTo(33.3333, 1)
+    })
+
+    it('should provide the dtMax when the frame rate is extremely low', () => {
+        const clock = new Clock(60)
+        const callback = jest.fn()
+
+        clock.tick(callback)
+
+        jest.advanceTimersByTime(1000)
+
+        clock.tick(callback)
+        expect(callback).toHaveBeenCalledWith(ms(100))
     })
 })

@@ -1,4 +1,3 @@
-import { Timings } from '../Clock'
 import { AI } from '../components/AI'
 import { Collision } from '../components/Collision'
 import { Control, ControlState } from '../components/Control'
@@ -16,9 +15,7 @@ export class PhysicsSystem implements System {
         private readonly entities: EntityManager) {
     }
 
-    update(timings: Timings) {
-        const { dt } = timings
-
+    update(dt: Time) {
         this.entities.withComponents(Physics).forEach(id => {
             const physics = this.entities.getComponent(id, Physics)
             physics.state = this.updateVelocity(dt, physics.state)

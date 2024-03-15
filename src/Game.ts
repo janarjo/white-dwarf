@@ -89,15 +89,14 @@ export class Game {
             systems: ReadonlyArray<System>,
             renderer: CanvasRenderer,
             fields: ReadonlyArray<Field>) {
-        requestAnimationFrame((time) => this.gameLoop(time, entities, systems, renderer, fields))
-
-        this.clock.tick(frameTime, (timings) => {
+        this.clock.tick(dt => {
             fields.forEach(field => field.generate())
-            systems.forEach(system => system.update(timings))
+            systems.forEach(system => system.update(dt))
             entities.clean()
         })
 
         renderer.render(this.isDebug ? this.fta.updateFrameRateInfo(frameTime) : undefined)
+        requestAnimationFrame((time) => this.gameLoop(time, entities, systems, renderer, fields))
     }
 
     private isPaused() {

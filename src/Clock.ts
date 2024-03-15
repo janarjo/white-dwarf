@@ -3,27 +3,29 @@ import { ms, Time } from './Units'
 export class Clock {
     constructor(readonly updatesPerSec: number) {
         this.updatesPerSec = updatesPerSec
-        this.intervalMs = 1000 / updatesPerSec
+        this.tickInteralMs = 1000 / updatesPerSec
     }
 
-    readonly intervalMs
-    prevTick = performance.now()
-    rate = 1
+    readonly tickInteralMs
     readonly dtmax = 100
+    rate = 1
+    prevTick = performance.now()
+    elapsedSinceLastTick = 0
 
-    lastFrameTime = 0
-
-    tick(frameTime: number, callback: (timings: Timings) => void) {
+    tick(callback: (dt: Time) => void) {
         const now = performance.now()
         const dt = Math.min(now - this.prevTick, this.dtmax) * this.rate
+        this.prevTick = now
+        this.elapsedSinceLastTick += dt
 
-        const dft = frameTime - this.lastFrameTime
-        this.lastFrameTime = frameTime
-
-        if (dt >= this.intervalMs) {
-            this.prevTick = now - (dt % (this.intervalMs))
-            callback({dt: ms(dt), dft: ms(dft)})
+        while (this.elapsedSinceLastTick >= this.tickInteralMs) {
+            this.elapsedSinceLastTick -= this.tickInteralMs
+            callback(ms(dt))
         }
+    }
+
+    getTickIntervalMs(): number {
+        return this.tickInteralMs
     }
 
     getRate(): number {
@@ -39,15 +41,3 @@ export class Clock {
     }
 }
 
-export interface Timings {
-
-    /**
-     * The time since the last tick in milliseconds. Fixed rate.
-     */
-    dt: Time
-
-    /**
-     * The time since the last frame in milliseconds. Variable rate.
-     */
-    dft: Time
-}

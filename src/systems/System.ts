@@ -1,5 +1,5 @@
-import { Timings } from '../Clock'
+import { Time } from '../Units'
 
 export interface System {
-    update(timings: Timings): void
+    update(dt: Time): void
 }
