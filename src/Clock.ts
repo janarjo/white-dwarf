@@ -1,16 +1,37 @@
 import { ms, Time } from './Units'
 
 export class Clock {
-    readonly dtmax = 100
-    rate = 1
+    constructor(readonly updatesPerSec: number) {
+        this.updatesPerSec = updatesPerSec
+        this.tickIntervalMs = 1000 / updatesPerSec
+    }
 
-    prevFrameTime = 0
+    private readonly tickIntervalMs
+    private prevTick = performance.now()
+    private elapsedSinceLastTickMs = 0
+    private rate = 1
 
-    tick(frameTime: number, callback: (dt: Time) => void) {
-        const dft = Math.min(frameTime - this.prevFrameTime, this.dtmax) * this.rate
-        this.prevFrameTime = frameTime
+    lastFrameTime = 0
 
-        callback(ms(dft))
+    /**
+     * @param callback - The function to call on each tick
+     * @returns The remaining time since the last processed tick
+     **/
+    tick(callback: (dt: Time) => void): Time {
+        const now = performance.now()
+        this.elapsedSinceLastTickMs += (now - this.prevTick) * this.rate
+        this.prevTick = now
+
+        while (this.elapsedSinceLastTickMs >= this.tickIntervalMs) {
+            this.elapsedSinceLastTickMs -= this.tickIntervalMs
+            callback(ms(this.tickIntervalMs))
+        }
+
+        return ms(this.elapsedSinceLastTickMs)
+    }
+
+    getTickInterval(): Time {
+        return ms(this.tickIntervalMs)
     }
 
     getRate(): number {
@@ -19,9 +40,5 @@ export class Clock {
 
     setRate(rate: number) {
         this.rate = rate
-    }
-
-    isPaused(): boolean {
-        return this.rate === 0
     }
 }

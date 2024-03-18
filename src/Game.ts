@@ -27,7 +27,7 @@ export enum UIMode {
 }
 
 export class Game {
-    readonly clock = new Clock()
+    readonly clock = new Clock(60)
     readonly isDebug = true
 
     readonly levels: LevelManager
@@ -89,7 +89,7 @@ export class Game {
             systems: ReadonlyArray<System>,
             renderer: CanvasRenderer,
             fields: ReadonlyArray<Field>) {
-        this.clock.tick(frameTime, dt => {
+        this.clock.tick(dt => {
             fields.forEach(field => field.generate())
             systems.forEach(system => system.update(dt))
             entities.clean()
