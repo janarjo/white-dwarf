@@ -19,3 +19,17 @@ export function isNotEmpty<T>(value: T[] | undefined): value is T[] {
 export function isNotEmptySet<T>(value: Set<T> | undefined): value is Set<T> {
     return value !== undefined && value.size > 0
 }
+
+export function deepCopy<T>(value: T): T {
+    if (typeof value !== 'object' || value === null) return value
+
+    const copy = (Array.isArray(value) ? [] : {}) as T
+
+    for (const key in value) {
+        if (Object.prototype.hasOwnProperty.call(value, key)) {
+            copy[key] = deepCopy(value[key])
+        }
+    }
+
+    return copy as T
+}

@@ -1,83 +1,76 @@
 import { Clock } from '../src/Clock'
 import { ms } from '../src/Units'
 describe('Clock', () => {
-    jest.useFakeTimers()
+    const updatesPerSec = 60
+    const singleTickMs = (1000 / updatesPerSec) + 1
 
     it('should tick at the correct rate', () => {
-        const clock = new Clock(60)
+        const clock = new Clock(updatesPerSec)
         const callback = jest.fn()
+        const now = performance.now()
 
-        clock.tick(callback)
+        clock.tick(now, callback)
         expect(callback).not.toHaveBeenCalled()
 
-        jest.advanceTimersByTime((1000 / 60) + 1)
-
-        clock.tick(callback)
+        clock.tick(now + singleTickMs, callback)
         expect(callback).toHaveBeenCalled()
+        expect(callback).toHaveBeenCalledWith(ms(16.666666666666668))
 
-        jest.advanceTimersByTime((1000 / 60) + 1)
-
-        clock.tick(callback)
+        clock.tick(now + singleTickMs * 2, callback)
         expect(callback).toHaveBeenCalledTimes(2)
+        expect(callback).toHaveBeenCalledWith(ms(16.666666666666668))
     })
 
     it('should tick at the correct rate when paused', () => {
-        const clock = new Clock(60)
+        const clock = new Clock(updatesPerSec)
         const callback = jest.fn()
+        const now = performance.now()
 
-        clock.tick( callback)
+        clock.tick(now, callback)
         expect(callback).not.toHaveBeenCalled()
 
         clock.setRate(0)
 
-        jest.advanceTimersByTime((1000 / 60) + 1)
-
-        clock.tick(callback)
+        clock.tick(now + singleTickMs, callback)
         expect(callback).not.toHaveBeenCalled()
     })
 
-    it('should provide the correct timings when paused', () => {
-        const clock = new Clock(60)
+    it('should tick at correct rate when frame rate is 120fps', () => {
+        const clock = new Clock(updatesPerSec)
         const callback = jest.fn()
-
-        clock.tick(callback)
-        expect(callback).not.toHaveBeenCalled()
-
-        clock.setRate(0)
-
-        jest.advanceTimersByTime(100)
-
-        clock.tick(callback)
-        expect(callback).not.toHaveBeenCalled()
-    })
-
-    it ('should provide correct timings when the frame rate is 120fps', () => {
-        const clock = new Clock(60)
-        const callback = jest.fn()
-
+        const now = performance.now()
         const frameTimeMs = 1000 / 120
 
-        clock.tick(callback)
-        for (let frameTime = 0; frameTime < (1000 / 60 + 1); frameTime += frameTimeMs) {
-            jest.advanceTimersByTime(frameTime)
-            clock.tick(callback)
+        clock.tick(now, callback)
+        for (let frameTime = 0; frameTime < singleTickMs; frameTime += frameTimeMs) {
+            clock.tick(now + frameTime, callback)
         }
 
         expect(callback).toHaveBeenCalledTimes(1)
-        expect(callback).toHaveBeenCalledWith(ms(1000 / 60))
+        expect(callback).toHaveBeenCalledWith(ms(16.666666666666668))
     })
 
-    it('should provide correct timings when the frame rate is 30fps', () => {
-        const clock = new Clock(60)
+    it('should tick at correct rate when when the frame rate is 30fps', () => {
+        const clock = new Clock(updatesPerSec)
         const callback = jest.fn()
+        const now = performance.now()
+        const frameTimeMs = 1000 / 30
 
-        clock.tick(callback)
+        clock.tick(now, callback)
+        clock.tick(now + frameTimeMs, callback)
 
-        jest.advanceTimersByTime(1000 / 30)
+        expect(callback).toHaveBeenCalledTimes(2)
+        expect(callback).toHaveBeenCalledWith(ms(16.666666666666668))
+    })
 
-        clock.tick(callback)
+    it('should prevent spiral of death', () => {
+        const clock = new Clock(updatesPerSec)
+        const callback = jest.fn()
+        const now = performance.now()
 
-        expect(callback).toHaveBeenCalledTimes(1)
-        expect(callback).toHaveBeenCalledWith(ms(1000 / 60))
+        clock.tick(now, callback)
+        clock.tick(now + singleTickMs * 500, callback)
+
+        expect(callback).toHaveBeenCalledTimes(240)
     })
 })
