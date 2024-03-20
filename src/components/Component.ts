@@ -14,6 +14,7 @@ export enum ComponentCode {
     AI,
     ITEM,
     INVENTORY,
+    QUICK_SLOT
 }
 
 export interface ComponentState {

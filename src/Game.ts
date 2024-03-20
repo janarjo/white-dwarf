@@ -20,6 +20,7 @@ import { Clock } from './Clock'
 import { InventorySystem } from './systems/InventorySystem'
 import { SoundManager } from './SoundManager'
 import { FrameTimeAnalyzer } from './FrameTimeAnalyzer'
+import { QuickSlotSystem } from './systems/QuickSlotSystem'
 
 export enum UIMode {
     GAME,
@@ -64,6 +65,7 @@ export class Game {
             new EmitterSystem(entities),
             new EffectHubSystem(entities),
             new InventorySystem(entities),
+            new QuickSlotSystem(entities),
         ] as const
 
         this.canvas.addEventListener('keydown', (event) => {

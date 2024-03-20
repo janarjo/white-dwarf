@@ -1,14 +1,13 @@
 import { projectile } from '../Assembly'
 import { AI } from '../components/AI'
 import { Control } from '../components/Control'
-import { Inventory, InventoryState } from '../components/Inventory'
+import { QuickSlot, QuickSlotState } from '../components/QuickSlot'
 import { Transform, TransformState } from '../components/Transform'
 import { Weapon, WeaponState } from '../components/Weapon'
 import { EntityManager } from '../EntityManager'
-import { ItemCode } from '../Items'
 import { add, rotate } from '../Math'
 import { SoundCode, SoundManager } from '../SoundManager'
-import { hasItem } from './InventorySystem'
+import { hasActiveItem } from './QuickSlotSystem'
 import { System } from './System'
 
 export class WeaponSystem implements System {
@@ -21,9 +20,9 @@ export class WeaponSystem implements System {
         this.entities.withComponents(Transform, Control, Weapon).forEach(id => {
             const control = this.entities.getComponent(id, Control)
             const weapon = this.entities.getComponent(id, Weapon)
-            const inventory = this.entities.getComponentOrNone(id, Inventory)
+            const quickSlot = this.entities.getComponentOrNone(id, QuickSlot)
 
-            if (control.state.isFiring && this.canFire(weapon.state, inventory?.state)) {
+            if (control.state.isFiring && this.canFire(weapon.state, quickSlot?.state)) {
                 const transform = this.entities.getComponent(id, Transform)
                 weapon.state = this.fire(weapon.state, transform.state, false)
             } else weapon.state.hasFired = false
@@ -40,13 +39,13 @@ export class WeaponSystem implements System {
         })
     }
 
-    private canFire(weaponState: WeaponState, invState?: InventoryState) {
-        const { lastFiredMs: lastFired, cooldownMs: cooldown } = weaponState
+    private canFire(weaponState: WeaponState, quickSlotState?: QuickSlotState) {
+        const { lastFiredMs: lastFired, cooldownMs: cooldown, ammoType, ammoConsumed } = weaponState
 
         const now = performance.now()
         const isCooledDown = now - lastFired >= cooldown
         if (!isCooledDown) return false
-        if (invState && !hasItem(invState, ItemCode.AMMO_PLASMA_SMALL)) return false
+        if (quickSlotState && !hasActiveItem(quickSlotState, ammoType, ammoConsumed)) return false
 
         return true
     }

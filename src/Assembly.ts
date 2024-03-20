@@ -13,7 +13,8 @@ import { Directions, earclip, Offset, scale, Vector } from './Math'
 import { TriggerType as EffectTriggerType, EffectHub, EffectType } from './components/EffectHub'
 import { degPerSec, pxPerSec, pxPerSec2 } from './Units'
 import { Inventory } from './components/Inventory'
-import { smallPlasmaPack } from './Items'
+import { ItemCode, smallPlasmaPack } from './Items'
+import { QuickSlot } from './components/QuickSlot'
 
 export const camera = () => [
     new Transform({
@@ -31,6 +32,8 @@ export const camera = () => [
 
 export const player = (position: Vector) => {
     const shapePoints: Offset[] = [[-24, -15], [24, 0], [-24, 15]]
+    const primaryWeapon = smallPlasmaPack()
+    const secondaryWeapon = smallPlasmaPack()
     return [
         new Transform({
             position,
@@ -45,6 +48,7 @@ export const player = (position: Vector) => {
             isTurningRight: false,
             isFiring: false,
             isBraking: false,
+            quickSlotIndex: 0,
         }),
         new Physics({
             currDirection: [1, 0],
@@ -78,8 +82,12 @@ export const player = (position: Vector) => {
             offset: [-30, 0],
         }),
         new Inventory({
-            items: [smallPlasmaPack()],
+            items: [primaryWeapon, secondaryWeapon],
             maxSize: 10
+        }),
+        new QuickSlot({
+            currItem: primaryWeapon,
+            items: [primaryWeapon, secondaryWeapon]
         })
     ]
 }
@@ -209,7 +217,9 @@ export const blaster = () => [
         lastFiredMs: 0,
         hasFired: false,
         cooldownMs: 500,
-        offset: [0, 0]
+        offset: [0, 0],
+        ammoType: ItemCode.AMMO_PLASMA_SMALL,
+        ammoConsumed: 1,
     }),
     new Attachment({
         type: SlotType.WEAPON,

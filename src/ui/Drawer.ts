@@ -47,9 +47,18 @@ export class Drawer {
     }
 
     drawDebugInfo(gameInfo: FrameRateDebugInfo, entityInfo: EntityDebugInfo) {
-        const { playerPosition, playerVelocity, playerAcceleration, entityCount, componentCount, playerInventory } = entityInfo
+        const {
+            playerPosition,
+            playerVelocity,
+            playerAcceleration,
+            entityCount,
+            componentCount,
+            playerInventory,
+            playerQuickSlot,
+        } = entityInfo
         const [ playerX, playerY ] = playerPosition
         const playerInventoryInfo = playerInventory.map(item => `${ItemCode[item.code]} (x${item.amount})`).join(', ')
+        const playerQuickSlotInfo = playerQuickSlot ? `${ItemCode[playerQuickSlot.code]} (x${playerQuickSlot.amount})` : 'None'
 
         this.ctx.save()
         this.ctx.font = '12px Arial'
@@ -59,9 +68,10 @@ export class Drawer {
         this.ctx.fillText(`Acceleration (px/s²): ${playerAcceleration.toFixed(0)}`, 10, 48)
         this.ctx.fillText(`Entities: ${entityCount}`, 10, 62)
         this.ctx.fillText(`Components: ${componentCount}`, 10, 76)
-        this.ctx.fillText(`Inventory: [${playerInventoryInfo}]`, 10, 90)
-        this.ctx.fillText(`FPS: ${gameInfo.fps.toFixed(2)}`, 10, 104)
-        this.ctx.fillText(`Avg. Frame time (ms): ${gameInfo.averageFrameTime.toFixed(2)}`, 10, 118)
+        this.ctx.fillText(`QuickSlot: [${playerQuickSlotInfo}]`, 10, 90)
+        this.ctx.fillText(`Inventory: [${playerInventoryInfo}]`, 10, 104)
+        this.ctx.fillText(`FPS: ${gameInfo.fps.toFixed(2)}`, 10, 118)
+        this.ctx.fillText(`Avg. Frame time (ms): ${gameInfo.averageFrameTime.toFixed(2)}`, 10, 132)
         this.ctx.restore()
     }
 

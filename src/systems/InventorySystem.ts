@@ -1,6 +1,5 @@
 import { Inventory, InventoryState } from '../components/Inventory'
-import { EntityHub, SlotType } from '../components/EntityHub'
-import { Weapon } from '../components/Weapon'
+
 import { EntityManager } from '../EntityManager'
 import { ItemCode } from '../Items'
 import { isDefined } from '../Util'
@@ -12,13 +11,9 @@ export class InventorySystem implements System {
     }
 
     update() {
-        this.entities.withComponents(Inventory, EntityHub).forEach(id => {
+        this.entities.withComponents(Inventory).forEach(id => {
             const inventory = this.entities.getComponent(id, Inventory)
-
-            this.entities.getAttachments(id, SlotType.WEAPON)
-                .map(attachmentId => this.entities.getComponent(attachmentId, Weapon))
-                .filter(weapon => weapon.state.hasFired)
-                .forEach(() => this.removeItem(inventory.state, ItemCode.AMMO_PLASMA_SMALL))
+            inventory.state.items = inventory.state.items.filter(item => item.amount > 0)
         })
     }
 

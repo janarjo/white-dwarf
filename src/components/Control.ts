@@ -9,6 +9,7 @@ export interface ControlState extends ComponentState {
     isTurningRight: boolean
     isBraking: boolean
     canvasPointer?: Position
+    quickSlotIndex: number
 }
 
 export class Control extends Component {

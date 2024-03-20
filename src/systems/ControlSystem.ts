@@ -69,6 +69,11 @@ export class ControlSystem implements System {
                 case ' ': {
                     control.state.isBraking = isKeyDown ? true : false
                 }
+                default: {
+                    if (event.key.match(/\d/)) {
+                        control.state.quickSlotIndex = (Number(event.key) - 1)
+                    }
+                }
             }
         })
     }

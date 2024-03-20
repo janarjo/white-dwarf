@@ -10,6 +10,7 @@ import { Inventory } from './components/Inventory'
 import { Camera } from './components/Camera'
 import { Physics } from './components/Physics'
 import { EntityBag } from './EntityBag'
+import { QuickSlot } from './components/QuickSlot'
 
 export class EntityManager extends EntityBag {
     private markedForRemoval: Set<number>
@@ -43,6 +44,7 @@ export class EntityManager extends EntityBag {
         this.addComponent(attachmentId, this.getComponentOrNone(parentId, Control))
         this.addComponent(attachmentId, this.getComponentOrNone(parentId, AI))
         this.addComponent(attachmentId, this.getComponentOrNone(parentId, Inventory))
+        this.addComponent(attachmentId, this.getComponentOrNone(parentId, QuickSlot))
 
         availableSlot.attachmentId = attachmentId
     }
@@ -92,13 +94,15 @@ export class EntityManager extends EntityBag {
         const playerPosition = this.getComponent(playerId, Transform).state.position
         const { currVelocity, currAcceleration } = this.getComponent(playerId, Physics).state
         const playerInventory = this.getComponent(playerId, Inventory).state.items
+        const playerQuickSlot = this.getComponent(playerId, QuickSlot).state.currItem
         return {
             playerPosition,
             playerVelocity: mag(currVelocity),
             playerAcceleration: mag(currAcceleration),
             entityCount: this.getEntityCount(),
             componentCount: this.getComponentCount(),
-            playerInventory
+            playerInventory,
+            playerQuickSlot,
         }
     }
 }
@@ -110,4 +114,5 @@ export interface EntityDebugInfo {
     entityCount: number
     componentCount: number
     playerInventory: Item[]
+    playerQuickSlot?: Item
 }
