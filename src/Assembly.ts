@@ -6,7 +6,7 @@ import { TriggerType as EmitterTriggerType, Emitter } from './components/Emitter
 import { Health } from './components/Health'
 import { EntityHub, SlotType } from './components/EntityHub'
 import { Physics as Physics } from './components/Physics'
-import { Render } from './components/Render'
+import { EffectCode, Render } from './components/Render'
 import { ShapeType, Transform } from './components/Transform'
 import { Weapon } from './components/Weapon'
 import { Directions, earclip, Offset, scale, Vector } from './Math'
@@ -15,6 +15,7 @@ import { degPerSec, pxPerSec, pxPerSec2 } from './Units'
 import { Inventory } from './components/Inventory'
 import { ItemCode, smallPlasmaPack } from './Items'
 import { QuickSlot } from './components/QuickSlot'
+import { asteroidGray, boosterOrange, metallicGray, plasmaBlue, white } from './ui/Colors'
 
 export const camera = () => [
     new Transform({
@@ -40,7 +41,7 @@ export const player = (position: Vector) => {
             direction: Directions.EAST,
             shape: { type: ShapeType.POLYGON, points: shapePoints, triangles: earclip(shapePoints) },
         }),
-        new Render({ color: 'white' }),
+        new Render({ color: metallicGray }),
         new Control({
             isAccelerating: false,
             isDecelerating: false,
@@ -100,7 +101,7 @@ export const enemy = (position: Vector) => {
             direction: Directions.EAST,
             shape: { type: ShapeType.POLYGON, points: shapePoints, triangles: earclip(shapePoints) },
         }),
-        new Render({color: 'white' }),
+        new Render({color: metallicGray }),
         /* new AI({
             isAccelerating: false,
             isDecelerating: false,
@@ -148,7 +149,9 @@ export const projectile = (position: Vector, direction: Vector, isEnemy: boolean
         direction,
         shape: { type: ShapeType.DOT }
     }),
-    new Render({ color: 'white' }),
+    new Render({
+        color: plasmaBlue
+    }),
     new Physics({
         currVelocity: scale(direction, 300),
         currAcceleration: [0, 0],
@@ -180,7 +183,7 @@ export const asteroid = (position: Vector, direction: Vector, points: Offset[]) 
         direction,
         shape: { type: ShapeType.POLYGON, points, triangles: earclip(points) }
     }),
-    new Render({ color: 'white' }),
+    new Render({ color: asteroidGray }),
     new Physics({
         currVelocity: scale(direction, 150),
         currAcceleration: [0, 0],
@@ -212,7 +215,7 @@ export const blaster = () => [
         direction: Directions.NORTH,
         shape: { type: ShapeType.DOT }
     }),
-    new Render({ color: 'white' }),
+    new Render({ color: white }),
     new Weapon({
         lastFiredMs: 0,
         hasFired: false,
@@ -246,8 +249,8 @@ export const exhaust = (position: Vector, direction: Vector) => {
             mass: 0.1,
         }),
         new Render({
-            color: 'white',
-            effect: { durationMs: 275, startedMs: performance.now() }
+            color: boosterOrange,
+            effect: { code: EffectCode.FADE, durationMs: 275, startedMs: performance.now() }
         }),
         new EffectHub({
             effects: [{ type: EffectType.DEATH, durationMs: 250, startedMs: performance.now(), trigger: EffectTriggerType.END }]

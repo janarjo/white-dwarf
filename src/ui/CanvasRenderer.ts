@@ -10,6 +10,7 @@ import { Inventory } from '../components/Inventory'
 import { Game, UIMode } from '../Game'
 import { Render } from '../components/Render'
 import { FrameRateDebugInfo } from '../FrameTimeAnalyzer'
+import { red, white } from './Colors'
 
 export class CanvasRenderer {
     constructor(
@@ -64,7 +65,7 @@ export class CanvasRenderer {
             const width = (health.state.health / health.state.maxHealth) * maxWidth
 
             const shape: Rectangle = { type: ShapeType.RECTANGLE, dimensions: [width, 2], fill: true }
-            this.drawer.drawShape(shape, { color: 'white', position: add(oPosition, [-(maxWidth / 2), offset]) } )
+            this.drawer.drawShape(shape, { color: white, position: add(oPosition, [-(maxWidth / 2), offset]) } )
         })
 
         /* Debug elements */
@@ -79,7 +80,7 @@ export class CanvasRenderer {
             const isColliding = collision.state.isColliding
 
             const shape: Rectangle = { type: ShapeType.RECTANGLE, dimensions, fill: false }
-            this.drawer.drawShape(shape, { color: isColliding ? 'red' : 'white', position: add(oPosition, offset) } )
+            this.drawer.drawShape(shape, { color: isColliding ? red : white, position: add(oPosition, offset) } )
         })
 
         this.entities.withComponents(Transform, Render, Weapon).forEach(id => {
@@ -91,7 +92,7 @@ export class CanvasRenderer {
             const { offset } = weapon.state
             const firePosition = rotate(oPosition, direction, add(oPosition, offset))
 
-            this.drawer.drawShape({ type: ShapeType.DOT, }, { position: firePosition, color: 'red' } )
+            this.drawer.drawShape({ type: ShapeType.DOT, }, { position: firePosition, color: red } )
         })
     }
 }

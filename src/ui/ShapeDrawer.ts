@@ -1,10 +1,11 @@
-import { Effect } from '../components/Render'
+import { Effect, EffectCode, Fade, Glow } from '../components/Render'
 import { Circle, Dot, Polygon, Rectangle, Shape } from '../components/Transform'
 import { Position, Direction } from '../Math'
+import { Color } from './Colors'
 
 export interface DrawParameters {
     position: Position
-    color: string
+    color: Color
     direction?: Direction
     effect?: Effect
 }
@@ -22,7 +23,11 @@ export abstract class ShapeDrawer<T extends Shape> {
 
     protected addEffect(effect?: Effect) {
         if (!effect) return
+        if (effect.code === EffectCode.FADE) this.addFadeEffect(effect)
+        if (effect.code === EffectCode.GLOW) this.addGlowEffect(effect)
+    }
 
+    private addFadeEffect(effect: Fade) {
         const now = performance.now()
         const { durationMs, startedMs } = effect
 
@@ -33,6 +38,15 @@ export abstract class ShapeDrawer<T extends Shape> {
 
         this.ctx.globalAlpha = 1 - ((now - startedMs) / durationMs)
     }
+
+    private addGlowEffect(effect: Glow) {
+        const { radius, color } = effect
+
+        this.ctx.shadowBlur = radius
+        this.ctx.shadowColor = `rgba(${color.r},${color.g},${color.b},${color.a})`
+        this.ctx.shadowOffsetX = 0
+        this.ctx.shadowOffsetY = 0
+    }
 }
 
 export class DotDrawer extends ShapeDrawer<Dot> {
@@ -40,7 +54,7 @@ export class DotDrawer extends ShapeDrawer<Dot> {
         const { position, effect, color } = instructions
 
         this.ctx.beginPath()
-        this.ctx.fillStyle = color
+        this.ctx.fillStyle = `rgba(${color.r},${color.g},${color.b},${color.a})`
         this.addEffect(effect)
 
         const [x, y] = position
@@ -54,7 +68,7 @@ export class CircleDrawer extends ShapeDrawer<Circle> {
         const { position, effect, color } = instructions
 
         this.ctx.beginPath()
-        this.ctx.fillStyle = color
+        this.ctx.fillStyle = `rgba(${color.r},${color.g},${color.b},${color.a})`
         this.ctx.lineWidth = 2
         this.addEffect(effect)
 
@@ -75,10 +89,10 @@ export class RectangleDrawer extends ShapeDrawer<Rectangle> {
         const [ x, y ] = position
         const [ w, h ] = shape.dimensions
         if (shape.fill) {
-            this.ctx.fillStyle = color
+            this.ctx.fillStyle = `rgba(${color.r},${color.g},${color.b},${color.a})`
             this.ctx.fillRect(x, y, w, h)
         } else {
-            this.ctx.strokeStyle = color
+            this.ctx.strokeStyle = `rgba(${color.r},${color.g},${color.b},${color.a})`
             this.ctx.strokeRect(x, y, w, h)
         }
         this.ctx.stroke()
@@ -90,7 +104,7 @@ export class PolygonDrawer extends ShapeDrawer<Polygon> {
         const { effect, color } = instructions
 
         this.ctx.beginPath()
-        this.ctx.fillStyle = color
+        this.ctx.fillStyle = `rgba(${color.r},${color.g},${color.b},${color.a})`
         this.addEffect(effect)
 
         const [ firstPoint, ...restPoints ] = shape.points

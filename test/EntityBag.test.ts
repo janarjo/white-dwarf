@@ -4,6 +4,7 @@ import { Inventory } from '../src/components/Inventory'
 import { Render } from '../src/components/Render'
 import { Weapon } from '../src/components/Weapon'
 import { EntityBag } from '../src/EntityBag'
+import { white } from '../src/ui/Colors'
 
 describe('EntityBag', () => {
     it('should add entities', () => {
@@ -98,7 +99,7 @@ describe('EntityBag withComponents', () => {
         ]
         entity3 = [
             new Camera({ origin: [20, 20] }),
-            new Render({ color: 'white'}),
+            new Render({ color: white }),
             new Inventory({ items: [], maxSize: 15}),
         ]
         bag = new EntityBag()
