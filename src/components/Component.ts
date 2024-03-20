@@ -25,7 +25,9 @@ export abstract class Component {
     constructor(
             readonly code: ComponentCode,
             readonly name: string,
-            readonly state: ComponentState) {
+            readonly state: ComponentState,
+            // Whether the component is shared between parent and child entities
+            readonly shared: boolean = false) {
     }
 }
 

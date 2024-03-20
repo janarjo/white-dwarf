@@ -37,16 +37,10 @@ export class EntityBag {
         this.addToComponentBag(component, id)
     }
 
-    removeComponent<T extends Component, Y extends ComponentState>(
-            id: number,
-            type: new (state: Y) => T): void {
-        const found = this.get(id)
-
-        const toDelete = found.find(component => component instanceof type)
-        if (!toDelete) return
-
-        this.entities.set(id, found.filter(component => component !== toDelete))
-        this.removeFromComponentBag(toDelete, id)
+    removeComponent( id: number, component?: Component): void {
+        if (!component) return
+        this.entities.set(id, this.get(id).filter(component => component !== component))
+        this.removeFromComponentBag(component, id)
     }
 
     remove(id: number) {

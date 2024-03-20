@@ -8,6 +8,6 @@ export interface QuickSlotState extends ComponentState {
 
 export class QuickSlot extends Component {
     constructor(public state: QuickSlotState) {
-        super(ComponentCode.QUICK_SLOT, 'Quick slot', state)
+        super(ComponentCode.QUICK_SLOT, 'Quick slot', state, true)
     }
 }

@@ -4,7 +4,6 @@ import { EntityHub, SlotType } from './components/EntityHub'
 import { isDefined, isUndefined } from './Util'
 import { mag, Position } from './Math'
 import { Transform } from './components/Transform'
-import { AI } from './components/AI'
 import { Item } from './Items'
 import { Inventory } from './components/Inventory'
 import { Camera } from './components/Camera'
@@ -41,10 +40,9 @@ export class EntityManager extends EntityBag {
             .find(slot => isUndefined(slot.attachmentId))
         if (!availableSlot) return
 
-        this.addComponent(attachmentId, this.getComponentOrNone(parentId, Control))
-        this.addComponent(attachmentId, this.getComponentOrNone(parentId, AI))
-        this.addComponent(attachmentId, this.getComponentOrNone(parentId, Inventory))
-        this.addComponent(attachmentId, this.getComponentOrNone(parentId, QuickSlot))
+        this.get(parentId)
+            .filter(component => component.shared)
+            .forEach(component => this.addComponent(attachmentId, component))
 
         availableSlot.attachmentId = attachmentId
     }
@@ -60,9 +58,9 @@ export class EntityManager extends EntityBag {
             .find(slot => slot.attachmentId === attachmentId)
         if (!attachmentSlot) return
 
-        this.removeComponent(attachmentId, Control)
-        this.removeComponent(attachmentId, AI)
-        this.removeComponent(attachmentId, Inventory)
+        this.get(attachmentId)
+            .filter(component => component.shared)
+            .forEach(component => this.removeComponent(parentId, component))
 
         attachmentSlot.attachmentId = undefined
     }

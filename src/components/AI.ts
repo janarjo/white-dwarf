@@ -9,6 +9,6 @@ export interface AIState extends ControlState {
 
 export class AI extends Component {
     constructor(public state: AIState) {
-        super(ComponentCode.AI, 'AI', state)
+        super(ComponentCode.AI, 'AI', state, true)
     }
 }

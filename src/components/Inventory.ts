@@ -8,6 +8,6 @@ export interface InventoryState extends ComponentState {
 
 export class Inventory extends Component {
     constructor(public state: InventoryState) {
-        super(ComponentCode.INVENTORY, 'Inventory', state)
+        super(ComponentCode.INVENTORY, 'Inventory', state, true)
     }
 }

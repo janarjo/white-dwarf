@@ -34,7 +34,7 @@ describe('EntityBag', () => {
         const component = new Camera({ origin: [0, 0] })
         bag.addComponent(0, component)
 
-        bag.removeComponent(0, Camera)
+        bag.removeComponent(0, component)
 
         expect(bag.get(0)).not.toContain(component)
     })
@@ -124,7 +124,7 @@ describe('EntityBag withComponents', () => {
     })
 
     it('returns the correct entity ids after removing a component', () => {
-        bag.removeComponent(0, Camera)
+        bag.removeComponent(0, entity1[0] as Camera)
         expect(bag.withComponents(Camera)).toEqual([1, 2])
     })
 })
