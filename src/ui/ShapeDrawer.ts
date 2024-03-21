@@ -1,9 +1,11 @@
 import { Effect, EffectCode, Fade, Glow } from '../components/Render'
-import { Circle, Dot, Polygon, Rectangle, Shape } from '../components/Transform'
-import { Position, Direction } from '../Math'
+import { Circle, Polygon, Rectangle, Shape } from '../components/Transform'
+import { Position, Direction, subtract, scale } from '../Math'
 import { Color } from './Colors'
 
 export interface DrawParameters {
+    zoom: number
+    origin: Position
     position: Position
     color: Color
     direction?: Direction
@@ -44,36 +46,21 @@ export abstract class ShapeDrawer<T extends Shape> {
 
         this.ctx.shadowBlur = radius
         this.ctx.shadowColor = `rgba(${color.r},${color.g},${color.b},${color.a})`
-        this.ctx.shadowOffsetX = 0
-        this.ctx.shadowOffsetY = 0
-    }
-}
-
-export class DotDrawer extends ShapeDrawer<Dot> {
-    protected drawInternal(shape: Dot, instructions: DrawParameters): void {
-        const { position, effect, color } = instructions
-
-        this.ctx.beginPath()
-        this.ctx.fillStyle = `rgba(${color.r},${color.g},${color.b},${color.a})`
-        this.addEffect(effect)
-
-        const [x, y] = position
-        this.ctx.fillRect(x, y, 2, 2)
-        this.ctx.stroke()
     }
 }
 
 export class CircleDrawer extends ShapeDrawer<Circle> {
     protected drawInternal(shape: Circle, instructions: DrawParameters): void {
-        const { position, effect, color } = instructions
+        const { zoom, origin, position, effect, color } = instructions
+        const oPosition = subtract(position, origin)
 
         this.ctx.beginPath()
         this.ctx.fillStyle = `rgba(${color.r},${color.g},${color.b},${color.a})`
         this.ctx.lineWidth = 2
         this.addEffect(effect)
 
-        const [x, y] = position
-        this.ctx.arc(x, y, shape.radius, 0, 2 * Math.PI, true)
+        const [x, y] = scale(oPosition, zoom)
+        this.ctx.arc(x, y, shape.radius * zoom, 0, Math.PI * 2)
         this.ctx.closePath()
         this.ctx.fill()
     }
@@ -81,13 +68,15 @@ export class CircleDrawer extends ShapeDrawer<Circle> {
 
 export class RectangleDrawer extends ShapeDrawer<Rectangle> {
     protected drawInternal(shape: Rectangle, instructions: DrawParameters): void {
-        const { position, effect, color } = instructions
+        const { origin, zoom, position, effect, color } = instructions
+        const oPosition = subtract(position, origin)
 
         this.ctx.beginPath()
         this.addEffect(effect)
 
-        const [ x, y ] = position
-        const [ w, h ] = shape.dimensions
+        const [ x, y ] = scale(oPosition, zoom)
+        const [ w, h ] = scale(shape.dimensions, zoom)
+
         if (shape.fill) {
             this.ctx.fillStyle = `rgba(${color.r},${color.g},${color.b},${color.a})`
             this.ctx.fillRect(x, y, w, h)
@@ -101,13 +90,15 @@ export class RectangleDrawer extends ShapeDrawer<Rectangle> {
 
 export class PolygonDrawer extends ShapeDrawer<Polygon> {
     protected drawInternal(shape: Polygon, instructions: DrawParameters): void {
-        const { effect, color } = instructions
+        const { origin, zoom, effect, color } = instructions
+        const oPoints = shape.points.map(p => subtract(p, origin))
+        const zoomedPoints = oPoints.map(p => scale(p, zoom))
 
         this.ctx.beginPath()
         this.ctx.fillStyle = `rgba(${color.r},${color.g},${color.b},${color.a})`
         this.addEffect(effect)
 
-        const [ firstPoint, ...restPoints ] = shape.points
+        const [ firstPoint, ...restPoints ] = zoomedPoints
 
         this.ctx.moveTo(firstPoint[0], firstPoint[1])
         restPoints.forEach(([x, y]) => this.ctx.lineTo(x, y))

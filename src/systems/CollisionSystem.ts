@@ -33,10 +33,10 @@ export class CollisionSystem implements System {
                     const { currShape: otherCurrShape } = otherTransform.state
 
                     if (!thisCurrShape || !otherCurrShape) return false
-                    if (thisCurrShape.type === ShapeType.POLYGON && otherCurrShape.type === ShapeType.DOT) {
+                    if (thisCurrShape.type === ShapeType.POLYGON && otherCurrShape.type === ShapeType.CIRCLE) {
                         return thisCurrShape.triangles.some(triangle => isWithinTriangle(otherTransform.state.position, triangle))
                     }
-                    if (thisCurrShape.type === ShapeType.DOT && otherCurrShape.type === ShapeType.POLYGON) {
+                    if (thisCurrShape.type === ShapeType.CIRCLE && otherCurrShape.type === ShapeType.POLYGON) {
                         return otherCurrShape.triangles.some(triangle => isWithinTriangle(transform.state.position, triangle))
                     }
                     if (thisCurrShape.type === ShapeType.POLYGON && otherCurrShape.type === ShapeType.POLYGON) {

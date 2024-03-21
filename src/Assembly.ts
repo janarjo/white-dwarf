@@ -24,6 +24,7 @@ export const camera = () => [
     }),
     new Camera({
         origin: [0, 0],
+        zoom: 1,
     }),
     new Attachment({
         type: SlotType.CAMERA,
@@ -147,7 +148,7 @@ export const projectile = (position: Vector, direction: Vector, isEnemy: boolean
     new Transform({
         position,
         direction,
-        shape: { type: ShapeType.DOT }
+        shape: { type: ShapeType.CIRCLE, radius: 2 }
     }),
     new Render({
         color: plasmaBlue
@@ -213,7 +214,7 @@ export const blaster = () => [
     new Transform({
         position: [0, 0],
         direction: Directions.NORTH,
-        shape: { type: ShapeType.DOT }
+        shape: { type: ShapeType.CIRCLE, radius: 1 }
     }),
     new Render({ color: white }),
     new Weapon({

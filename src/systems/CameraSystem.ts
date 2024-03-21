@@ -15,17 +15,18 @@ export class CameraSystem implements System {
         this.entities.withComponents(Transform, Camera).forEach(id => {
             const transform = this.entities.getComponent(id, Transform)
             const { position } = transform.state
+
             const camera = this.entities.getComponent(id, Camera)
-            const origin = camera.state.origin
+            const { zoom } = camera.state
 
-            const newOrigin = subtract(position, divide(this.viewport, 2))
-            const isOutsideHorizontalViewPort = newOrigin[0] < 0 || (newOrigin[0] + this.viewport[0]) > this.mapSize[0]
-            const isOutsideVerticalViewPort = newOrigin[1] < 0 || (newOrigin[1] + this.viewport[1]) > this.mapSize[1]
+            const zoomedViewport = divide(this.viewport, zoom)
+            let newOrigin = subtract(position, divide(zoomedViewport, 2))
+            if (newOrigin[0] < 0) newOrigin = [0, newOrigin[1]]
+            if (newOrigin[1] < 0) newOrigin = [newOrigin[0], 0]
+            if (newOrigin[0] + zoomedViewport[0] > this.mapSize[0]) newOrigin = [this.mapSize[0] - zoomedViewport[0], newOrigin[1]]
+            if (newOrigin[1] + zoomedViewport[1] > this.mapSize[1]) newOrigin = [newOrigin[0], this.mapSize[1] - zoomedViewport[1]]
 
-            if (isOutsideHorizontalViewPort && isOutsideVerticalViewPort) return
-            else if (isOutsideHorizontalViewPort) camera.state.origin = [origin[0], newOrigin[1]]
-            else if (isOutsideVerticalViewPort) camera.state.origin = [newOrigin[0], origin[1]]
-            else camera.state.origin = newOrigin
+            camera.state.origin = newOrigin
         })
     }
 }

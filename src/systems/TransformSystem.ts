@@ -55,15 +55,15 @@ export class TransformSystem implements System {
             const { position, direction, shape } = transform.state
 
             switch (shape?.type) {
-                case ShapeType.DOT:
-                    transform.state.currShape = shape
-                    break
                 case ShapeType.POLYGON:
                     const currPoints = translate(rotatePolygon(shape.points, direction), position) as Vector[]
                     const currTriangles = shape.triangles
                         .map(triangle => rotatePolygon(triangle, transform.state.direction) as Triangle)
                         .map(triangle => translate(triangle, transform.state.position) as Triangle)
                     transform.state.currShape = { ...shape, points: currPoints, triangles: currTriangles }
+                    break
+                default:
+                    transform.state.currShape = shape
                     break
             }
         })

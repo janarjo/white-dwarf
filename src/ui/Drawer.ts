@@ -1,6 +1,6 @@
 import { Star } from '../LevelManager'
 import { EntityDebugInfo } from '../EntityManager'
-import { CircleDrawer, DotDrawer, DrawParameters, PolygonDrawer, RectangleDrawer } from './ShapeDrawer'
+import { CircleDrawer, DrawParameters, PolygonDrawer, RectangleDrawer } from './ShapeDrawer'
 import { Item, ItemCode } from '../Items'
 import { Shape, ShapeType } from '../components/Transform'
 import { FrameRateDebugInfo } from '../FrameTimeAnalyzer'
@@ -8,7 +8,6 @@ import { FrameRateDebugInfo } from '../FrameTimeAnalyzer'
 export class Drawer {
     constructor(readonly ctx: CanvasRenderingContext2D) {}
 
-    private readonly dotDrawer: DotDrawer = new DotDrawer(this.ctx)
     private readonly circleDrawer: CircleDrawer = new CircleDrawer(this.ctx)
     private readonly rectangleDrawer: RectangleDrawer = new RectangleDrawer(this.ctx)
     private readonly polygonDrawer: PolygonDrawer = new PolygonDrawer(this.ctx)
@@ -77,9 +76,6 @@ export class Drawer {
 
     drawShape(shape: Shape, params: DrawParameters) {
         switch (shape.type) {
-            case ShapeType.DOT:
-                this.dotDrawer.draw(shape, params)
-                break
             case ShapeType.CIRCLE:
                 this.circleDrawer.draw(shape, params)
                 break

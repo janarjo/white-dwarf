@@ -1,7 +1,7 @@
 import { Control } from '../components/Control'
 import { Transform } from '../components/Transform'
 import { EntityManager } from '../EntityManager'
-import { add, angleBetween, subtract } from '../Math'
+import { add, angleBetween, divide, subtract } from '../Math'
 import { System } from './System'
 
 export class ControlSystem implements System {
@@ -27,8 +27,8 @@ export class ControlSystem implements System {
 
             if (canvasPointer) {
                 const camera = this.entities.getCamera()
-                const origin = camera.state.origin
-                const pointerPosition = add(canvasPointer, origin)
+                const { origin, zoom } = camera.state
+                const pointerPosition = add(divide(canvasPointer, zoom), origin)
                 const targetDirection = subtract(pointerPosition, position)
                 // Calculate the angle between the current heading direction and the direction towards the mouse cursor
                 const diff = angleBetween(direction, targetDirection)

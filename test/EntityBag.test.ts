@@ -20,7 +20,7 @@ describe('EntityBag', () => {
         const entity = [new Inventory({ items: [], maxSize: 10})]
         bag.add(entity)
 
-        const component = new Camera({ origin: [0, 0] })
+        const component = new Camera({ origin: [0, 0], zoom: 1 })
         bag.addComponent(0, component)
 
         expect(bag.get(0)).toContain(component)
@@ -32,7 +32,7 @@ describe('EntityBag', () => {
         const entity = [new Inventory({ items: [], maxSize: 10})]
         bag.add(entity)
 
-        const component = new Camera({ origin: [0, 0] })
+        const component = new Camera({ origin: [0, 0], zoom: 1 })
         bag.addComponent(0, component)
 
         bag.removeComponent(0, component)
@@ -57,7 +57,7 @@ describe('EntityBag', () => {
         const entity = [new Inventory({ items: [], maxSize: 10})]
         bag.add(entity)
 
-        const component = new Camera({ origin: [0, 0] })
+        const component = new Camera({ origin: [0, 0], zoom: 1 })
         bag.addComponent(0, component)
 
         expect(bag.getComponent(0, Camera)).toBe(component)
@@ -78,7 +78,7 @@ describe('EntityBag', () => {
         const entity = [new Inventory({ items: [], maxSize: 10})]
         bag.add(entity)
 
-        bag.addComponent(0, new Camera({ origin: [0, 0] }))
+        bag.addComponent(0, new Camera({ origin: [0, 0], zoom: 1 }))
 
         expect(bag.hasComponent(0, Camera)).toBe(true)
     })
@@ -90,15 +90,15 @@ describe('EntityBag withComponents', () => {
 
     beforeEach(() => {
         entity1 = [
-            new Camera({origin: [0, 0] }),
+            new Camera({origin: [0, 0], zoom: 1 }),
             new Inventory({ items: [], maxSize: 10})
         ]
         entity2 = [
-            new Camera({ origin: [10, 10]  }),
+            new Camera({ origin: [10, 10], zoom: 1 }),
             new Inventory({ items: [], maxSize: 10}),
         ]
         entity3 = [
-            new Camera({ origin: [20, 20] }),
+            new Camera({ origin: [20, 20], zoom: 1 }),
             new Render({ color: white }),
             new Inventory({ items: [], maxSize: 15}),
         ]

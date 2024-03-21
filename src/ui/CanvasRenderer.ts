@@ -4,7 +4,7 @@ import { Rectangle, ShapeType, Transform } from '../components/Transform'
 import { Weapon } from '../components/Weapon'
 import { EntityManager } from '../EntityManager'
 import { Star } from '../LevelManager'
-import { add, rotate, subtract } from '../Math'
+import { add, rotate } from '../Math'
 import { Drawer } from './Drawer'
 import { Inventory } from '../components/Inventory'
 import { Game, UIMode } from '../Game'
@@ -29,34 +29,23 @@ export class CanvasRenderer {
         }
 
         const camera = this.entities.getCamera()
-        const origin = camera.state.origin
 
         this.drawer.clear()
         this.drawer.drawStars(this.stars)
 
         this.entities.withComponents(Transform, Render).forEach(id => {
             const transform = this.entities.getComponent(id, Transform)
-            const { direction, shape, currShape, position } = transform.state
-            if (!shape) return
+            const { direction, currShape, position } = transform.state
+            if (!currShape) return
 
             const render = this.entities.getComponent(id, Render)
             const { color, effect } = render.state
-
-            const oPosition = subtract(position, origin)
-            const drawParams = { position: oPosition, color, direction, effect }
-
-            if (currShape?.type === ShapeType.POLYGON) {
-                const oPoints = currShape.points.map(p => subtract(p, origin))
-                this.drawer.drawShape({ ...currShape, points: oPoints }, drawParams)
-                return
-            }
-
-            this.drawer.drawShape(shape, drawParams)
+            this.drawer.drawShape(currShape, { ...camera.state, position, color, direction, effect })
         })
 
         this.entities.withComponents(Transform, Render, Health).forEach(id => {
             const transform = this.entities.getComponent(id, Transform)
-            const oPosition = subtract(transform.state.position, origin)
+            const { position } = transform.state
             const health = this.entities.getComponent(id, Health)
             if (!health.state.showIndicator) return
 
@@ -65,7 +54,7 @@ export class CanvasRenderer {
             const width = (health.state.health / health.state.maxHealth) * maxWidth
 
             const shape: Rectangle = { type: ShapeType.RECTANGLE, dimensions: [width, 2], fill: true }
-            this.drawer.drawShape(shape, { color: white, position: add(oPosition, [-(maxWidth / 2), offset]) } )
+            this.drawer.drawShape(shape, { ...camera.state, color: white, position: add(position, [-(maxWidth / 2), offset]) } )
         })
 
         /* Debug elements */
@@ -74,25 +63,24 @@ export class CanvasRenderer {
 
         this.entities.withComponents(Transform, Render, Collision).forEach(id => {
             const transform = this.entities.getComponent(id, Transform)
-            const oPosition = subtract(transform.state.position, origin)
+            const { position } = transform.state
             const collision = this.entities.getComponent(id, Collision)
             const [offset, dimensions] = collision.state.boundingBox
             const isColliding = collision.state.isColliding
 
             const shape: Rectangle = { type: ShapeType.RECTANGLE, dimensions, fill: false }
-            this.drawer.drawShape(shape, { color: isColliding ? red : white, position: add(oPosition, offset) } )
+            this.drawer.drawShape(shape, { ...camera.state, color: isColliding ? red : white, position: add(position, offset) } )
         })
 
         this.entities.withComponents(Transform, Render, Weapon).forEach(id => {
             const transform = this.entities.getComponent(id, Transform)
-            const oPosition = subtract(transform.state.position, origin)
-            const direction = transform.state.direction
+            const { position, direction } = transform.state
 
             const weapon = this.entities.getComponent(id, Weapon)
             const { offset } = weapon.state
-            const firePosition = rotate(oPosition, direction, add(oPosition, offset))
+            const firePosition = rotate(position, direction, add(position, offset))
 
-            this.drawer.drawShape({ type: ShapeType.DOT, }, { position: firePosition, color: red } )
+            this.drawer.drawShape({ type: ShapeType.CIRCLE, radius: 1 }, { ...camera.state, position: firePosition, color: red } )
         })
     }
 }

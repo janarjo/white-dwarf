@@ -2,11 +2,7 @@ import { Dimensions, Position, Vector, Triangle as MathTriangle } from '../Math'
 import { Component, ComponentCode, ComponentState } from './Component'
 
 export enum ShapeType {
-    DOT, CIRCLE, TRIANGLE, RECTANGLE, POLYGON
-}
-
-export interface Dot {
-    type: ShapeType.DOT
+    CIRCLE, TRIANGLE, RECTANGLE, POLYGON
 }
 
 export interface Circle {
@@ -26,7 +22,7 @@ export interface Polygon {
     triangles: MathTriangle[]
 }
 
-export type Shape = Dot | Circle | Rectangle | Polygon
+export type Shape = Circle | Rectangle | Polygon
 
 export interface TransformState extends ComponentState {
     position: Position
