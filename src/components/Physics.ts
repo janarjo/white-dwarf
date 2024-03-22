@@ -14,6 +14,6 @@ export interface PhysicsState extends ComponentState {
 
 export class Physics extends Component {
     constructor(public state: PhysicsState) {
-        super(ComponentCode.PHYSICS, 'Physics', state)
+        super(ComponentCode.PHYSICS, 'Physics', state, true)
     }
 }

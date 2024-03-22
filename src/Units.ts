@@ -73,3 +73,5 @@ export const deg = (amount: number) => new Rotation(amount, Math.PI / 180)
 export const pxPerSec = (amount: number) => new Speed(px(amount), sec(1))
 export const degPerSec = (amount: number) => new RateOfRotation(deg(amount), sec(1))
 export const pxPerSec2 = (amount: number) => new Acceleration(pxPerSec(amount), sec(1))
+
+export const COSMIC_SPEED_LIMIT = pxPerSec(10000)

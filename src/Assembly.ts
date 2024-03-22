@@ -9,9 +9,9 @@ import { Physics as Physics } from './components/Physics'
 import { EffectCode, Render } from './components/Render'
 import { ShapeType, Transform } from './components/Transform'
 import { Weapon } from './components/Weapon'
-import { Directions, earclip, Offset, scale, Vector } from './Math'
+import { add, Directions, earclip, Offset, scale, Vector } from './Math'
 import { TriggerType as EffectTriggerType, EffectHub, EffectType } from './components/EffectHub'
-import { degPerSec, pxPerSec, pxPerSec2 } from './Units'
+import { COSMIC_SPEED_LIMIT, degPerSec, pxPerSec, pxPerSec2 } from './Units'
 import { Inventory } from './components/Inventory'
 import { ItemCode, smallPlasmaPack } from './Items'
 import { QuickSlot } from './components/QuickSlot'
@@ -144,7 +144,11 @@ export const enemy = (position: Vector) => {
     ]
 }
 
-export const projectile = (position: Vector, direction: Vector, isEnemy: boolean) => [
+export const projectile = (
+        position: Vector,
+        direction: Vector,
+        parentVelocity: Vector,
+        isEnemy: boolean) => [
     new Transform({
         position,
         direction,
@@ -154,11 +158,11 @@ export const projectile = (position: Vector, direction: Vector, isEnemy: boolean
         color: plasmaBlue
     }),
     new Physics({
-        currVelocity: scale(direction, 300),
+        currVelocity: add(scale(direction, 500), parentVelocity),
         currAcceleration: [0, 0],
         currRotationalSpeed: 0,
         acceleration: pxPerSec2(0),
-        maxSpeed: pxPerSec(300),
+        maxSpeed: COSMIC_SPEED_LIMIT,
         rotationalSpeed: degPerSec(0),
         lastUpdated: performance.now(),
         mass: 0.01,
