@@ -37,6 +37,11 @@ export const union = (set1: Set<number>, set2: Set<number>) => new Set([...set1,
 export const intersect = (set1: Set<number>, set2: Set<number>) => new Set([...set1].filter(x => set2.has(x)))
 export const difference = (set1: Set<number>, set2: Set<number>) => new Set([...set1].filter(x => !set2.has(x)))
 
+export const round = (n: number, precision = 0) => {
+    const factor = Math.pow(10, precision)
+    return Math.round(n * factor) / factor
+}
+
 export type Direction = Vector
 export class Directions {
     static readonly EAST = [1, 0] as const

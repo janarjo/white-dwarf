@@ -10,6 +10,7 @@ export interface ControlState extends ComponentState {
     isBraking: boolean
     canvasPointer?: Position
     quickSlotIndex: number
+    zoomFactor: number
 }
 
 export class Control extends Component {

@@ -13,7 +13,26 @@ import {
     earclip,
     getAxes,
     project,
+    round,
 } from '../src/Math'
+
+describe('round function', () => {
+    it('should round a number to the nearest integer', () => {
+        expect(round(0.5)).toBe(1)
+        expect(round(0.4)).toBe(0)
+    })
+
+    it('should round a number to the nearest integer with a specified precision', () => {
+        expect(round(0.55, 1)).toBe(0.6)
+        expect(round(0.44, 1)).toBe(0.4)
+
+        expect(round(0.555, 2)).toBe(0.56)
+        expect(round(0.444, 2)).toBe(0.44)
+
+        expect(round(0.5555, 3)).toBe(0.556)
+        expect(round(0.4444, 3)).toBe(0.444)
+    })
+})
 
 describe('isIntersect function', () => {
     it('should return true if the rectangles intersect', () => {

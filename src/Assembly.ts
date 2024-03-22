@@ -51,6 +51,7 @@ export const player = (position: Vector) => {
             isFiring: false,
             isBraking: false,
             quickSlotIndex: 0,
+            zoomFactor: 1,
         }),
         new Physics({
             currDirection: [1, 0],

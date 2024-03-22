@@ -1,7 +1,8 @@
+import { Camera } from '../components/Camera'
 import { Control } from '../components/Control'
 import { Transform } from '../components/Transform'
 import { EntityManager } from '../EntityManager'
-import { add, angleBetween, divide, subtract } from '../Math'
+import { add, angleBetween, divide, round, subtract } from '../Math'
 import { System } from './System'
 
 export class ControlSystem implements System {
@@ -14,6 +15,7 @@ export class ControlSystem implements System {
         canvas.addEventListener('mouseup', (event) => this.handleMouseInput(event, false))
         canvas.addEventListener('contextmenu', (event) => event.preventDefault())
         canvas.addEventListener('mousemove', (event) => { this.handleMouseMovement(event) })
+        canvas.addEventListener('wheel', (event) => { this.handleWheel(event) })
     }
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -94,6 +96,17 @@ export class ControlSystem implements System {
         this.entities.withComponents(Control).forEach(id => {
             const control = this.entities.getComponent(id, Control)
             control.state.canvasPointer = [event.clientX, event.clientY] as const
+        })
+    }
+
+    handleWheel(event: WheelEvent) {
+        this.entities.withComponents(Control, Camera).forEach(id => {
+            const control = this.entities.getComponent(id, Control)
+            const { zoomFactor } = control.state
+            const newZoomFactor = zoomFactor + round(event.deltaY / 2000, 2)
+            if (newZoomFactor < 0.7) return
+            if (newZoomFactor >= 1.5) return
+            control.state.zoomFactor = newZoomFactor
         })
     }
 }

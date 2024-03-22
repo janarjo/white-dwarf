@@ -1,4 +1,5 @@
 import { Camera } from '../components/Camera'
+import { Control } from '../components/Control'
 import { Transform } from '../components/Transform'
 import { EntityManager } from '../EntityManager'
 import { Dimensions, divide, subtract } from '../Math'
@@ -12,6 +13,13 @@ export class CameraSystem implements System {
     }
 
     update() {
+        this.entities.withComponents(Camera, Control).forEach(id => {
+            const control = this.entities.getComponent(id, Control)
+            const camera = this.entities.getComponent(id, Camera)
+
+            camera.state.zoom = control.state.zoomFactor
+        })
+
         this.entities.withComponents(Transform, Camera).forEach(id => {
             const transform = this.entities.getComponent(id, Transform)
             const { position } = transform.state
