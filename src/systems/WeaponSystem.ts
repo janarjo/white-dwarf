@@ -1,4 +1,4 @@
-import { projectile } from '../Assembly'
+import { missile, plasmaBullet } from '../Assembly'
 import { AI } from '../components/AI'
 import { Control } from '../components/Control'
 import { Physics, PhysicsState } from '../components/Physics'
@@ -6,6 +6,7 @@ import { QuickSlot, QuickSlotState } from '../components/QuickSlot'
 import { Transform, TransformState } from '../components/Transform'
 import { Weapon, WeaponState } from '../components/Weapon'
 import { EntityManager } from '../EntityManager'
+import { ItemCode } from '../Items'
 import { add, rotate } from '../Math'
 import { SoundCode, SoundManager } from '../SoundManager'
 import { hasActiveItem } from './QuickSlotSystem'
@@ -58,13 +59,20 @@ export class WeaponSystem implements System {
             transformState: TransformState,
             physicsState: PhysicsState,
             isEnemy: boolean) {
-        const { offset } = weaponState
+        const { offset, ammoType } = weaponState
         const { position, direction } = transformState
         const { currVelocity } = physicsState
 
         const firePosition = rotate(add(position, offset), direction, position)
-        this.entities.add(projectile(firePosition, direction, currVelocity, isEnemy))
-        this.sounds.play(SoundCode.LASER)
+
+        if (ammoType === ItemCode.AMMO_PLASMA_SMALL) {
+            this.entities.add(plasmaBullet(firePosition, direction, currVelocity, isEnemy))
+            this.sounds.play(SoundCode.LASER)
+        } else if (ammoType === ItemCode.AMMO_MISSILE_SMALL) {
+            this.entities.add(missile(firePosition, direction, currVelocity, isEnemy))
+            this.sounds.play(SoundCode.LASER)
+        }
+
         return { ...weaponState, lastFiredMs: performance.now(), hasFired: true }
     }
 }

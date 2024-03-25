@@ -8,7 +8,7 @@ export interface PhysicsState extends ComponentState {
     currRotationalSpeed: number
     acceleration: Acceleration
     rotationalSpeed: RateOfRotation
-    maxSpeed: Speed
+    maxVelocity: Speed
     mass: number
 }
 

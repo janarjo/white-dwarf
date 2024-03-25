@@ -46,7 +46,7 @@ export class CollisionSystem implements System {
                     return false
                 })
             collision.state.isColliding = collidingEntities.length > 0
-            collision.state.colliders = collidingEntities
+            collision.state.colliders = [id, ...collidingEntities]
         })
     }
 

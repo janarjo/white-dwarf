@@ -10,7 +10,7 @@ export class EntityBag {
     constructor() {
         this.entities = new Map()
         this.components = new Map()
-        this.enumerator = 0
+        this.enumerator = 1
     }
 
     has(id: number): boolean {

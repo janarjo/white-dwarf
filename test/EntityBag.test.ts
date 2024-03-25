@@ -11,7 +11,7 @@ describe('EntityBag', () => {
         const bag = new EntityBag()
         const entity = [new Inventory({ items: [], maxSize: 10})]
         bag.add(entity)
-        expect(bag.get(0)).toBe(entity)
+        expect(bag.get(1)).toBe(entity)
     })
 
     it('should add components', () => {
@@ -21,9 +21,9 @@ describe('EntityBag', () => {
         bag.add(entity)
 
         const component = new Camera({ origin: [0, 0], zoom: 1 })
-        bag.addComponent(0, component)
+        bag.addComponent(1, component)
 
-        expect(bag.get(0)).toContain(component)
+        expect(bag.get(1)).toContain(component)
     })
 
     it('should remove components', () => {
@@ -33,11 +33,11 @@ describe('EntityBag', () => {
         bag.add(entity)
 
         const component = new Camera({ origin: [0, 0], zoom: 1 })
-        bag.addComponent(0, component)
+        bag.addComponent(1, component)
 
-        bag.removeComponent(0, component)
+        bag.removeComponent(1, component)
 
-        expect(bag.get(0)).not.toContain(component)
+        expect(bag.get(1)).not.toContain(component)
     })
 
     it('should remove entities', () => {
@@ -46,9 +46,9 @@ describe('EntityBag', () => {
         const entity = [new Inventory({ items: [], maxSize: 10})]
         bag.add(entity)
 
-        bag.remove(0)
+        bag.remove(1)
 
-        expect(() => bag.get(0)).toThrow()
+        expect(() => bag.get(1)).toThrow()
     })
 
     it('should get components', () => {
@@ -58,9 +58,9 @@ describe('EntityBag', () => {
         bag.add(entity)
 
         const component = new Camera({ origin: [0, 0], zoom: 1 })
-        bag.addComponent(0, component)
+        bag.addComponent(1, component)
 
-        expect(bag.getComponent(0, Camera)).toBe(component)
+        expect(bag.getComponent(1, Camera)).toBe(component)
     })
 
     it('should get components or none', () => {
@@ -69,7 +69,7 @@ describe('EntityBag', () => {
         const entity = [new Inventory({ items: [], maxSize: 10})]
         bag.add(entity)
 
-        expect(bag.getComponentOrNone(0, Camera)).toBeUndefined()
+        expect(bag.getComponentOrNone(1, Camera)).toBeUndefined()
     })
 
     it('should check if entity has component', () => {
@@ -78,9 +78,9 @@ describe('EntityBag', () => {
         const entity = [new Inventory({ items: [], maxSize: 10})]
         bag.add(entity)
 
-        bag.addComponent(0, new Camera({ origin: [0, 0], zoom: 1 }))
+        bag.addComponent(1, new Camera({ origin: [0, 0], zoom: 1 }))
 
-        expect(bag.hasComponent(0, Camera)).toBe(true)
+        expect(bag.hasComponent(1, Camera)).toBe(true)
     })
 })
 
@@ -109,15 +109,15 @@ describe('EntityBag withComponents', () => {
     })
 
     it('returns the correct entity ids for one component type', () => {
-        expect(bag.withComponents(Camera)).toEqual([0, 1, 2])
+        expect(bag.withComponents(Camera)).toEqual([1, 2, 3])
     })
 
     it('returns the correct entity ids for two component types', () => {
-        expect(bag.withComponents(Camera, Inventory)).toEqual([0, 1, 2])
+        expect(bag.withComponents(Camera, Inventory)).toEqual([1, 2, 3])
     })
 
     it('returns the correct entity ids for three component types', () => {
-        expect(bag.withComponents(Camera, Inventory, Render)).toEqual([2])
+        expect(bag.withComponents(Camera, Inventory, Render)).toEqual([3])
     })
 
     it('returns empty for non-existent component types', () => {
@@ -125,7 +125,7 @@ describe('EntityBag withComponents', () => {
     })
 
     it('returns the correct entity ids after removing a component', () => {
-        bag.removeComponent(0, entity1[0] as Camera)
-        expect(bag.withComponents(Camera)).toEqual([1, 2])
+        bag.removeComponent(1, entity1[0] as Camera)
+        expect(bag.withComponents(Camera)).toEqual([2, 3])
     })
 })

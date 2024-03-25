@@ -1,4 +1,4 @@
-import { blaster, camera, enemy, player } from './Assembly'
+import { blaster, camera, enemy, missileLauncher, player } from './Assembly'
 import { EntityManager } from './EntityManager'
 import { Dimensions, Position } from './Math'
 import { AsteroidField } from './fields/AsteroidField'
@@ -57,6 +57,9 @@ export class LevelManager {
 
             const blasterId = entities.add(blaster())
             entities.attach(playerId, blasterId)
+
+            const missileLauncherId = entities.add(missileLauncher())
+            entities.attach(playerId, missileLauncherId)
 
             const enemyId = entities.add(enemy([420, 260]))
             const enemyBlasterId = entities.add(blaster())
