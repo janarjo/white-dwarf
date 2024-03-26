@@ -1,12 +1,66 @@
 import { EntityManager } from '../../src/EntityManager'
-import { sec } from '../../src/Units'
+import { Vector } from '../../src/Math'
+import { COSMIC_SPEED_LIMIT, Speed, degPerSec, pxPerSec, pxPerSec2, sec } from '../../src/Units'
 import { Collision } from '../../src/components/Collision'
 import { Component } from '../../src/components/Component'
 import { Physics } from '../../src/components/Physics'
 import { PhysicsSystem } from '../../src/systems/PhysicsSystem'
-import { collision, physics } from '../TestUtil'
+import { collision } from '../TestUtil'
 
-describe('PhysicsSystem', () => {
+describe('PhysicsSystem update', () => {
+
+    it('should update the velocity for a moving entity with no acceleration', () => {
+        const entities = new EntityManager()
+        const entityId = entities.add([physics([10, 10], [0, 0])])
+
+        new PhysicsSystem(entities).update(sec(1))
+
+        const updatedState = entities.getComponent(entityId, Physics).state
+        expect(updatedState.currVelocity).toMatchVector([10, 10])
+    })
+
+    it('should update the velocity for a moving entity with acceleration', () => {
+        const entities = new EntityManager()
+        const entityId = entities.add([physics([10, 10], [1, 1])])
+
+        new PhysicsSystem(entities).update(sec(1))
+
+        const updatedState = entities.getComponent(entityId, Physics).state
+        expect(updatedState.currVelocity).toMatchVector([11, 11])
+    })
+
+    it('should update the velocity for a moving entity with deceleration', () => {
+        const entities = new EntityManager()
+        const entityId = entities.add([physics([10, 10], [-1, -1])])
+
+        new PhysicsSystem(entities).update(sec(1))
+
+        const updatedState = entities.getComponent(entityId, Physics).state
+        expect(updatedState.currVelocity).toMatchVector([9, 9])
+    })
+
+    it('should update the velocity without exceeding the max velocity for a moving entity with acceleration', () => {
+        const entities = new EntityManager()
+        const entityId = entities.add([physics([6, 6], [5, 5], pxPerSec(10))])
+
+        new PhysicsSystem(entities).update(sec(1))
+
+        const updatedState = entities.getComponent(entityId, Physics).state
+        expect(updatedState.currVelocity).toMatchVector([7.071, 7.071])
+    })
+
+    const physics = (currVelocity: Vector, currAcceleration: Vector, maxVelocity: Speed = COSMIC_SPEED_LIMIT) => new Physics({
+        currVelocity,
+        currRotationalSpeed: 0,
+        currAcceleration,
+        acceleration: pxPerSec2(10),
+        rotationalSpeed: degPerSec(180),
+        maxVelocity,
+        mass: 1
+    })
+})
+
+describe('PhysicsSystem collision update', () => {
 
     it('should update the velocities for a collision between stationary and moving entity', () => {
         const entities = new EntityManager()
@@ -51,6 +105,16 @@ describe('PhysicsSystem', () => {
 
         const otherUpdatedState = entities.getComponent(colliderIds[1], Physics).state
         expect(otherUpdatedState.currVelocity).toMatchVector([0.333, 0.333])
+    })
+
+    const physics = (currVelocity: Vector, mass: number = 1) => new Physics({
+        currVelocity,
+        currRotationalSpeed: 0,
+        currAcceleration: [0, 0],
+        acceleration: pxPerSec2(10),
+        rotationalSpeed: degPerSec(10),
+        maxVelocity: COSMIC_SPEED_LIMIT,
+        mass
     })
 
     const setupColliders = (entities: EntityManager, entity1: Component[], entity2: Component[]) => {

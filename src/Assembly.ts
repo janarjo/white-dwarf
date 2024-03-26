@@ -58,7 +58,7 @@ export const player = (position: Vector) => {
             currVelocity: [0, 0],
             currAcceleration: [0, 0],
             currRotationalSpeed: 0,
-            acceleration: pxPerSec2(100),
+            acceleration: pxPerSec2(50),
             maxVelocity: pxPerSec(200),
             rotationalSpeed: degPerSec(180),
             lastUpdated: performance.now(),

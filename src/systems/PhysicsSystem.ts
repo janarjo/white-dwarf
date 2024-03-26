@@ -9,7 +9,6 @@ import { Time } from '../Units'
 import { arraysEqual } from '../Util'
 import { System } from './System'
 
-const BRAKING_TRESHOLD = 5
 
 export class PhysicsSystem implements System {
     constructor(
@@ -68,14 +67,9 @@ export class PhysicsSystem implements System {
     private updateVelocity(dt: Time, movementState: PhysicsState): PhysicsState {
         const { currVelocity, currAcceleration, maxVelocity: maxSpeed } = movementState
 
-        let newVelocity = limit(add(currVelocity, scale(currAcceleration, dt.toSec())), maxSpeed.toPxPerSec())
-        if (mag(newVelocity) < BRAKING_TRESHOLD && mag(currVelocity) > BRAKING_TRESHOLD) {
-            newVelocity = [0, 0]
-        }
-
         return {
             ...movementState,
-            currVelocity: newVelocity
+            currVelocity: limit(add(currVelocity, scale(currAcceleration, dt.toSec())), maxSpeed.toPxPerSec())
         }
     }
 
@@ -95,7 +89,7 @@ export class PhysicsSystem implements System {
         } else newRotationalSpeed = 0
 
         let newAcceleration: Vector
-        if (isBraking && mag(currVelocity) > 0) {
+        if (isBraking && mag(currVelocity) >= 1) {
             newAcceleration = scale(neg(norm(currVelocity)), acceleration.toPxPerSec())
         } else if (isAccelerating) {
             newAcceleration = scale(direction, acceleration.toPxPerSec())
