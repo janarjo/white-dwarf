@@ -103,7 +103,7 @@ export class ControlSystem implements System {
         this.entities.withComponents(Control, Camera).forEach(id => {
             const control = this.entities.getComponent(id, Control)
             const { zoomFactor } = control.state
-            const newZoomFactor = zoomFactor + round(event.deltaY / 2000, 2)
+            const newZoomFactor = zoomFactor - round(event.deltaY / 2000, 2)
             if (newZoomFactor < 0.7) return
             if (newZoomFactor >= 1.5) return
             control.state.zoomFactor = newZoomFactor
