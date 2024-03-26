@@ -11,6 +11,7 @@ export interface EmitterState extends ComponentState {
     decayMs: number
     lastEmittedMs: number
     offset: Offset
+    size: number
 }
 
 export class Emitter extends Component {

@@ -14,7 +14,7 @@ export class EmitterSystem implements System {
     update() {
         this.entities.withComponents(Transform, Physics, Emitter).forEach(id => {
             const emitter = this.entities.getComponent(id, Emitter)
-            const { trigger, rateMs, lastEmittedMs, offset } = emitter.state
+            const { trigger, rateMs, lastEmittedMs, offset, size } = emitter.state
 
             if (trigger !== TriggerType.ACCELERATION) return
 
@@ -29,7 +29,7 @@ export class EmitterSystem implements System {
             const { position, direction } = transform.state
 
             const emitPosition = rotate(add(position, offset), direction, position)
-            this.entities.add(exhaust(emitPosition, scale(direction, -1)))
+            this.entities.add(exhaust(emitPosition, scale(direction, -1), size))
             emitter.state = { ...emitter.state, lastEmittedMs: now }
         })
     }

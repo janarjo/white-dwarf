@@ -84,6 +84,7 @@ export const player = (position: Vector) => {
             decayMs: 0,
             lastEmittedMs: 0,
             offset: [-30, 0],
+            size: 1,
         }),
         new Inventory({
             items: [primaryWeapon, secondaryWeapon],
@@ -142,6 +143,7 @@ export const enemy = (position: Vector) => {
             decayMs: 0,
             lastEmittedMs: 0,
             offset: [-30, 0],
+            size: 1,
         })
     ]
 }
@@ -201,7 +203,7 @@ export const missile = (
         }),
         new Physics({
             currVelocity: add(scale(direction, 200), parentVelocity),
-            currAcceleration: [0, 0],
+            currAcceleration: scale(direction, 50),
             currRotationalSpeed: 0,
             acceleration: pxPerSec2(0),
             maxVelocity: COSMIC_SPEED_LIMIT,
@@ -222,6 +224,14 @@ export const missile = (
             showIndicator: false,
             verticalOffset: 0,
         }),
+        new Emitter({
+            trigger: EmitterTriggerType.ACCELERATION,
+            rateMs: 75,
+            decayMs: 0,
+            lastEmittedMs: 0,
+            offset: [-4, 0],
+            size: 0.5,
+        })
     ]}
 
 export const asteroid = (position: Vector, direction: Vector, points: Offset[]) => [
@@ -298,13 +308,14 @@ export const missileLauncher = () => [
     }),
 ]
 
-export const exhaust = (position: Vector, direction: Vector) => {
+export const exhaust = (position: Vector, direction: Vector, size: number = 1) => {
     const shapePoints: Offset[] = [[-8, -5], [8, 0], [-8, 5]]
+    const scaledPoints = shapePoints.map(point => scale(point, size))
     return [
         new Transform({
             position,
             direction,
-            shape: { type: ShapeType.POLYGON, points: shapePoints, triangles: earclip(shapePoints) },
+            shape: { type: ShapeType.POLYGON, points: scaledPoints, triangles: earclip(scaledPoints) },
         }),
         new Physics({
             currVelocity: scale(direction, 1.5),
