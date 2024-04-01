@@ -4,11 +4,12 @@ import { Control, ControlState } from '../components/Control'
 import { Physics, PhysicsState } from '../components/Physics'
 import { Transform, TransformState } from '../components/Transform'
 import { EntityManager } from '../EntityManager'
-import { add, limit, mag, neg, norm, scale, Vector } from '../Math'
+import { add, dot, limit, mag, neg, norm, scale, Vector } from '../Math'
 import { Time } from '../Units'
 import { arraysEqual } from '../Util'
 import { System } from './System'
 
+export const MIN_SPEED = 1
 
 export class PhysicsSystem implements System {
     constructor(
@@ -16,11 +17,6 @@ export class PhysicsSystem implements System {
     }
 
     update(dt: Time) {
-        this.entities.withComponents(Physics).forEach(id => {
-            const physics = this.entities.getComponent(id, Physics)
-            physics.state = this.updateVelocity(dt, physics.state)
-        })
-
         this.entities.withComponents(Transform, Physics, Control).forEach(id => {
             const transform = this.entities.getComponent(id, Transform)
             const physics = this.entities.getComponent(id, Physics)
@@ -37,6 +33,11 @@ export class PhysicsSystem implements System {
             physics.state = this.updateControl(physics.state, ai.state, transform.state)
         })
 
+        this.entities.withComponents(Physics).forEach(id => {
+            const physics = this.entities.getComponent(id, Physics)
+            physics.state = this.updateVelocity(dt, physics.state)
+        })
+
         const colliderPairs = [] as Array<[number, number]>
         this.entities.withComponents(Physics, Collision)
             .map(id => this.entities.getComponent(id, Collision).state)
@@ -48,8 +49,7 @@ export class PhysicsSystem implements System {
                 const existingIndex = colliderPairs.findIndex(pair => arraysEqual(pair, colliders))
                 if (existingIndex === -1) colliderPairs.push(colliders) // Only handle each collision once
             })
-        for (const pair of colliderPairs) {
-            const [thisId, otherId] = pair
+        for (const [thisId, otherId] of colliderPairs) {
             if (!this.entities.exists(thisId) || !this.entities.exists(otherId)) return
 
             const thisPhysics = this.entities.getComponentOrNone(thisId, Physics)
@@ -67,9 +67,17 @@ export class PhysicsSystem implements System {
     private updateVelocity(dt: Time, movementState: PhysicsState): PhysicsState {
         const { currVelocity, currAcceleration, maxVelocity: maxSpeed } = movementState
 
+        const currSpeed = mag(currVelocity)
+        const isZeroAccelerationWithLowSpeed = mag(currAcceleration) === 0 && currSpeed < MIN_SPEED
+        const isOppositeAccelerationWithLowSpeed = dot(currVelocity, currAcceleration) < 0 && currSpeed < MIN_SPEED
+
+        let newVelocity: Vector
+        if (isZeroAccelerationWithLowSpeed || isOppositeAccelerationWithLowSpeed) newVelocity = [0, 0]
+        else newVelocity = limit(add(currVelocity, scale(currAcceleration, dt.toSec())), maxSpeed.toPxPerSec())
+
         return {
             ...movementState,
-            currVelocity: limit(add(currVelocity, scale(currAcceleration, dt.toSec())), maxSpeed.toPxPerSec())
+            currVelocity: newVelocity
         }
     }
 
@@ -89,7 +97,7 @@ export class PhysicsSystem implements System {
         } else newRotationalSpeed = 0
 
         let newAcceleration: Vector
-        if (isBraking && mag(currVelocity) >= 1) {
+        if (isBraking && mag(currVelocity) >= MIN_SPEED) {
             newAcceleration = scale(neg(norm(currVelocity)), acceleration.toPxPerSec())
         } else if (isAccelerating) {
             newAcceleration = scale(direction, acceleration.toPxPerSec())

@@ -49,6 +49,26 @@ describe('PhysicsSystem update', () => {
         expect(updatedState.currVelocity).toMatchVector([7.071, 7.071])
     })
 
+    it('should set velocity to zero when zero acceleration with less than minimum speed', () => {
+        const entities = new EntityManager()
+        const entityId = entities.add([physics([0.5, 0.5], [0, 0])])
+
+        new PhysicsSystem(entities).update(sec(1))
+
+        const updatedState = entities.getComponent(entityId, Physics).state
+        expect(updatedState.currVelocity).toMatchVector([0, 0])
+    })
+
+    it('should set velocity to zero when opposite acceleration with less than minimum speed', () => {
+        const entities = new EntityManager()
+        const entityId = entities.add([physics([0.5, 0.5], [-5, -5])])
+
+        new PhysicsSystem(entities).update(sec(1))
+
+        const updatedState = entities.getComponent(entityId, Physics).state
+        expect(updatedState.currVelocity).toMatchVector([0, 0])
+    })
+
     const physics = (currVelocity: Vector, currAcceleration: Vector, maxVelocity: Speed = COSMIC_SPEED_LIMIT) => new Physics({
         currVelocity,
         currRotationalSpeed: 0,
