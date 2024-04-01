@@ -16,6 +16,7 @@ import { Inventory } from './components/Inventory'
 import { ItemCode, smallMissilePack, smallPlasmaPack } from './Items'
 import { QuickSlot } from './components/QuickSlot'
 import { asteroidGray, boosterOrange, metallicGray, plasmaBlue, white } from './ui/Colors'
+import { SoundCode } from './SoundManager'
 
 export const camera = () => [
     new Transform({
@@ -85,6 +86,7 @@ export const player = (position: Vector) => {
             lastEmittedMs: 0,
             offset: [-30, 0],
             size: 1,
+            emitSound: SoundCode.THRUST
         }),
         new Inventory({
             items: [primaryWeapon, secondaryWeapon],
@@ -183,6 +185,7 @@ export const plasmaBullet = (
         maxHealth: 1,
         showIndicator: false,
         verticalOffset: 0,
+        deathSound: SoundCode.HIT
     }),
 ]
 
@@ -223,6 +226,7 @@ export const missile = (
             maxHealth: 1,
             showIndicator: false,
             verticalOffset: 0,
+            deathSound: SoundCode.EXPLOSION
         }),
         new Emitter({
             trigger: EmitterTriggerType.ACCELERATION,
@@ -280,6 +284,7 @@ export const blaster = () => [
         offset: [0, 0],
         ammoType: ItemCode.AMMO_PLASMA_SMALL,
         ammoConsumed: 1,
+        fireSound: SoundCode.LASER,
     }),
     new Attachment({
         type: SlotType.WEAPON,
@@ -301,6 +306,7 @@ export const missileLauncher = () => [
         offset: [0, 0],
         ammoType: ItemCode.AMMO_MISSILE_SMALL,
         ammoConsumed: 1,
+        fireSound: SoundCode.LAUNCH
     }),
     new Attachment({
         type: SlotType.WEAPON,

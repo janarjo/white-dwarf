@@ -1,5 +1,6 @@
 import { ItemCode } from '../Items'
 import { Offset } from '../Math'
+import { SoundCode } from '../SoundManager'
 import { Component, ComponentCode, ComponentState } from './Component'
 
 export interface WeaponState extends ComponentState {
@@ -9,6 +10,7 @@ export interface WeaponState extends ComponentState {
     hasFired: boolean
     ammoType: ItemCode
     ammoConsumed: number
+    fireSound?: SoundCode
 }
 
 export class Weapon extends Component {

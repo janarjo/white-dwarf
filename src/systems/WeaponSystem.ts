@@ -1,5 +1,6 @@
 import { missile, plasmaBullet } from '../Assembly'
 import { AI } from '../components/AI'
+import { Entity } from '../components/Component'
 import { Control } from '../components/Control'
 import { Physics, PhysicsState } from '../components/Physics'
 import { QuickSlot, QuickSlotState } from '../components/QuickSlot'
@@ -8,7 +9,7 @@ import { Weapon, WeaponState } from '../components/Weapon'
 import { EntityManager } from '../EntityManager'
 import { ItemCode } from '../Items'
 import { add, rotate } from '../Math'
-import { SoundCode, SoundManager } from '../SoundManager'
+import { SoundManager } from '../SoundManager'
 import { hasActiveItem } from './QuickSlotSystem'
 import { System } from './System'
 
@@ -59,19 +60,22 @@ export class WeaponSystem implements System {
             transformState: TransformState,
             physicsState: PhysicsState,
             isEnemy: boolean) {
-        const { offset, ammoType } = weaponState
+        const { offset, ammoType, fireSound } = weaponState
         const { position, direction } = transformState
         const { currVelocity } = physicsState
 
         const firePosition = rotate(add(position, offset), direction, position)
 
-        if (ammoType === ItemCode.AMMO_PLASMA_SMALL) {
-            this.entities.add(plasmaBullet(firePosition, direction, currVelocity, isEnemy))
-            this.sounds.play(SoundCode.LASER)
-        } else if (ammoType === ItemCode.AMMO_MISSILE_SMALL) {
-            this.entities.add(missile(firePosition, direction, currVelocity, isEnemy))
-            this.sounds.play(SoundCode.LASER)
-        }
+        let projectile: Entity | undefined
+        if (ammoType === ItemCode.AMMO_PLASMA_SMALL)
+            projectile = plasmaBullet(firePosition, direction, currVelocity, isEnemy)
+        else if (ammoType === ItemCode.AMMO_MISSILE_SMALL)
+            projectile = missile(firePosition, direction, currVelocity, isEnemy)
+
+        if (!projectile) return weaponState
+
+        this.entities.add(projectile)
+        if (fireSound) this.sounds.play(fireSound)
 
         return { ...weaponState, lastFiredMs: performance.now(), hasFired: true }
     }

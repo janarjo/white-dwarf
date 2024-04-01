@@ -1,3 +1,4 @@
+import { SoundCode } from '../SoundManager'
 import { Component, ComponentCode, ComponentState } from './Component'
 
 export interface HealthState extends ComponentState {
@@ -5,6 +6,7 @@ export interface HealthState extends ComponentState {
     maxHealth: number
     showIndicator: boolean
     verticalOffset: number
+    deathSound?: SoundCode
 }
 
 export class Health extends Component {

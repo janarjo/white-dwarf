@@ -1,4 +1,5 @@
 import { Offset } from '../Math'
+import { SoundCode } from '../SoundManager'
 import { Component, ComponentCode, ComponentState } from './Component'
 
 export enum TriggerType {
@@ -12,6 +13,7 @@ export interface EmitterState extends ComponentState {
     lastEmittedMs: number
     offset: Offset
     size: number
+    emitSound?: SoundCode
 }
 
 export class Emitter extends Component {
