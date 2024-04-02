@@ -260,7 +260,7 @@ export const asteroid = (position: Vector, direction: Vector, points: Offset[]) 
         isColliding: false,
         colliders: [],
         group: CollisionGroup.ENEMY,
-        mask: [CollisionGroup.PLAYER],
+        mask: [CollisionGroup.PLAYER, CollisionGroup.ENEMY],
     }),
     new Health({
         health: 100,
