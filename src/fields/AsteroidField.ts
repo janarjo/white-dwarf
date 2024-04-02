@@ -1,5 +1,5 @@
 import { EntityManager } from '../EntityManager'
-import { Dimensions, randInt, rand, hvec, generateRandomPolygon, Position, Direction } from '../Math'
+import { Dimensions, randInt, rand, hvec, generateRandomPolygon, Position, Direction, scale } from '../Math'
 import { Field } from './Field'
 import { asteroid } from '../Assembly'
 import { Component } from '../components/Component'
@@ -32,6 +32,6 @@ export class AsteroidField implements Field {
     }
 
     private generateAsteroid(position: Position, direction: Direction): Component[] {
-        return asteroid(position, direction, generateRandomPolygon(randInt([5, 10]), 20, 30))
+        return asteroid(position, direction, generateRandomPolygon(randInt([5, 10]), 20, 30), scale(direction, randInt([50, 200])))
     }
 }

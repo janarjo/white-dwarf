@@ -238,7 +238,7 @@ export const missile = (
         })
     ]}
 
-export const asteroid = (position: Vector, direction: Vector, points: Offset[]) => [
+export const asteroid = (position: Vector, direction: Vector, points: Offset[], velocity: Vector) => [
     new Transform({
         position,
         direction,
@@ -246,11 +246,11 @@ export const asteroid = (position: Vector, direction: Vector, points: Offset[]) 
     }),
     new Render({ color: asteroidGray }),
     new Physics({
-        currVelocity: scale(direction, 150),
+        currVelocity: velocity,
         currAcceleration: [0, 0],
         currRotationalSpeed: 0,
         acceleration: pxPerSec2(0),
-        maxVelocity: pxPerSec(150),
+        maxVelocity: COSMIC_SPEED_LIMIT,
         rotationalSpeed: degPerSec(0),
         lastUpdated: performance.now(),
         mass: 1.5,
