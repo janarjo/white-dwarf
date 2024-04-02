@@ -1,7 +1,7 @@
 import { EntityManager } from '../EntityManager'
 import { Dimensions, randInt, rand, hvec, generateRandomPolygon, Position, Direction, scale } from '../Math'
 import { Field } from './Field'
-import { asteroid } from '../Assembly'
+import { asteroid } from '../assembly/Core'
 import { Component } from '../components/Component'
 
 export class AsteroidField implements Field {

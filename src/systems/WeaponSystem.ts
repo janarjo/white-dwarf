@@ -1,4 +1,5 @@
-import { missile, plasmaBullet } from '../Assembly'
+import { missile } from '../assembly/Projectiles'
+import { plasmaBullet } from '../assembly/Projectiles'
 import { AI } from '../components/AI'
 import { Entity } from '../components/Component'
 import { Control } from '../components/Control'

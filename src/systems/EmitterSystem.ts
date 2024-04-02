@@ -1,4 +1,4 @@
-import { exhaust } from '../Assembly'
+import { exhaust } from '../assembly/Effects'
 import { Emitter, TriggerType } from '../components/Emitter'
 import { Physics } from '../components/Physics'
 import { Transform } from '../components/Transform'
