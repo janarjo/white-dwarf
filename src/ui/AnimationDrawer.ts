@@ -23,14 +23,14 @@ export class ExplosionDrawer extends AnimationDrawer<Explosion> {
 
     drawInternal(animation: Explosion, params: DrawParameters) {
         const { zoom, origin, position, color } = params
-        const oPosition = subtract(position, origin)
+        const oPosition = scale(subtract(position, origin), zoom)
         const { radius, durationMs, startedMs } = animation
         const elapsed = performance.now() - startedMs
         const progress = elapsed / durationMs
         const radiusProgress = Math.min(progress, 1) * radius
         const fadeProgress = Math.max(1 - progress, 0)
 
-        const [x, y] = scale(oPosition, zoom)
+        const [x, y] = oPosition
 
         this.ctx.beginPath()
         this.ctx.fillStyle = `rgba(${color.r},${color.g},${color.b},${fadeProgress})`

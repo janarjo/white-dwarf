@@ -191,5 +191,7 @@ export const asteroid = (position: Vector, direction: Vector, points: Offset[], 
         maxHealth: 100,
         showIndicator: true,
         verticalOffset: -30,
+        deathEmitRef: EffectCode.DUST_EXPLOSION,
+        deathSound: SoundCode.EXPLOSION
     }),
 ]

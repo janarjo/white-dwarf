@@ -87,7 +87,7 @@ export const missile = (
             maxHealth: 1,
             showIndicator: false,
             verticalOffset: 0,
-            deathEmitRef: EffectCode.EXPLOSION,
+            deathEmitRef: EffectCode.FIRE_EXPLOSION,
             deathSound: SoundCode.EXPLOSION
         }),
         new Emitter({
