@@ -41,14 +41,14 @@ export const explosion = (position: Vector, _direction: Vector, size: number) =>
         new Transform({
             position,
             direction: [0, 0],
+            shape: { type: ShapeType.CIRCLE, radius: size }
         }),
         new Render({
             color: fireOrange,
-            drawEffect: { code: DrawEffectCode.FADE, durationMs: 250, startedMs: performance.now() },
-            animation: { code: AnimationCode.EXPLOSION, radius: size, durationMs: 250, startedMs: performance.now() }
+            animation: { code: AnimationCode.EXPLOSION, radius: size, durationMs: 500, startedMs: performance.now() }
         }),
         new ConditionHub({
-            conditions: [{ type: ConditionType.DYING, durationMs: 250, startedMs: performance.now(), trigger: TriggerType.END }]
+            conditions: [{ type: ConditionType.DYING, durationMs: 500, startedMs: performance.now(), trigger: TriggerType.END }]
         })
     ]
 }

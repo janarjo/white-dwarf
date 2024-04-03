@@ -1,4 +1,5 @@
 import { SoundCode } from '../SoundManager'
+import { EffectCode } from '../assembly/Effects'
 import { Component, ComponentCode, ComponentState } from './Component'
 
 export interface HealthState extends ComponentState {
@@ -6,6 +7,7 @@ export interface HealthState extends ComponentState {
     maxHealth: number
     showIndicator: boolean
     verticalOffset: number
+    deathEmitRef?: EffectCode
     deathSound?: SoundCode
 }
 

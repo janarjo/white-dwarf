@@ -1,7 +1,8 @@
 import { smallPlasmaPack, smallMissilePack } from '../Items'
 import { Directions, Offset, Vector, earclip } from '../Math'
 import { SoundCode } from '../SoundManager'
-import { pxPerSec2, pxPerSec, degPerSec, COSMIC_SPEED_LIMIT } from '../Units'
+import { pxPerSec2, pxPerSec, degPerSec, COSMIC_SPEED_LIMIT, ms } from '../Units'
+import { AI } from '../components/AI'
 import { Attachment, RemoveBehavior } from '../components/Attachment'
 import { Camera } from '../components/Camera'
 import { Collision, CollisionGroup } from '../components/Collision'
@@ -112,16 +113,18 @@ export const enemy = (position: Vector) => {
             shape: { type: ShapeType.POLYGON, points: shapePoints, triangles: earclip(shapePoints) },
         }),
         new Render({ color: metallicGray }),
-        /* new AI({
+        new AI({
             isAccelerating: false,
             isDecelerating: false,
             isTurningLeft: false,
             isTurningRight: false,
             isFiring: false,
             isBraking: false,
+            quickSlotIndex: 0,
+            zoomFactor: 1,
             pollingRate: ms(500),
             lastPolled: performance.now(),
-        }), */
+        }),
         new Physics({
             currDirection: [1, 0],
             currVelocity: [0, 0],

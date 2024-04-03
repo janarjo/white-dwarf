@@ -1,4 +1,4 @@
-import { subtract } from '../Math'
+import { scale, subtract } from '../Math'
 import { Explosion } from '../components/Render'
 import { DrawParameters } from './ShapeDrawer'
 import { Animation } from '../components/Render'
@@ -30,9 +30,11 @@ export class ExplosionDrawer extends AnimationDrawer<Explosion> {
         const radiusProgress = Math.min(progress, 1) * radius
         const fadeProgress = Math.max(1 - progress, 0)
 
+        const [x, y] = scale(oPosition, zoom)
+
         this.ctx.beginPath()
         this.ctx.fillStyle = `rgba(${color.r},${color.g},${color.b},${fadeProgress})`
-        this.ctx.arc(oPosition[0], oPosition[1], radiusProgress * zoom, 0, Math.PI * 2)
+        this.ctx.arc(x, y, radiusProgress * zoom, 0, Math.PI * 2)
         this.ctx.closePath()
         this.ctx.fill()
     }
