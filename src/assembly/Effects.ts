@@ -2,9 +2,9 @@ import { Vector, Offset, scale, earclip } from '../Math'
 import { pxPerSec2, pxPerSec, degPerSec } from '../Units'
 import { EffectHub, EffectType, TriggerType } from '../components/EffectHub'
 import { Physics } from '../components/Physics'
-import { Render, EffectCode } from '../components/Render'
+import { Render, EffectCode, AnimationCode } from '../components/Render'
 import { Transform, ShapeType } from '../components/Transform'
-import { boosterOrange } from '../ui/Colors'
+import { fireOrange } from '../ui/Colors'
 
 export const exhaust = (position: Vector, direction: Vector, size: number = 1) => {
     const shapePoints: Offset[] = [[-8, -5], [8, 0], [-8, 5]]
@@ -26,8 +26,25 @@ export const exhaust = (position: Vector, direction: Vector, size: number = 1) =
             mass: 0.1,
         }),
         new Render({
-            color: boosterOrange,
+            color: fireOrange,
             effect: { code: EffectCode.FADE, durationMs: 275, startedMs: performance.now() }
+        }),
+        new EffectHub({
+            effects: [{ type: EffectType.DEATH, durationMs: 250, startedMs: performance.now(), trigger: TriggerType.END }]
+        })
+    ]
+}
+
+export const explosion = (position: Vector, radius: number) => {
+    return [
+        new Transform({
+            position,
+            direction: [0, 0],
+        }),
+        new Render({
+            color: fireOrange,
+            effect: { code: EffectCode.FADE, durationMs: 250, startedMs: performance.now() },
+            animation: { code: AnimationCode.EXPLOSION, radius, durationMs: 250, startedMs: performance.now() }
         }),
         new EffectHub({
             effects: [{ type: EffectType.DEATH, durationMs: 250, startedMs: performance.now(), trigger: TriggerType.END }]

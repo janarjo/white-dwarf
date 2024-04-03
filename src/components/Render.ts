@@ -20,9 +20,23 @@ export interface Glow {
 
 export type Effect = Fade | Glow
 
+export enum AnimationCode {
+    EXPLOSION,
+}
+
+export interface Explosion {
+    code: AnimationCode.EXPLOSION
+    radius: number
+    durationMs: number
+    startedMs: number
+}
+
+export type Animation = Explosion
+
 export interface RenderState extends ComponentState {
     color: Color
     effect?: Effect
+    animation?: Animation
 }
 
 export class Render extends Component {

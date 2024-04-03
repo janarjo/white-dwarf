@@ -4,6 +4,9 @@ import { CircleDrawer, DrawParameters, PolygonDrawer, RectangleDrawer } from './
 import { Item, ItemCode } from '../Items'
 import { Shape, ShapeType } from '../components/Transform'
 import { FrameRateDebugInfo } from '../FrameTimeAnalyzer'
+import { ExplosionDrawer } from './AnimationDrawer'
+import { AnimationCode } from '../components/Render'
+import { Animation } from '../components/Render'
 
 export class Drawer {
     constructor(readonly ctx: CanvasRenderingContext2D) {}
@@ -11,6 +14,8 @@ export class Drawer {
     private readonly circleDrawer: CircleDrawer = new CircleDrawer(this.ctx)
     private readonly rectangleDrawer: RectangleDrawer = new RectangleDrawer(this.ctx)
     private readonly polygonDrawer: PolygonDrawer = new PolygonDrawer(this.ctx)
+
+    private readonly explosionDrawer: ExplosionDrawer = new ExplosionDrawer(this.ctx)
 
     clear() {
         this.ctx.fillStyle = 'black'
@@ -84,6 +89,14 @@ export class Drawer {
                 break
             case ShapeType.POLYGON:
                 this.polygonDrawer.draw(shape, params)
+                break
+        }
+    }
+
+    drawAnimation(animation: Animation, params: DrawParameters) {
+        switch (animation.code) {
+            case AnimationCode.EXPLOSION:
+                this.explosionDrawer.draw(animation, params)
                 break
         }
     }
