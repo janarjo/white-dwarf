@@ -2,12 +2,14 @@ import { Offset, Vector, add, earclip, scale } from '../Math'
 import { SoundCode } from '../SoundManager'
 import { pxPerSec2, COSMIC_SPEED_LIMIT, degPerSec } from '../Units'
 import { Collision, CollisionGroup } from '../components/Collision'
-import { Emitter, TriggerType } from '../components/Emitter'
+import { Entity } from '../components/Component'
+import { Emitter, EmissionType, TriggerType } from '../components/Emitter'
 import { Health } from '../components/Health'
 import { Physics } from '../components/Physics'
 import { Render } from '../components/Render'
 import { Transform, ShapeType } from '../components/Transform'
 import { metallicGray, plasmaBlue } from '../ui/Colors'
+import { EffectCode } from './Effects'
 
 export const plasmaBullet = (
         position: Vector,
@@ -88,12 +90,26 @@ export const missile = (
             deathSound: SoundCode.EXPLOSION
         }),
         new Emitter({
-            trigger: TriggerType.ACCELERATION,
-            rateMs: 75,
-            decayMs: 0,
-            lastEmittedMs: 0,
-            offset: [-4, 0],
-            size: 0.5,
+            emissions: [{
+                type: EmissionType.REACTIVE,
+                trigger: TriggerType.ACCELERATION,
+                emitRef: EffectCode.EXHAUST,
+                rateMs: 75,
+                decayMs: 0,
+                lastEmittedMs: 0,
+                offset: [-4, 0],
+                size: 0.5,
+            }]
         })
     ]
+}
+
+export enum ProjectileCode {
+    PLASMA_BULLET = 'PLASMA_BULLET',
+    MISSILE = 'MISSILE',
+}
+export type ProjectileFunction = (position: Vector, direction: Vector, parentVelocity: Vector, isEnemy: boolean) => Entity
+export const Projectiles: Record<ProjectileCode, ProjectileFunction> = {
+    [ProjectileCode.PLASMA_BULLET]: plasmaBullet,
+    [ProjectileCode.MISSILE]: missile,
 }

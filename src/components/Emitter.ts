@@ -1,19 +1,43 @@
 import { Offset } from '../Math'
 import { SoundCode } from '../SoundManager'
+import { EffectCode } from '../assembly/Effects'
 import { Component, ComponentCode, ComponentState } from './Component'
+
+export enum EmissionType {
+    REACTIVE,
+    PERIODIC,
+}
 
 export enum TriggerType {
     ACCELERATION
 }
 
-export interface EmitterState extends ComponentState {
+export interface BaseEmission {
+    type: EmissionType
+    offset: Offset
+    size: number
+    emitRef: EffectCode
+    emitSound?: SoundCode
+}
+
+export interface PeriodicEmission extends BaseEmission {
+    type: EmissionType.PERIODIC
+    rateMs: number
+    lastEmittedMs: number
+}
+
+export interface ReactiveEmission extends BaseEmission {
+    type: EmissionType.REACTIVE
     trigger: TriggerType
     rateMs: number
     decayMs: number
     lastEmittedMs: number
-    offset: Offset
-    size: number
-    emitSound?: SoundCode
+}
+
+export type Emission = ReactiveEmission | PeriodicEmission
+
+export interface EmitterState extends ComponentState {
+    emissions: Emission[]
 }
 
 export class Emitter extends Component {

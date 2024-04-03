@@ -1,24 +1,24 @@
 import { Color } from '../ui/Colors'
 import { Component, ComponentCode, ComponentState } from './Component'
 
-export enum EffectCode {
+export enum DrawEffectCode {
     FADE,
     GLOW,
 }
 
 export interface Fade {
-    code: EffectCode.FADE
+    code: DrawEffectCode.FADE
     durationMs: number
     startedMs: number
 }
 
 export interface Glow {
-    code: EffectCode.GLOW
+    code: DrawEffectCode.GLOW
     radius: number
     color: Color
 }
 
-export type Effect = Fade | Glow
+export type DrawEffect = Fade | Glow
 
 export enum AnimationCode {
     EXPLOSION,
@@ -35,7 +35,7 @@ export type Animation = Explosion
 
 export interface RenderState extends ComponentState {
     color: Color
-    effect?: Effect
+    drawEffect?: DrawEffect
     animation?: Animation
 }
 

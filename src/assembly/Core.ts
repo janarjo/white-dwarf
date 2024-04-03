@@ -6,7 +6,7 @@ import { Attachment, RemoveBehavior } from '../components/Attachment'
 import { Camera } from '../components/Camera'
 import { Collision, CollisionGroup } from '../components/Collision'
 import { Control } from '../components/Control'
-import { Emitter, TriggerType } from '../components/Emitter'
+import { Emitter, EmissionType, TriggerType } from '../components/Emitter'
 import { EntityHub, SlotType } from '../components/EntityHub'
 import { Health } from '../components/Health'
 import { Inventory } from '../components/Inventory'
@@ -15,6 +15,7 @@ import { QuickSlot } from '../components/QuickSlot'
 import { Render } from '../components/Render'
 import { ShapeType, Transform } from '../components/Transform'
 import { asteroidGray, metallicGray } from '../ui/Colors'
+import { EffectCode } from './Effects'
 
 
 export const camera = () => [
@@ -79,13 +80,17 @@ export const player = (position: Vector) => {
             mask: [CollisionGroup.ENEMY],
         }),
         new Emitter({
-            trigger: TriggerType.ACCELERATION,
-            rateMs: 125,
-            decayMs: 0,
-            lastEmittedMs: 0,
-            offset: [-30, 0],
-            size: 1,
-            emitSound: SoundCode.THRUST
+            emissions: [{
+                type: EmissionType.REACTIVE,
+                trigger: TriggerType.ACCELERATION,
+                emitRef: EffectCode.EXHAUST,
+                rateMs: 125,
+                decayMs: 0,
+                lastEmittedMs: 0,
+                offset: [-30, 0],
+                size: 1,
+                emitSound: SoundCode.THRUST
+            }]
         }),
         new Inventory({
             items: [primaryWeapon, secondaryWeapon],
@@ -139,12 +144,17 @@ export const enemy = (position: Vector) => {
             mask: [CollisionGroup.PLAYER],
         }),
         new Emitter({
-            trigger: TriggerType.ACCELERATION,
-            rateMs: 125,
-            decayMs: 0,
-            lastEmittedMs: 0,
-            offset: [-30, 0],
-            size: 1,
+            emissions: [{
+                type: EmissionType.REACTIVE,
+                trigger: TriggerType.ACCELERATION,
+                emitRef: EffectCode.EXHAUST,
+                rateMs: 125,
+                decayMs: 0,
+                lastEmittedMs: 0,
+                offset: [-30, 0],
+                size: 1,
+                emitSound: SoundCode.THRUST
+            }]
         })
     ]
 }

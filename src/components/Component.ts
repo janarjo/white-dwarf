@@ -9,7 +9,7 @@ export enum ComponentCode {
     CAMERA,
     ATTACHMENT,
     ENTITY_HUB,
-    EFFECT_HUB,
+    CONDITION_HUB,
     EMITTER,
     AI,
     ITEM,

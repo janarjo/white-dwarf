@@ -13,7 +13,7 @@ import { WeaponSystem } from './systems/WeaponSystem'
 import { Dimensions } from './Math'
 import { Field } from './fields/Field'
 import { EmitterSystem } from './systems/EmitterSystem'
-import { EffectHubSystem } from './systems/EffectHubSystem'
+import { ConditionHubSystem } from './systems/ConditionHubSystem'
 import { Drawer } from './ui/Drawer'
 import { AISystem } from './systems/AISystem'
 import { Clock } from './Clock'
@@ -62,8 +62,8 @@ export class Game {
             new WeaponSystem(entities, this.sounds),
             new HealthSystem(entities, this.sounds),
             new CameraSystem(entities, this.viewPort, mapSize),
+            new ConditionHubSystem(entities),
             new EmitterSystem(entities, this.sounds),
-            new EffectHubSystem(entities),
             new InventorySystem(entities),
             new QuickSlotSystem(entities),
         ] as const

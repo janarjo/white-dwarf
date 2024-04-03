@@ -39,7 +39,7 @@ export class CanvasRenderer {
             if (!currShape) return
 
             const render = this.entities.getComponent(id, Render)
-            const { color, effect, animation } = render.state
+            const { color, drawEffect: effect, animation } = render.state
 
             const params = { ...camera.state, position, color, direction, effect }
 

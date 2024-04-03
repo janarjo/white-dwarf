@@ -1,14 +1,11 @@
-import { missile } from '../assembly/Projectiles'
-import { plasmaBullet } from '../assembly/Projectiles'
+import { Projectiles } from '../assembly/Projectiles'
 import { AI } from '../components/AI'
-import { Entity } from '../components/Component'
 import { Control } from '../components/Control'
 import { Physics, PhysicsState } from '../components/Physics'
 import { QuickSlot, QuickSlotState } from '../components/QuickSlot'
 import { Transform, TransformState } from '../components/Transform'
 import { Weapon, WeaponState } from '../components/Weapon'
 import { EntityManager } from '../EntityManager'
-import { ItemCode } from '../Items'
 import { add, rotate } from '../Math'
 import { SoundManager } from '../SoundManager'
 import { hasActiveItem } from './QuickSlotSystem'
@@ -61,21 +58,12 @@ export class WeaponSystem implements System {
             transformState: TransformState,
             physicsState: PhysicsState,
             isEnemy: boolean) {
-        const { offset, ammoType, fireSound } = weaponState
+        const { offset, fireSound, projectileRef } = weaponState
         const { position, direction } = transformState
         const { currVelocity } = physicsState
 
         const firePosition = rotate(add(position, offset), direction, position)
-
-        let projectile: Entity | undefined
-        if (ammoType === ItemCode.AMMO_PLASMA_SMALL)
-            projectile = plasmaBullet(firePosition, direction, currVelocity, isEnemy)
-        else if (ammoType === ItemCode.AMMO_MISSILE_SMALL)
-            projectile = missile(firePosition, direction, currVelocity, isEnemy)
-
-        if (!projectile) return weaponState
-
-        this.entities.add(projectile)
+        this.entities.add(Projectiles[projectileRef](firePosition, direction, currVelocity, isEnemy))
         if (fireSound) this.sounds.play(fireSound)
 
         return { ...weaponState, lastFiredMs: performance.now(), hasFired: true }

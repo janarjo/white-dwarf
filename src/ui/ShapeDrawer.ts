@@ -1,4 +1,4 @@
-import { Effect, EffectCode, Fade, Glow } from '../components/Render'
+import { DrawEffect, DrawEffectCode, Fade, Glow } from '../components/Render'
 import { Circle, Polygon, Rectangle, Shape } from '../components/Transform'
 import { Position, Direction, subtract, scale } from '../Math'
 import { Color } from './Colors'
@@ -9,7 +9,7 @@ export interface DrawParameters {
     position: Position
     color: Color
     direction?: Direction
-    effect?: Effect
+    effect?: DrawEffect
 }
 
 export abstract class ShapeDrawer<T extends Shape> {
@@ -23,13 +23,13 @@ export abstract class ShapeDrawer<T extends Shape> {
 
     protected abstract drawInternal(shape: T, params: DrawParameters): void
 
-    protected addEffect(effect?: Effect) {
+    protected addEffect(effect?: DrawEffect) {
         if (!effect) return
-        if (effect.code === EffectCode.FADE) this.addFadeEffect(effect)
-        if (effect.code === EffectCode.GLOW) this.addGlowEffect(effect)
+        if (effect.code === DrawEffectCode.FADE) this.addFade(effect)
+        if (effect.code === DrawEffectCode.GLOW) this.addGlow(effect)
     }
 
-    private addFadeEffect(effect: Fade) {
+    private addFade(effect: Fade) {
         const now = performance.now()
         const { durationMs, startedMs } = effect
 
@@ -41,7 +41,7 @@ export abstract class ShapeDrawer<T extends Shape> {
         this.ctx.globalAlpha = 1 - ((now - startedMs) / durationMs)
     }
 
-    private addGlowEffect(effect: Glow) {
+    private addGlow(effect: Glow) {
         const { radius, color } = effect
 
         this.ctx.shadowBlur = radius

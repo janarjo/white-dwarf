@@ -7,6 +7,7 @@ import { Render } from '../components/Render'
 import { Transform, ShapeType } from '../components/Transform'
 import { Weapon } from '../components/Weapon'
 import { white } from '../ui/Colors'
+import { ProjectileCode } from './Projectiles'
 
 export const blaster = () => [
     new Transform({
@@ -20,6 +21,7 @@ export const blaster = () => [
         hasFired: false,
         cooldownMs: 500,
         offset: [0, 0],
+        projectileRef: ProjectileCode.PLASMA_BULLET,
         ammoType: ItemCode.AMMO_PLASMA_SMALL,
         ammoConsumed: 1,
         fireSound: SoundCode.LASER,
@@ -42,6 +44,7 @@ export const missileLauncher = () => [
         hasFired: false,
         cooldownMs: 2000,
         offset: [0, 0],
+        projectileRef: ProjectileCode.MISSILE,
         ammoType: ItemCode.AMMO_MISSILE_SMALL,
         ammoConsumed: 1,
         fireSound: SoundCode.LAUNCH
