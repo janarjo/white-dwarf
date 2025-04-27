@@ -2,7 +2,7 @@ import { Camera } from '../components/Camera'
 import { Control } from '../components/Control'
 import { Transform } from '../components/Transform'
 import { EntityManager } from '../EntityManager'
-import { Dimensions, divide, subtract } from '../Math'
+import { Dimensions, divide, subtract } from '../math/Math'
 import { System } from './System'
 
 export class CameraSystem implements System {

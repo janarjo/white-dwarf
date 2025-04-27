@@ -1,4 +1,4 @@
-import { Dimensions, Position, Vector, Triangle as MathTriangle } from '../Math'
+import { Dimensions, Position, Vector, Triangle as MathTriangle } from '../math/Math'
 import { Component, ComponentCode, ComponentState } from './Component'
 
 export enum ShapeType {

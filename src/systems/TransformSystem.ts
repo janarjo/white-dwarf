@@ -2,7 +2,7 @@ import { EntityHub } from '../components/EntityHub'
 import { Physics } from '../components/Physics'
 import { ShapeType, Transform } from '../components/Transform'
 import { EntityManager } from '../EntityManager'
-import { add, hvec, isWithinRectangle, rotate, rotatePolygon, scale, translate, Triangle, Vector } from '../Math'
+import { add, hvec, isWithinRectangle, rotate, rotatePolygon, scale, translate, Triangle, Vector } from '../math/Math'
 import { Time } from '../Units'
 import { System } from './System'
 

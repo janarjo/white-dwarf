@@ -1,4 +1,4 @@
-import { Offset, Vector, add, earclip, scale } from '../Math'
+import { Offset, Vector, add, scale } from '../math/Math'
 import { SoundCode } from '../SoundManager'
 import { pxPerSec2, COSMIC_SPEED_LIMIT, degPerSec } from '../Units'
 import { Collision, CollisionGroup } from '../components/Collision'
@@ -10,6 +10,7 @@ import { Render } from '../components/Render'
 import { Transform, ShapeType } from '../components/Transform'
 import { metallicGray, plasmaBlue } from '../ui/Colors'
 import { EffectCode } from './Effects'
+import { earclip } from '../math/SAT'
 
 export const plasmaBullet = (
         position: Vector,
@@ -31,13 +32,12 @@ export const plasmaBullet = (
         acceleration: pxPerSec2(0),
         maxVelocity: COSMIC_SPEED_LIMIT,
         rotationalSpeed: degPerSec(0),
-        lastUpdated: performance.now(),
         mass: 0.01,
     }),
     new Collision({
         boundingBox: [[0, 0], [1, 1]],
         isColliding: false,
-        colliders: [],
+        collisions: [],
         group: isEnemy ? CollisionGroup.ENEMY : CollisionGroup.PLAYER,
         mask: [isEnemy ? CollisionGroup.PLAYER : CollisionGroup.ENEMY],
     }),
@@ -72,13 +72,12 @@ export const missile = (
             acceleration: pxPerSec2(0),
             maxVelocity: COSMIC_SPEED_LIMIT,
             rotationalSpeed: degPerSec(0),
-            lastUpdated: performance.now(),
             mass: 1,
         }),
         new Collision({
             boundingBox: [[-6, -6], [12, 12]],
             isColliding: false,
-            colliders: [],
+            collisions: [],
             group: isEnemy ? CollisionGroup.ENEMY : CollisionGroup.PLAYER,
             mask: [isEnemy ? CollisionGroup.PLAYER : CollisionGroup.ENEMY],
         }),

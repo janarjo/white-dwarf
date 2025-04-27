@@ -1,6 +1,6 @@
 import { expect } from '@jest/globals'
-import { Vector } from '../src/Math'
-import { round } from '../src/Math'
+import { Vector } from '../src/math/Math'
+import { round } from '../src/math/Math'
 
 expect.extend({
     toMatchVector(received: Vector, expected: Vector, precision = 3) {

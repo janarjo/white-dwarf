@@ -4,7 +4,7 @@ import { enemy } from './assembly/Core'
 import { player } from './assembly/Core'
 import { camera } from './assembly/Core'
 import { EntityManager } from './EntityManager'
-import { Dimensions, Position } from './Math'
+import { Dimensions, Position } from './math/Math'
 import { AsteroidField } from './fields/AsteroidField'
 import { Field } from './fields/Field'
 

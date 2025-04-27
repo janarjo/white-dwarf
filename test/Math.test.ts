@@ -9,12 +9,10 @@ import {
     isIntersectingLineSegments,
     Triangle,
     isWithinTriangle,
-    isEar,
-    earclip,
-    getAxes,
-    project,
     round,
-} from '../src/Math'
+    isWithinPlane,
+    Plane,
+} from '../src/math/Math'
 
 describe('round function', () => {
     it('should round a number to the nearest integer', () => {
@@ -219,88 +217,53 @@ describe('generateRandomPolygon function', () => {
     })
 })
 
-describe('isEar function', () => {
-    it('should return true if the triangle is an ear', () => {
-        const polygon = [[0, 0], [10, 0], [10, 10], [0, 10]] as const
-        const triangle = [[0, 0], [10, 0], [10, 10]] as const
-        expect(isEar(triangle, polygon)).toBe(true)
+describe('isWithinPlane function', () => {
+    it('should return true if the point is on the plane', () => {
+        const point = [0, 0] as const
+        const plane: Plane = [[0, 0], [1, 0]]
+
+        expect(isWithinPlane(point, plane)).toBe(true)
     })
 
-    it('should return false if the triangle is not an ear because it is concave', () => {
-        const polygon = [[0, 0], [10, 0], [10, 10], [5, 5], [0, 10]] as const
-        const triangle = [[10, 10], [5, 5], [0, 10]] as const
-        expect(isEar(triangle, polygon)).toBe(false)
+    it('should return true if the point is above the plane', () => {
+        const point = [1, 1] as const
+        const plane: Plane = [[0, 0], [0, 1]]
+
+        expect(isWithinPlane(point, plane)).toBe(true)
     })
 
-    it('should return false if the triangle is not an ear because contains another point of the polygon within', () => {
-        const polygon = [[0, 0], [10, 0], [10, 10], [5, 5], [0, 10]] as const
-        const triangle = [[0, 0], [10, 0], [10, 10]] as const
-        expect(isEar(triangle, polygon)).toBe(false)
-    })
-})
+    it('should return false if the point is below the plane', () => {
+        const point = [0, -1] as const
+        const plane: Plane = [[0, 0], [0, 1]]
 
-describe('earclip function', () => {
-    it('should throw an error if the polygon is not valid', () => {
-        const polygon = [[0, 0], [10, 0]] as const
-        expect(() => earclip(polygon)).toThrowError()
+        expect(isWithinPlane(point, plane)).toBe(false)
     })
 
-    it('should return a triangulated polygon (triangle)', () => {
-        const polygon = [[0, 0], [10, 0], [10, 10]] as const
-        const triangles = earclip(polygon)
-        expect(triangles.length).toBe(1)
-        expect(triangles[0]).toEqual([[0, 0], [10, 0], [10, 10]])
+    it('should return true if the point is on the plane with a diagonal normal', () => {
+        const point = [1, 1] as const
+        const plane: Plane = [[0, 0], [1, 1]]
+
+        expect(isWithinPlane(point, plane)).toBe(true)
     })
 
-    it('should return a triangulated polygon (rectangle)', () => {
-        const polygon = [[0, 0], [10, 0], [10, 10], [0, 10]] as const
-        const triangles = earclip(polygon)
-        expect(triangles.length).toBe(2)
-        expect(triangles[0]).toEqual([[0, 0], [10, 0], [10, 10]])
-        expect(triangles[1]).toEqual([[0, 0], [10, 10], [0, 10]])
+    it('should return false if the point is below the plane with a diagonal normal', () => {
+        const point = [-1, -1] as const
+        const plane: Plane = [[0, 0], [1, 1]]
+
+        expect(isWithinPlane(point, plane)).toBe(false)
     })
 
-    it('should return a triangulated polygon (pentagon)', () => {
-        const polygon = [[0, 0], [10, 0], [10, 10], [5, 15], [0, 10]] as const
-        const triangles = earclip(polygon)
-        expect(triangles.length).toBe(3)
-        expect(triangles[0]).toEqual([[0, 0], [10, 0], [10, 10]])
-        expect(triangles[1]).toEqual([[0, 0], [10, 10], [5, 15]])
-        expect(triangles[2]).toEqual([[0, 0], [5, 15], [0, 10]])
-    })
-})
+    it('should return true if the point is far above the plane', () => {
+        const point = [100, 100] as const
+        const plane: Plane = [[0, 0], [1, 1]]
 
-describe('getAxes function', () => {
-    it('should return the correct axes for a rectangle', () => {
-        const rectangle = [[0, 0], [10, 0], [10, 10], [0, 10]] as const
-        const axes = getAxes(rectangle)
-        expect(axes.length).toBe(2)
-        expect(axes[0]).toEqual([-0, 1])
-        expect(axes[1]).toEqual([-1, 0])
+        expect(isWithinPlane(point, plane)).toBe(true)
     })
 
-    it('should return the correct axes for a triangle', () => {
-        const triangle = [[0, 0], [10, 0], [10, 10]] as const
-        const axes = getAxes(triangle)
-        expect(axes.length).toBe(3)
-        expect(axes[0]).toEqual([-0, 1])
-        expect(axes[1]).toEqual([-1, 0])
-        expect(axes[2]).toEqual([0.7071067811865475, -0.7071067811865475])
-    })
-})
+    it('should return false if the point is far below the plane', () => {
+        const point = [-100, -100] as const
+        const plane: Plane = [[0, 0], [1, 1]]
 
-describe('project function', () => {
-    it('should return the correct projection for a rectangle', () => {
-        const rectangle = [[0, 0], [10, 0], [10, 10], [0, 10]] as const
-        const axis = [-0, 1] as const
-        const projection = project(rectangle, axis)
-        expect(projection).toEqual([0, 10])
-    })
-
-    it('should return the correct projection for a triangle', () => {
-        const triangle = [[0, 0], [10, 0], [10, 10]] as const
-        const axis = [0.7071067811865475, -0.7071067811865475] as const
-        const projection = project(triangle, axis)
-        expect(projection).toEqual([0, 7.071067811865475])
+        expect(isWithinPlane(point, plane)).toBe(false)
     })
 })

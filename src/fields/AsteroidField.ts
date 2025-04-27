@@ -1,5 +1,5 @@
 import { EntityManager } from '../EntityManager'
-import { Dimensions, randInt, rand, hvec, generateRandomPolygon, Position, Direction, scale } from '../Math'
+import { Dimensions, randInt, rand, hvec, generateRandomPolygon, Position, Direction, scale } from '../math/Math'
 import { Field } from './Field'
 import { asteroid } from '../assembly/Core'
 import { Component } from '../components/Component'

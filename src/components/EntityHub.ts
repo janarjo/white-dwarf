@@ -1,4 +1,4 @@
-import { Offset } from '../Math'
+import { Offset } from '../math/Math'
 import { Component, ComponentCode, ComponentState } from './Component'
 
 export enum RemoveBehavior {

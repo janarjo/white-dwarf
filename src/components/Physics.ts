@@ -1,4 +1,4 @@
-import { Vector } from '../Math'
+import { Vector } from '../math/Math'
 import { Acceleration, RateOfRotation, Speed } from '../Units'
 import { Component, ComponentCode, ComponentState } from './Component'
 

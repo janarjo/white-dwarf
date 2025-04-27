@@ -1,5 +1,5 @@
 import { ItemCode } from '../Items'
-import { Offset } from '../Math'
+import { Offset } from '../math/Math'
 import { SoundCode } from '../SoundManager'
 import { ProjectileCode } from '../assembly/Projectiles'
 import { Component, ComponentCode, ComponentState } from './Component'

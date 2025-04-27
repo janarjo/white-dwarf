@@ -1,6 +1,6 @@
 import { DrawEffect, DrawEffectCode, Fade, Glow } from '../components/Render'
 import { Circle, Polygon, Rectangle, Shape } from '../components/Transform'
-import { Position, Direction, subtract, scale } from '../Math'
+import { Position, Direction, subtract, scale } from '../math/Math'
 import { Color } from './Colors'
 
 export interface DrawParameters {

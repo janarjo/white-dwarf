@@ -1,5 +1,5 @@
 import { Component, ComponentCode, ComponentState, Entity } from './components/Component'
-import { intersect } from './Math'
+import { intersect } from './math/Math'
 import { isDefined } from './Util'
 
 export class EntityBag {

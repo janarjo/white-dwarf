@@ -1,5 +1,5 @@
 import { ItemCode } from '../Items'
-import { Directions } from '../Math'
+import { Directions } from '../math/Math'
 import { SoundCode } from '../SoundManager'
 import { Attachment, RemoveBehavior } from '../components/Attachment'
 import { SlotType } from '../components/EntityHub'

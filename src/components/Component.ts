@@ -17,15 +17,13 @@ export enum ComponentCode {
     QUICK_SLOT
 }
 
-export interface ComponentState {
-    [key: string]: unknown
-}
+export interface ComponentState {}
 
-export abstract class Component {
+export abstract class Component<T extends ComponentState = ComponentState> {
     constructor(
             readonly code: ComponentCode,
             readonly name: string,
-            readonly state: ComponentState,
+            readonly state: T,
             // Whether the component is shared between parent and child entities
             readonly shared: boolean = false) {
     }

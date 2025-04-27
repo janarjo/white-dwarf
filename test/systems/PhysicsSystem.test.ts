@@ -1,5 +1,5 @@
 import { EntityManager } from '../../src/EntityManager'
-import { Vector } from '../../src/Math'
+import { Vector } from '../../src/math/Math'
 import { COSMIC_SPEED_LIMIT, Speed, degPerSec, pxPerSec, pxPerSec2, sec } from '../../src/Units'
 import { Collision } from '../../src/components/Collision'
 import { Component } from '../../src/components/Component'
@@ -140,8 +140,8 @@ describe('PhysicsSystem collision update', () => {
     const setupColliders = (entities: EntityManager, entity1: Component[], entity2: Component[]) => {
         const entity1Id = entities.add(entity1)
         const entity2Id = entities.add(entity2)
-        entities.getComponent(entity1Id, Collision).state.colliders = [entity1Id, entity2Id]
-        entities.getComponent(entity2Id, Collision).state.colliders = [entity1Id, entity2Id]
+        entities.getComponent(entity1Id, Collision).state.collisions = [{ id: entity2Id, contactPoints: [[0, 0]] }]
+        entities.getComponent(entity2Id, Collision).state.collisions = [{ id: entity1Id, contactPoints: [[0, 0]] }]
         return [entity1Id, entity2Id]
     }
 })

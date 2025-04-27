@@ -1,4 +1,4 @@
-import { Vector, Offset, scale, earclip } from '../Math'
+import { Vector, Offset, scale } from '../math/Math'
 import { pxPerSec2, pxPerSec, degPerSec } from '../Units'
 import { Entity } from '../components/Component'
 import { ConditionHub, ConditionType, TriggerType } from '../components/ConditionHub'
@@ -6,6 +6,7 @@ import { Physics } from '../components/Physics'
 import { Render, DrawEffectCode, AnimationCode } from '../components/Render'
 import { Transform, ShapeType } from '../components/Transform'
 import { asteroidGray, fireOrange } from '../ui/Colors'
+import { earclip } from '../math/SAT'
 
 export const exhaust = (position: Vector, direction: Vector, size: number = 1) => {
     const shapePoints: Offset[] = [[-8, -5], [8, 0], [-8, 5]]

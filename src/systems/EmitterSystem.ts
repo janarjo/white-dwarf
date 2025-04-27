@@ -3,7 +3,7 @@ import { Emitter, EmissionType, ReactiveEmission } from '../components/Emitter'
 import { Physics, PhysicsState } from '../components/Physics'
 import { Transform, TransformState } from '../components/Transform'
 import { EntityManager } from '../EntityManager'
-import { add, mag, rotate, scale } from '../Math'
+import { add, mag, rotate, scale } from '../math/Math'
 import { SoundManager } from '../SoundManager'
 import { System } from './System'
 

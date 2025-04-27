@@ -1,4 +1,4 @@
-import { Position } from '../Math'
+import { Position } from '../math/Math'
 import { Component, ComponentCode, ComponentState } from './Component'
 
 export interface ControlState extends ComponentState {

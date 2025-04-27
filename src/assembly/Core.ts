@@ -1,5 +1,5 @@
 import { smallPlasmaPack, smallMissilePack } from '../Items'
-import { Directions, Offset, Vector, earclip } from '../Math'
+import { Directions, Offset, Vector } from '../math/Math'
 import { SoundCode } from '../SoundManager'
 import { pxPerSec2, pxPerSec, degPerSec, COSMIC_SPEED_LIMIT, ms } from '../Units'
 import { AI } from '../components/AI'
@@ -17,7 +17,7 @@ import { Render } from '../components/Render'
 import { ShapeType, Transform } from '../components/Transform'
 import { asteroidGray, metallicGray } from '../ui/Colors'
 import { EffectCode } from './Effects'
-
+import { earclip } from '../math/SAT'
 
 export const camera = () => [
     new Transform({
@@ -56,14 +56,12 @@ export const player = (position: Vector) => {
             zoomFactor: 1,
         }),
         new Physics({
-            currDirection: [1, 0],
             currVelocity: [0, 0],
             currAcceleration: [0, 0],
             currRotationalSpeed: 0,
             acceleration: pxPerSec2(50),
             maxVelocity: pxPerSec(200),
             rotationalSpeed: degPerSec(180),
-            lastUpdated: performance.now(),
             mass: 1,
         }),
         new EntityHub({
@@ -76,7 +74,7 @@ export const player = (position: Vector) => {
         new Collision({
             boundingBox: [[-30, -30], [60, 60]],
             isColliding: false,
-            colliders: [],
+            collisions: [],
             group: CollisionGroup.PLAYER,
             mask: [CollisionGroup.ENEMY],
         }),
@@ -126,14 +124,12 @@ export const enemy = (position: Vector) => {
             lastPolled: performance.now(),
         }),
         new Physics({
-            currDirection: [1, 0],
             currVelocity: [0, 0],
             currAcceleration: [0, 0],
             currRotationalSpeed: 0,
             acceleration: pxPerSec2(200),
             maxVelocity: pxPerSec(300),
             rotationalSpeed: degPerSec(180),
-            lastUpdated: performance.now(),
             mass: 1,
         }),
         new EntityHub({
@@ -142,7 +138,7 @@ export const enemy = (position: Vector) => {
         new Collision({
             boundingBox: [[-30, -30], [60, 60]],
             isColliding: false,
-            colliders: [],
+            collisions: [],
             group: CollisionGroup.ENEMY,
             mask: [CollisionGroup.PLAYER],
         }),
@@ -176,13 +172,12 @@ export const asteroid = (position: Vector, direction: Vector, points: Offset[], 
         acceleration: pxPerSec2(0),
         maxVelocity: COSMIC_SPEED_LIMIT,
         rotationalSpeed: degPerSec(0),
-        lastUpdated: performance.now(),
         mass: 1.5,
     }),
     new Collision({
         boundingBox: [[-30, -30], [60, 60]],
         isColliding: false,
-        colliders: [],
+        collisions: [],
         group: CollisionGroup.ENEMY,
         mask: [CollisionGroup.PLAYER, CollisionGroup.ENEMY],
     }),

@@ -1,4 +1,4 @@
-import { Offset } from '../Math'
+import { Offset } from '../math/Math'
 import { SoundCode } from '../SoundManager'
 import { EffectCode } from '../assembly/Effects'
 import { Component, ComponentCode, ComponentState } from './Component'

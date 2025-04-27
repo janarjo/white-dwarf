@@ -4,7 +4,7 @@ import { Control, ControlState } from '../components/Control'
 import { Physics, PhysicsState } from '../components/Physics'
 import { Transform, TransformState } from '../components/Transform'
 import { EntityManager } from '../EntityManager'
-import { add, dot, limit, mag, neg, norm, scale, Vector } from '../Math'
+import { add, dot, limit, mag, neg, norm, scale, Vector } from '../math/Math'
 import { Time } from '../Units'
 import { arraysEqual } from '../Util'
 import { System } from './System'
@@ -40,9 +40,8 @@ export class PhysicsSystem implements System {
 
         const colliderPairs = [] as Array<[number, number]>
         this.entities.withComponents(Physics, Collision)
-            .map(id => this.entities.getComponent(id, Collision).state)
-            .filter(collision => collision.isColliding)
-            .map(collision => collision.colliders)
+            .map(id => [id, ...this.entities.getComponent(id, Collision).state.collisions.map(collision => collision.id)])
+            .filter(collisions => collisions.length > 1)
             .map(colliders => colliders.slice(0, 2) as [number, number]) // Only handle collisions between two entities
             .map(colliders => colliders.sort()) // Sort to avoid duplicates
             .forEach(colliders => {

@@ -1,4 +1,4 @@
-import { scale, subtract } from '../Math'
+import { scale, subtract } from '../math/Math'
 import { Explosion } from '../components/Render'
 import { DrawParameters } from './ShapeDrawer'
 import { Animation } from '../components/Render'

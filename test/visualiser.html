@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Polygon Visualizer</title>
+  <style>
+    body { margin: 0; font-family: sans-serif; }
+    canvas { border: 1px solid #ccc; display: block; margin: 1rem auto; }
+  </style>
+</head>
+<body>
+<canvas id="canvas" width="800" height="800"></canvas>
+
+<script>
+  // === Configurable Constants ===
+  const scale = 25;
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
+  const w = canvas.width, h = canvas.height;
+  const origin = [w / 2, h / 2];
+
+  // === Coordinate Helpers ===
+  const toCanvas = ([x, y]) => [origin[0] + x * scale, origin[1] - y * scale];
+
+  const drawAxes = () => {
+    ctx.strokeStyle = "#888";
+    ctx.lineWidth = 1;
+
+    // X-axis
+    ctx.beginPath();
+    ctx.moveTo(0, origin[1]);
+    ctx.lineTo(w, origin[1]);
+    ctx.stroke();
+
+    // Y-axis
+    ctx.beginPath();
+    ctx.moveTo(origin[0], 0);
+    ctx.lineTo(origin[0], h);
+    ctx.stroke();
+
+    ctx.fillStyle = "#444";
+    ctx.font = "10px sans-serif";
+
+    // X ticks
+    for (let x = -w / 2; x <= w / 2; x += scale) {
+      const [cx, cy] = toCanvas([x / scale, 0]);
+      ctx.beginPath();
+      ctx.moveTo(cx, cy - 3);
+      ctx.lineTo(cx, cy + 3);
+      ctx.stroke();
+      if (x !== 0) ctx.fillText(x / scale, cx - 5, cy + 12);
+    }
+
+    // Y ticks
+    for (let y = -h / 2; y <= h / 2; y += scale) {
+      const [cx, cy] = toCanvas([0, y / scale]);
+      ctx.beginPath();
+      ctx.moveTo(cx - 3, cy);
+      ctx.lineTo(cx + 3, cy);
+      ctx.stroke();
+      if (y !== 0) ctx.fillText(y / scale, cx + 6, cy + 3);
+    }
+  };
+
+  // === Draw Polygon ===
+  const drawPolygon = (poly, options = {}) => {
+    if (!poly.length) return;
+    const color = options.color || "black";
+    const label = options.label;
+    const pts = poly.map(toCanvas);
+
+    ctx.beginPath();
+    ctx.moveTo(...pts[0]);
+    for (let i = 1; i < pts.length; i++) {
+      ctx.lineTo(...pts[i]);
+    }
+    ctx.closePath();
+
+    ctx.fillStyle = color + "55";
+    ctx.fill();
+    ctx.strokeStyle = color;
+    ctx.stroke();
+
+    if (label) {
+      ctx.fillStyle = color;
+      ctx.fillText(label, ...pts[0]);
+    }
+  };
+
+  // === Draw Points (e.g., Contacts) ===
+  const drawPoints = (points, color = "black") => {
+    for (const pt of points) {
+      const [x, y] = toCanvas(pt);
+      ctx.beginPath();
+      ctx.arc(x, y, 4, 0, 2 * Math.PI);
+      ctx.fillStyle = color;
+      ctx.fill();
+      ctx.strokeStyle = "white";
+      ctx.stroke();
+    }
+  };
+
+  // ====== Example Usage: Edit These Polygons ======
+  /** @type {Array<{ polygon: Array<[number, number]>, color?: string, label?: string }>} */
+  const shapes = [
+  {
+      polygon: [[0, 0], [10, 0], [5, 10]],
+      color: "blue",
+      label: "Ref"
+    },
+    /* {
+      polygon: [[10, 0], [15, 0], [15, 15]],
+      color: "red",
+      label: "Inc"
+    }, */
+    
+  ];
+
+  // ====== Draw All ======
+  for (const shape of shapes) {
+    drawPolygon(shape.polygon, shape);
+  }
+  drawAxes();
+</script>
+</body>
+</html>
