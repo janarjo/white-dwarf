@@ -24,7 +24,6 @@ export const exhaust = (position: Vector, direction: Vector, size: number = 1) =
             acceleration: pxPerSec2(0),
             maxVelocity: pxPerSec(0),
             rotationalSpeed: degPerSec(0),
-            lastUpdated: performance.now(),
             mass: 0.1,
         }),
         new Render({
