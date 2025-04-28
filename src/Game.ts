@@ -50,7 +50,6 @@ export class Game {
     start(levelNo: number) {
         const level = this.levels.getLevel(levelNo)
         const { mapSize, entities, fields, stars } = level
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const renderer = new CanvasRenderer(entities, new Drawer(this.canvas.getContext('2d')!), stars)
         const systems = [
             new TransformSystem(entities, mapSize),
@@ -69,7 +68,11 @@ export class Game {
         ] as const
 
         this.canvas.addEventListener('keydown', (event) => {
-            if (event.key === 'Pause') this.isPaused() ? this.unpause() : this.pause()
+            if (event.key === 'Pause') {
+                if (this.isPaused()) {
+                    this.unpause()
+                } else { this.pause() }
+            }
             if (event.key === 'i') {
                 if (Game.mode === UIMode.INVENTORY) {
                     Game.mode = UIMode.GAME

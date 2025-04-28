@@ -20,7 +20,7 @@ if (isWatch) {
     await ctx.watch()
     console.log('Watching...')
 
-    let { port } = await ctx.serve({servedir: 'build', host: 'localhost', port: 7000})
+    let { port } = await ctx.serve({ servedir: 'build', host: 'localhost', port: 7000 })
     console.log(`Serving http://localhost:${port}`)
 } else {
     console.log('Building...')

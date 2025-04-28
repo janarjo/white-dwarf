@@ -9,7 +9,7 @@ import { white } from '../src/ui/Colors'
 describe('EntityBag', () => {
     it('should add entities', () => {
         const bag = new EntityBag()
-        const entity = [new Inventory({ items: [], maxSize: 10})]
+        const entity = [new Inventory({ items: [], maxSize: 10 })]
         bag.add(entity)
         expect(bag.get(1)).toBe(entity)
     })
@@ -17,7 +17,7 @@ describe('EntityBag', () => {
     it('should add components', () => {
         const bag = new EntityBag()
 
-        const entity = [new Inventory({ items: [], maxSize: 10})]
+        const entity = [new Inventory({ items: [], maxSize: 10 })]
         bag.add(entity)
 
         const component = new Camera({ origin: [0, 0], zoom: 1 })
@@ -29,7 +29,7 @@ describe('EntityBag', () => {
     it('should remove components', () => {
         const bag = new EntityBag()
 
-        const entity = [new Inventory({ items: [], maxSize: 10})]
+        const entity = [new Inventory({ items: [], maxSize: 10 })]
         bag.add(entity)
 
         const component = new Camera({ origin: [0, 0], zoom: 1 })
@@ -43,7 +43,7 @@ describe('EntityBag', () => {
     it('should remove entities', () => {
         const bag = new EntityBag()
 
-        const entity = [new Inventory({ items: [], maxSize: 10})]
+        const entity = [new Inventory({ items: [], maxSize: 10 })]
         bag.add(entity)
 
         bag.remove(1)
@@ -54,7 +54,7 @@ describe('EntityBag', () => {
     it('should get components', () => {
         const bag = new EntityBag()
 
-        const entity = [new Inventory({ items: [], maxSize: 10})]
+        const entity = [new Inventory({ items: [], maxSize: 10 })]
         bag.add(entity)
 
         const component = new Camera({ origin: [0, 0], zoom: 1 })
@@ -66,7 +66,7 @@ describe('EntityBag', () => {
     it('should get components or none', () => {
         const bag = new EntityBag()
 
-        const entity = [new Inventory({ items: [], maxSize: 10})]
+        const entity = [new Inventory({ items: [], maxSize: 10 })]
         bag.add(entity)
 
         expect(bag.getComponentOrNone(1, Camera)).toBeUndefined()
@@ -75,7 +75,7 @@ describe('EntityBag', () => {
     it('should check if entity has component', () => {
         const bag = new EntityBag()
 
-        const entity = [new Inventory({ items: [], maxSize: 10})]
+        const entity = [new Inventory({ items: [], maxSize: 10 })]
         bag.add(entity)
 
         bag.addComponent(1, new Camera({ origin: [0, 0], zoom: 1 }))
@@ -90,17 +90,17 @@ describe('EntityBag withComponents', () => {
 
     beforeEach(() => {
         entity1 = [
-            new Camera({origin: [0, 0], zoom: 1 }),
-            new Inventory({ items: [], maxSize: 10})
+            new Camera({ origin: [0, 0], zoom: 1 }),
+            new Inventory({ items: [], maxSize: 10 })
         ]
         entity2 = [
             new Camera({ origin: [10, 10], zoom: 1 }),
-            new Inventory({ items: [], maxSize: 10}),
+            new Inventory({ items: [], maxSize: 10 }),
         ]
         entity3 = [
             new Camera({ origin: [20, 20], zoom: 1 }),
             new Render({ color: white }),
-            new Inventory({ items: [], maxSize: 15}),
+            new Inventory({ items: [], maxSize: 15 }),
         ]
         bag = new EntityBag()
         bag.add(entity1)

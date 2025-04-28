@@ -38,7 +38,7 @@ export const exhaust = (position: Vector, direction: Vector, size: number = 1) =
 
 export const fireExplosion = (position: Vector) => {
     return [
-        new Transform({ position, direction: [0, 0], shape: { type: ShapeType.CIRCLE, radius: 30 }}),
+        new Transform({ position, direction: [0, 0], shape: { type: ShapeType.CIRCLE, radius: 30 } }),
         new Render({
             color: fireOrange,
             animation: { code: AnimationCode.EXPLOSION, radius: 30, durationMs: 500, startedMs: performance.now() }
@@ -51,7 +51,7 @@ export const fireExplosion = (position: Vector) => {
 
 export const dustExplosion = (position: Vector) => {
     return [
-        new Transform({ position, direction: [0, 0], shape: { type: ShapeType.CIRCLE, radius: 50 }}),
+        new Transform({ position, direction: [0, 0], shape: { type: ShapeType.CIRCLE, radius: 50 } }),
         new Render({
             color: asteroidGray,
             animation: { code: AnimationCode.EXPLOSION, radius: 50, durationMs: 1000, startedMs: performance.now() }

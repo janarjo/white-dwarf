@@ -18,7 +18,6 @@ export class ControlSystem implements System {
         canvas.addEventListener('wheel', (event) => { this.handleWheel(event) })
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     update(): void {
         this.entities.withComponents(Control, Transform).forEach(id => {
             const control = this.entities.getComponent(id, Control)

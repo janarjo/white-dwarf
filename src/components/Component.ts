@@ -17,6 +17,7 @@ export enum ComponentCode {
     QUICK_SLOT
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface ComponentState {}
 
 export abstract class Component<T extends ComponentState = ComponentState> {
