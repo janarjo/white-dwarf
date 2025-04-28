@@ -12,7 +12,7 @@ export interface PhysicsState extends ComponentState {
     mass: number
 }
 
-export class Physics extends Component {
+export class Physics extends Component<PhysicsState> {
     constructor(public state: PhysicsState) {
         super(ComponentCode.PHYSICS, 'Physics', state, true)
     }

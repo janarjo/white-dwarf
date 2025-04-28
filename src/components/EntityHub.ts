@@ -21,7 +21,7 @@ export interface EntityHubState extends ComponentState {
     slots: Slot[]
 }
 
-export class EntityHub extends Component {
+export class EntityHub extends Component<EntityHubState> {
     constructor(public state: EntityHubState) {
         super(ComponentCode.ENTITY_HUB, 'Entity Hub', state)
     }

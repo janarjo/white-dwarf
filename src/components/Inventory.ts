@@ -6,7 +6,7 @@ export interface InventoryState extends ComponentState {
     maxSize: number
 }
 
-export class Inventory extends Component {
+export class Inventory extends Component<InventoryState> {
     constructor(public state: InventoryState) {
         super(ComponentCode.INVENTORY, 'Inventory', state, true)
     }

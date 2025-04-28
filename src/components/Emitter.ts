@@ -40,7 +40,7 @@ export interface EmitterState extends ComponentState {
     emissions: Emission[]
 }
 
-export class Emitter extends Component {
+export class Emitter extends Component<EmitterState> {
     constructor(public state: EmitterState) {
         super(ComponentCode.EMITTER, 'Emitter', state)
     }

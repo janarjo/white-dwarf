@@ -31,7 +31,7 @@ export interface TransformState extends ComponentState {
     currShape?: Shape
 }
 
-export class Transform extends Component {
+export class Transform extends Component<TransformState> {
     constructor(public state: TransformState) {
         super(ComponentCode.TRANSFORM, 'Core', state)
     }

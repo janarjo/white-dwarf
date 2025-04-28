@@ -7,7 +7,7 @@ export interface AIState extends ControlState {
     lastPolled: number
 }
 
-export class AI extends Component {
+export class AI extends Component<AIState> {
     constructor(public state: AIState) {
         super(ComponentCode.AI, 'AI', state, true)
     }

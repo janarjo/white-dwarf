@@ -11,7 +11,7 @@ export interface HealthState extends ComponentState {
     deathSound?: SoundCode
 }
 
-export class Health extends Component {
+export class Health extends Component<HealthState> {
     constructor(public state: HealthState) {
         super(ComponentCode.HEALTH, 'Health', state)
     }

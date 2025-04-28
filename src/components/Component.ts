@@ -31,4 +31,3 @@ export abstract class Component<T extends ComponentState = ComponentState> {
 
 export type Entity = Component[]
 export type ComponentConstructor<T extends Component, Y extends ComponentState> = new (state: Y) => T
-

@@ -39,7 +39,7 @@ export interface RenderState extends ComponentState {
     animation?: Animation
 }
 
-export class Render extends Component {
+export class Render extends Component<RenderState> {
     constructor(public state: RenderState) {
         super(ComponentCode.RENDER, 'Render', state)
     }

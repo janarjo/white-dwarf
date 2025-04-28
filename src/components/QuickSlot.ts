@@ -6,7 +6,7 @@ export interface QuickSlotState extends ComponentState {
     items: (Item | undefined)[]
 }
 
-export class QuickSlot extends Component {
+export class QuickSlot extends Component<QuickSlotState> {
     constructor(public state: QuickSlotState) {
         super(ComponentCode.QUICK_SLOT, 'Quick slot', state, true)
     }

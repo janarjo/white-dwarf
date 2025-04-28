@@ -13,7 +13,7 @@ export interface ControlState extends ComponentState {
     zoomFactor: number
 }
 
-export class Control extends Component {
+export class Control extends Component<ControlState> {
     constructor(public state: ControlState) {
         super(ComponentCode.CONTROL, 'Control', state, true)
     }

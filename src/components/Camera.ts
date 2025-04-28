@@ -6,7 +6,7 @@ export interface CameraState extends ComponentState {
     zoom: number
 }
 
-export class Camera extends Component {
+export class Camera extends Component<CameraState> {
     constructor(public state: CameraState) {
         super(ComponentCode.CAMERA, 'Camera', state)
     }

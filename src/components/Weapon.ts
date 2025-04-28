@@ -15,7 +15,7 @@ export interface WeaponState extends ComponentState {
     fireSound?: SoundCode
 }
 
-export class Weapon extends Component {
+export class Weapon extends Component<WeaponState> {
     constructor(public state: WeaponState) {
         super(ComponentCode.WEAPON, 'Weapon', state)
     }

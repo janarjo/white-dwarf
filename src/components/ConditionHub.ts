@@ -24,7 +24,7 @@ export interface ConditionHubState extends ComponentState {
     conditions: Condition[]
 }
 
-export class ConditionHub extends Component {
+export class ConditionHub extends Component<ConditionHubState> {
     constructor(public state: ConditionHubState) {
         super(ComponentCode.CONDITION_HUB, 'Condition Hub', state)
     }

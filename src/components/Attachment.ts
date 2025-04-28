@@ -11,7 +11,7 @@ export interface AttachmentState extends ComponentState {
     onRemove: RemoveBehavior
 }
 
-export class Attachment extends Component {
+export class Attachment extends Component<AttachmentState> {
     constructor(public state: AttachmentState) {
         super(ComponentCode.ATTACHMENT, 'Attachment', state)
     }
